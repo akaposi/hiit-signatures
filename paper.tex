@@ -1,0 +1,160 @@
+\documentclass{lmcs} %%% last changed 2014-08-20
+
+%% mandatory lists of keywords 
+\keywords{MANDATORY list of keywords}
+
+%% read in additional TeX-packages or personal macros here:
+%% e.g. \usepackage{tikz}
+\usepackage{hyperref}
+%%\input{myMacros.tex}
+%% define non-standard environments BEYOND the ones already supplied 
+%% here, for example
+\theoremstyle{plain}\newtheorem{satz}[thm]{Satz} %\crefname{satz}{Satz}{S\"atze}
+%% Do NOT replace the proclamation environments lready provided by
+%% your own.
+
+\def\eg{{\em e.g.}}
+\def\cf{{\em cf.}}
+
+%% due to the dependence on amsart.cls, \begin{document} has to occur
+%% BEFORE the title and author information:
+
+\begin{document}
+
+\title[Short title TODO]{Homomorphisms from type theoretic signatures using parametricity}
+\titlecomment{{\lsuper*} This is a journal version of the paper \cite{hiit}.}
+
+\author[A.~Kaposi]{Ambrus Kaposi}	%required
+\address{Department of Programming Languages and Compilers, E{\"o}tv{\"o}s Lor{\'a}nd University, Budapest, Hungary}	%required
+\email{akaposi@inf.elte.hu}  %optional
+%\thanks{thanks 1, optional.}	%optional
+
+\author[A.~Kov{\'a}cs]{Andr{\'a}s Kov{\'a}cs}	%optional
+\address{Department of Programming Languages and Compilers, E{\"o}tv{\"o}s Lor{\'a}nd University, Budapest, Hungary}	%required
+\email{kovacsandras@inf.elte.hu}  %optional
+\thanks{This work was supported by the European Union, co-financed by the
+European Social Fund (EFOP-3.6.3-VEKOP-16-2017-00002) and COST Action
+EUTypes CA15123.}	%optional
+
+%% etc.
+
+%% required for running head on odd and even pages, use suitable
+%% abbreviations in case of long titles and many authors:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% the abstract has to PRECEDE the command \maketitle:
+%% be sure not to issue the \maketitle command twice!
+
+\begin{abstract}
+  \noindent If a logical relation between two algebras is a graph of a
+  function, it is an algebra homomorphism. 
+\end{abstract}
+
+\maketitle
+
+\section*{Introduction}
+
+In HoTT, algebraic structures can have higher equalities. What is a
+homomorphism between two such algebraic structures? Example: circle,
+sphere. This also answers the question: what is an elimination
+principle for any HIT?
+
+Another Motivation: usefulness of GATs for formalising programming
+languages. Example: tt-in-tt with equations. Algebraic view of
+progr. langs.
+
+Method: Uday observation (inverse Reynolds), signatures for
+generalised algebraic theories using domain-specific tt, parametricity
+interpretation of dependent types. We put these
+together. Achievements: getting induction principles for non-strictly
+positive types, describing induction principles for HIITs.
+
+This is a journal version, main new thing: relation to parametricity
+(graph model), category model (extension of reflexive graph model),
+homomorphisms for non strictly positive operators, relation of
+syntactic translations and models for solving coherence issue, for
+HIITs the syntactic translation cannot be extended to a category.
+
+Formalisation?
+
+\subsection*{Overview of the paper}
+
+\subsection*{Related work}
+
+\section*{Theory of signatures}
+
+Brick red color. Subst.calc, U,El,Pi. We formalise the calculus as a
+QIIT, but present it with variables names and judgements. Eliminating
+from the QIIT needs to preserve equalities. Metatheory extensional.
+
+\section*{From logical relations to homomorphisms}
+
+Graph model, (A,M''), check what it gives for natural numbers
+
+we restrict U from relations to functions and El becomes graph of the
+function
+
+now we get homomorphisms
+
+example: homomorphism for non-strictly positive operators
+
+problem: suc is not the usual one, we cannot compose homomorphisms:
+composition does not work for Pi
+
+\section*{Categories of algebras}
+
+Restriction to strictly positive operators in signatures.
+
+category model
+
+\section*{Extensions}
+
+Pi with metatheoretic domain and large codomain
+
+Pi with metatheoretic domain and small codomain (infinitary)
+
+Extensional identity
+
+Identities between sorts
+
+Examples
+
+\section*{Higher equalities}
+
+The metatheory has K, so we do not elimiante into it, but to a target
+theory which does not have K. This also solves a coherence problem
+when eliminating from the syntax as a QIIT in HoTT as
+metatheory. Also, we add intensional Id type.
+
+\subsection*{Source theory}
+
+(Brick red)
+
+\subsection*{Target theory}
+
+(Blue)
+
+\subsection*{Translations}
+
+cannot be extended to a category because U[] is not strict unless we
+add new computation rules.
+
+\subsection*{Examples}
+
+\section*{Conclusions and further work}
+
+\section*{Acknowledgment}
+  \noindent The authors wish to acknowledge fruitful discussions with
+  A and B.
+
+
+\bibliographystyle{plain}
+\bibliography{b}
+  
+\appendix
+\section{}
+
+appendix contents
+
+\end{document}

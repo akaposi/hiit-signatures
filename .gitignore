@@ -1,0 +1,17 @@
+*~
+*.agdai
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.pdf
+*.toc
+*.nav
+*.snm
+*.vrb
+*.vtc
+*.ptb
+comment.cut
