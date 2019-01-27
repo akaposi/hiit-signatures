@@ -1,23 +1,55 @@
-\documentclass[dvipsnames]{lmcs} %%% last changed 2014-08-20
+\documentclass[a4paper,UKenglish]{lipics-v2018}
 
-%% build: latexmk -pdf -pvc -interaction=nonstopmode paper.tex
-
-%% mandatory lists of keywords
-\keywords{homotopy type theory, higher inductive types, inductive types}
-
-%% read in additional TeX-packages or personal macros here:
-%% e.g. \usepackage{tikz}
-%% \usepackage[dvipsnames]{xcolor}
 \usepackage{microtype}
 \usepackage{proof}
+\usepackage[dvipsnames]{xcolor}
 \usepackage{amsmath}
-\usepackage{amssymb}
 \usepackage{stmaryrd}
-\bibliographystyle{plainurl}
-\usepackage{hyperref}
 
-%% ABBREVS
-%% --------------------------------------------------------------------------------
+\bibliographystyle{plainurl}
+
+% Author macros::begin %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{A Syntax for Higher Inductive-Inductive Types}
+%\titlerunning{} %optional, in case that the title is too long; the running title should fit into the top page column
+
+%% Please provide for each author the \author and \affil macro, even when authors have the same affiliation, i.e. for each author there needs to be the  \author and \affil macros
+\author{Ambrus Kaposi}{Faculty of Informatics, E{\"o}tv{\"o}s Lor{\'a}nd University, P{\'a}zm{\'a}ny P{\'e}ter s{\'e}t{\'a}ny 1/C, 1117 Budapest, Hungary}{akaposi@inf.elte.hu}{https://orcid.org/0000-0001-9897-8936}{}
+\author{András Kovács}{Faculty of Informatics, E{\"o}tv{\"o}s Lor{\'a}nd University, P{\'a}zm{\'a}ny P{\'e}ter s{\'e}t{\'a}ny 1/C, 1117 Budapest, Hungary}{kovacsandras@inf.elte.hu}{https://orcid.org/0000-0002-6375-9781}{}
+\authorrunning{A. Kaposi and A. Kovács} %mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et. al.'
+
+\Copyright{Ambrus Kaposi and András Kovács}%mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+\subjclass{Theory of computation $\rightarrow$ Type theory}
+\keywords{homotopy type theory, inductive-inductive types, higher inductive types, quotient inductive types, logical relations}% mandatory: Please provide 1-5 keywords
+
+\funding{This work was supported by the European Union, co-financed by
+  the European Social Fund (EFOP-3.6.3-VEKOP-16-2017-00002), USAF
+  grant FA9550-16-1-0029, and by COST Action EUTypes CA15123.}
+
+\acknowledgements{The authors thank Thorsten Altenkirch, Simon
+  Boulier, Paolo Capriotti, Péter Diviánszky, Gábor Lehel and Nicolas
+  Tabareau for discussions related to this paper and the anonymous
+  reviewers for their helpful comments and suggestions. We thank
+  Balázs Kőműves for the idea of using a Tarski universe instead of a
+  Russell universe in the theory of codes.}
+
+% Author macros::end %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{H\'{e}l\`{e}ne Kirchner}
+\EventNoEds{1}
+\EventLongTitle{3rd International Conference on Formal Structures for Computation and Deduction (FSCD 2018)}
+\EventShortTitle{FSCD 2018}
+\EventAcronym{FSCD}
+\EventYear{2018}
+\EventDate{July 9--12, 2018}
+\EventLocation{Oxford, UK}
+\EventLogo{}
+\SeriesVolume{108}
+\ArticleNo{20}
+% Editor-only macros::end %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%=====================================================================
 
 %% setting \sqcdot as HoTT-book-style transitivity
 \makeatletter
@@ -67,20 +99,20 @@
 \newcommand{\ID}{\mathsf{ID}}
 \newcommand{\id}{\mathsf{id}}
 \newcommand{\nat}{\,\dot{\rightarrow}\,}
+%\newcommand{\nat}{\overset{\mathsf{n}}{\ra}} % this is how we denote it in the formalisation
 \newcommand{\Nat}{\mathsf{Nat}}
-%% \renewcommand{\S}{\overset{\mathsf{s}}{\ra}}
-\newcommand{\blank}{\mathord{\hspace{1pt}\text{--}\hspace{1pt}}}
+\renewcommand{\S}{\overset{\mathsf{s}}{\ra}} % we have it with uppercase S in the formalisation
+\newcommand{\blank}{\mathord{\hspace{1pt}\text{--}\hspace{1pt}}} %from the book
+%\newcommand{\blank}{\!{-}\!}
 \newcommand{\lam}{\mathsf{lam}}
 \newcommand{\app}{\mathsf{app}}
 \newcommand{\tr}[2]{\ensuremath{{}_{#1 *}\mathopen{}{#2}\mathclose{}}}
 \newcommand{\C}{\mathsf{C}}
 \newcommand{\Code}{\mathsf{Code}}
-
-\newcommand{\A}{\mathsf{A}}
 \newcommand{\M}{\mathsf{M}}
-\newcommand{\D}{\mathsf{D}}
-\renewcommand{\S}{\mathsf{S}}
-
+% from the book
+%\newcommand{\M}{{\scalebox{0.6}{$\mathsf{M}$}}}
+%% \newcommand{\C}{\mathcal{C}}
 \newcommand{\data}{\mathsf{data}}
 \newcommand{\ind}{\hspace{1em}}
 \newcommand{\idP}{\mathsf{idP}}
@@ -151,8 +183,11 @@
 \newcommand{\rb}{\rangle} \newcommand{\Decl}{\mathsf{Decl}}
 \newcommand{\Core}{\mathsf{Core}} \newcommand{\IND}{\mathsf{ind}}
 \newcommand{\Id}{\mathsf{Id}} \newcommand{\Base}{\mathsf{Base}}
+\newcommand{\Setoid}{\mathsf{Setoid}}
+\newcommand{\FamSetoid}{\mathsf{FamSetoid}}
+\newcommand{\prop}{\mathsf{prop}} \newcommand{\resp}{\mathsf{resp}}
 \newcommand{\transport}{\mathsf{transport}}
-\newcommand{\I}{\mathsf{I}} \newcommand{\E}{\mathsf{S}}
+\newcommand{\I}{\mathsf{I}} \newcommand{\E}{\mathsf{E}}
 \newcommand{\transp}{\mathsf{transp}}
 \newcommand{\Transp}{\mathsf{Transp}}
 \newcommand{\W}{\mathsf{W}}
@@ -184,73 +219,40 @@
 \newcommand\pp{\ensuremath{\hat{\mathbin{+\mkern-10mu+}}}}
 \newcommand{\semicol}{\hat;\,}
 \newcommand{\targetass}{\hat{\Gamma}\semicol}
-\newcommand{\Alg}{\mathsf{Alg}}
-\newcommand{\DisplayedAlg}{\mathsf{DisplayedAlg}}
-\newcommand{\Morphism}{\mathsf{Morphism}}
-\newcommand{\Section}{\mathsf{Section}}
+%\newcommand{\targetass}{;}
 
-%% END OF ABBREVS
-%% --------------------------------------------------------------------------------
-
-%%\input{myMacros.tex}
-%% define non-standard environments BEYOND the ones already supplied
-%% here, for example
-\theoremstyle{plain}\newtheorem{satz}[thm]{Satz} %\crefname{satz}{Satz}{S\"atze}
-%% Do NOT replace the proclamation environments lready provided by
-%% your own.
-
-\def\eg{{\em e.g.}}
-\def\cf{{\em cf.}}
-
-%% due to the dependence on amsart.cls, \begin{document} has to occur
-%% BEFORE the title and author information:
+%=====================================================================
 
 \begin{document}
 
-\title{Signatures and Induction Principles for Higher Inductive-Inductive Types}
-\titlecomment{{\lsuper*} This is a journal version of the paper \cite{hiit}.}
-
-\author[A.~Kaposi]{Ambrus Kaposi}	%required
-\address{Department of Programming Languages and Compilers, E{\"o}tv{\"o}s Lor{\'a}nd University, Budapest, Hungary}	%required
-\email{akaposi@inf.elte.hu}  %optional
-%\thanks{thanks 1, optional.}	%optional
-
-\author[A.~Kov{\'a}cs]{Andr{\'a}s Kov{\'a}cs}	%optional
-\address{Department of Programming Languages and Compilers, E{\"o}tv{\"o}s Lor{\'a}nd University, Budapest, Hungary}	%required
-\email{kovacsandras@inf.elte.hu}  %optional
-\thanks{This work was supported by the European Union, co-financed by the
-European Social Fund (EFOP-3.6.3-VEKOP-16-2017-00002) and COST Action
-EUTypes CA15123.}	%optional
-
-%% required for running head on odd and even pages, use suitable
-%% abbreviations in case of long titles and many authors:
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% the abstract has to PRECEDE the command \maketitle:
-%% be sure not to issue the \maketitle command twice!
-
-\begin{abstract}
-\noindent
-Higher inductive-inductive types (HIITs) generalize inductive types of dependent
-type theories in two ways. On the one hand they allow the simultaneous
-definition of multiple sorts that can be indexed over each other. On the other
-hand they support equality constructors, thus generalizing higher inductive
-types of homotopy type theory. Examples that make use of both features are the
-Cauchy reals and the well-typed syntax of type theory where conversion rules are
-given as equality constructors. In this paper we propose a general definition of
-HIITs using a small type theory, named the theory of signatures. A context in
-this theory encodes a HIIT by listing the constructors. We also compute notions
-of induction and recursion for HIITs, by using variants of syntactic logical
-relation translations. Building full categorical semantics and constructing
-initial algebras is left for future work. The theory of HIIT signatures was
-formalised in Agda together with the syntactic translations. We also provide a
-Haskell implementation, which takes signatures as input and outputs translation
-results as valid Agda code.
-\end{abstract}
-
 \maketitle
 
+%=====================================================================
+
+\begin{abstract}
+Higher inductive-inductive types (HIITs) generalise inductive types of
+dependent type theories in two directions. On the one hand they allow
+the simultaneous definition of multiple sorts that can be indexed over
+each other. On the other hand they support equality constructors, thus
+generalising higher inductive types of homotopy type theory. Examples
+that make use of both features are the Cauchy reals and the well-typed
+syntax of type theory where conversion rules are given as equality
+constructors. In this paper we propose a general definition of HIITs
+using a domain-specific type theory. A context in this small type
+theory encodes a HIIT by listing the type formation rules and
+constructors. The type of the elimination principle and its
+$\beta$-rules are computed from the context using a variant of the
+syntactic logical relation translation. We show that for indexed
+W-types and various examples of HIITs the computed elimination
+principles are the expected ones. Showing that the thus specified
+HIITs exist is left as future work. The type theory specifying HIITs
+was formalised in Agda together with the syntactic translations. A
+Haskell implementation converts the types of sorts and constructors
+into valid Agda code which postulates the elimination principles and
+computation rules.
+\end{abstract}
+
+%=====================================================================
 
 \section{Introduction}
 \label{sec:intro}
@@ -261,25 +263,28 @@ principle which expresses that all inhabitants are constructed using
 finitely many applications of the constructors.
 
 For example, the inductive type of natural numbers $\Nat$ is given by
-the constructors $\zero:\Nat$ and $\suc:\Nat \ra \Nat$, and has the
-well-known induction principle:
+the constructors $\zero:\Nat$ and $\suc:\Nat \ra \Nat$. The
+eliminator corresponds to the usual notion of mathematical induction:
 \[
   \Elim\Nat:(P:\Nat \ra \mathsf{Type})(pz: P\,\zero)\big(ps:(n:\Nat)\ra P\,n\ra P\,(\suc\,n)\big)(n:\Nat)\ra P\,n
 \]
-\noindent $P$ is a family of types (or: a proof-relevant predicate) over natural
-numbers, which is called the \emph{induction motive}. The arguments $pz$ and
-$ps$ are called the \emph{induction methods}. The behavior of induction is
-described by a \emph{computation-rule} ($\beta$-rule) for each constructor
-and induction method:
+$P$ is a family of types over natural numbers, which is called the
+\emph{motive} of the eliminator. It can be viewed as a proof-relevant
+predicate on $\Nat$. The arguments $pz$ and $ps$ are called the
+\emph{methods} of the eliminator. The \emph{target} of the eliminator
+is $n$ and given methods for each constructor, the eliminator provides
+a witness of $P\,n$. Thus, if $P$ holds for $\zero$ and $\suc$
+preserves $P$, then $P$ holds for all natural numbers. The behaviour
+of the eliminator is described by a \emph{computation-rule}
+($\beta$-rule) for each constructor:
 \begin{alignat*}{5}
   & \Elim\Nat\,P\,pz\,ps\,\zero && \equiv pz \\
   & \Elim\Nat\,P\,pz\,ps\,(\suc\,n) && \equiv ps\,n\,(\Elim\Nat\,P\,pz\,ps\,n)
 \end{alignat*}
-
-%% These express that the eliminator applied to a constructor expression
-%% reduces to an application of the corresponding induction method. From
-%% an operational point of view, $\Elim\Nat$ replaces all the $\zero$ and
-%% $\suc$ constructors with the given induction methods.
+These express that the eliminator applied to a constructor expression
+reduces to an application of the corresponding induction method. From
+an operational point of view, $\Elim\Nat$ replaces all the $\zero$ and
+$\suc$ constructors with the given induction methods.
 
 % A special case of the eliminator is the recursor (non-dependent
 % eliminator) which allows the definition of a non-dependent function
@@ -290,55 +295,60 @@ and induction method:
 % The eliminator can be derived from the recursor and a uniqueness
 % principle.
 
-Indexed families of types can be also considered, for example length-indexed
-vectors of $A$-elements $\mathsf{Vec}_A: \Nat \ra \mathsf{Type}$. Mutual
-inductive types are yet another generalization, however, they can be reduced to
-indexed families where indices classify constructors for each mutual type.
-Inductive-inductive types \cite{forsberg-phd} are mutual definitions where this
-reduction does not work: here a type can be defined together with a family
-indexed over it. An example is the following fragment of a well-typed syntax of
-a type theory, where the second $\Ty$ type constructor is indexed over $\Con$,
-but constructors of $\Con$ also refer to $\Ty$:
+Dependent families of types can be defined in a similar way, for
+example vectors of $A$-elements $\mathsf{Vec}_A: \Nat \ra \mathsf{Type}$ which
+are indexed by their length. Another generalisation of inductive types
+are mutual inductive types. However, these can be reduced to indexed
+families where indices classify constructors for each mutual type.
+Inductive-inductive types \cite{forsberg-phd} are mutual definitions
+where this reduction does not work: here a type is defined together
+with a family indexed over it. An example is the following fragment of
+the well-typed syntax of type theory where the second sort $\Ty$ is
+indexed over the first sort $\Con$, but constructors of $\Con$ also
+refer to $\Ty$:
 \begin{alignat*}{3}
-  & \Con && : \mathsf{Type} && \text{contexts} \\
-  & \Ty  && : \Con \ra \mathsf{Type} && \text{types in contexts} \\
+  & \Con && : \mathsf{Type} && \text{sort of contexts} \\
+  & \Ty  && : \Con \ra \mathsf{Type} && \text{sort of types given a context} \\
   & \bullet && : \Con && \text{constructor for the empty context} \\
   & \blank\rhd\blank && : (\Gamma:\Con)\ra\Ty\,\Gamma\ra\Con && \text{constructor for context extension} \\
-  & \iota && : (\Gamma:\Con)\ra\Ty\,\Gamma && \text{constructor for a base type} \\
+  & \U && : (\Gamma:\Con)\ra\Ty\,\Gamma && \text{constructor for a base type} \\
   & \Pi && : (\Gamma:\Con)(A:\Ty\,\Gamma)\ra\Ty\,(\Gamma\rhd A)\ra\Ty\,\Gamma \hspace{1em} && \text{constructor for dependent functions}
 \end{alignat*}
 There are two eliminators for this type: one for $\Con$ and one for
 $\Ty$. Both take the same arguments: two motives ($P:\Con\ra\mathsf{Type}$ and
 $Q:(\Gamma:\Con)\ra P\,\Gamma\ra\Ty\,\Gamma\ra\mathsf{Type}$) and four methods
-(one for each constructor, which we omit).
+(one for each constructor, we don't list these).
 \begin{alignat*}{6}
   & \Elim\Con && : (P:\dots)(Q:\dots)\ra\dots\ra(\Gamma:\Con) && \ra P\,\Gamma \\
   & \Elim\Ty  && : (P:\dots)(Q:\dots)\ra\dots\ra(A:\Ty\,\Gamma) && \ra Q\,\Gamma\,(\Elim\Con\,\Gamma)\,A
 \end{alignat*}
-Note that the type of $\Elim\Ty$ refers to $\Elim\Con$; for this reason
-this elimination principle is sometimes called ``recursive-recursive''
-(analogously to ``inductive-inductive'').
+Note that the type of $\Elim\Ty$ refers to $\Elim\Con$, which is why
+this elimination principle is called recursive-recursive (analogously
+to the phrase ``inductive-inductive'').
 
-Higher inductive types (HITs, \cite[Chapter 6]{HoTTbook}) generalize inductive
-types in a different way: they allow constructors expressing equalities of
-elements of the type being defined. This enables, among others, the definition
-of types quotiented by a relation. For example, the type of integers $\Int$ can
-be given by a constructor $\mathsf{pair}:\Nat\ra\Nat\ra\Int$ and an equality
-constructor $\mathsf{eq}:(a\,b\,c\,d:\Nat)\ra a+d=_\Nat b+c\ra
-\mathsf{pair}\,a\,b=_{\Int}\mathsf{pair}\,c\,d$ targetting an equality of
-$\Int$. The eliminator for $\Int$ expects a motive $P:\Int\ra\mathsf{Type}$, a
-method for the $\mathsf{pair}$ constructor $p:(a\,b:\Nat)\ra
-P\,(\mathsf{pair}\,a\,b)$ and a method for the equality constructor
-$\mathsf{path}$. This method is a proof that given $e:a+d=_\Nat b+c$, $p\,a\,b$
-is equal to $p\,c\,d$ (the types of which are equal by $e$). Thus the method for
-the equality constructor ensures that all functions defined from the quotiented
-type respect the relation. Since the integers are supposed to be a set (which
-means that any two equalities between the same two integers are equal), we would
-need an additional higher equality constructor
-$\mathsf{trunc}:(x\,y:\Int)\ra(p\,q:x=_\Int y)\ra p=_{x=_\Int y} q$.  HITs may
-have constructors of iterated equality types as well. With the view of types as
-spaces in mind, point constructors add points to spaces, equality constructors
-add paths and higher constructors add homotopies between higher-dimensional paths.
+Higher inductive types (HITs, \cite[Chapter 6]{HoTTbook}) generalise
+inductive types in a different way: they allow constructors expressing
+equalities of elements of the type being defined. This enables, among
+others, the definition of types quotiented by a relation. For example,
+the type of integers $\Int$ can be given by a constructor
+$\mathsf{pair}:\Nat\ra\Nat\ra\Int$ and an equality constructor
+$\mathsf{eq}:(a\,b\,c\,d:\Nat)\ra a+d=_\Nat b+c\ra
+\mathsf{pair}\,a\,b=_{\Int}\mathsf{pair}\,c\,d$ targetting an equality
+of $\Int$. The eliminator for $\Int$ expects a motive
+$P:\Int\ra\mathsf{Type}$, a method for the $\mathsf{pair}$ constructor
+$p:(a\,b:\Nat)\ra P\,(\mathsf{pair}\,a\,b)$ and a method for the
+equality constructor $\mathsf{path}$. This method is a proof that
+given $e:a+d=_\Nat b+c$, $p\,a\,b$ is equal to $p\,c\,d$ (the types of
+which are equal by $e$). Thus the method for the equality constructor
+ensures that all functions defined from the quotiented type respect
+the relation. Since the integers are supposed to be a set (which
+means that any two equalities between the same two integers are
+equal), we would need an additional higher equality constructor
+$\mathsf{trunc}:(x\,y:\Int)\ra(p\,q:x=_\Int y)\ra p=_{x=_\Int y} q$.
+HITs allow equality constructors at any level. With the view of types
+as spaces in mind, point constructors add points to the space,
+equality constructors add paths and higher constructors add homotopies
+between paths.
 
 Not all constructor expressions make sense. For example \cite[Example
   6.13.1]{HoTTbook}, given an $f:(X:\mathsf{Type})\ra X\ra X$, suppose that an
@@ -355,130 +365,151 @@ $p_b:P\,\mathsf{b}$, and there is no way in general to transform these
 to have types $P\,(f\,\mathsf{Ival}\,\mathsf{a})$ and
 $P\,(f\,\mathsf{Ival}\,\mathsf{b})$.
 
-Another invalid example is an inductive type $\mathsf{Neg}$ with a constructor
-$\con:(\mathsf{Neg} \ra \bot) \ra \mathsf{Neg}$ where $\bot$ is the empty
-type. An eliminator for this type should (at least) yield a projection function
-$\proj: \mathsf{Neg} \ra (\mathsf{Neg} \ra \bot)$. Given this, we can define $u
-:\equiv \con\,(\lambda x . \proj\, x\,x):\mathsf{Neg}$ and then derive $\bot$ by
-$\proj\,u\,u$. The existence of $\mathsf{Neg}$ would make the type theory
-inconsistent. A common restriction to avoid such situations is \emph{strict
-  positivity}. It means that the type being defined cannot occur on the left
-hand side of a function arrow in a parameter of a constructor. This excludes the
-above constructor $\con$.
+Another invalid example is an inductive type $\mathsf{Neg}$ with a
+constructor $\con:(\mathsf{Neg} \ra \bot) \ra \mathsf{Neg}$ where $\bot$
+is the empty type. An eliminator for this type should (at least) yield
+a projection function $\proj: \mathsf{Neg} \ra (\mathsf{Neg} \ra
+\bot)$. Given this, we can define $u :\equiv \con\,(\lambda x
+. \proj\, x\,x):\mathsf{Neg}$ and then derive $\bot$ by
+$\proj\,u\,u$. The existence of $\mathsf{Neg}$ would make the type
+theory inconsistent. A common restriction to avoid such situations is
+\emph{strict positivity}. It means that the type being defined cannot
+occur on the left hand side of a function arrow in a parameter of a
+constructor. This excludes the above constructor $\con$.
 
-In this paper we propose a notion of signatures for higher inductive-inductive
-types (HIITs) which includes the above valid examples and excludes the invalid
-ones. Our signatures allow any number of inductive-inductive type constructors,
-possibly infinitary higher constructors of any dimension and restricts
-constructors to strictly positive ones. It also allows free usage of $\J$ (path
-induction) and $\refl$ in HIIT signatures, and allows mixing type, point and path
-constructors in any order.
+In this paper we propose a general syntax for higher
+inductive-inductive types (HIITs) which includes the above positive
+examples and excludes the negative ones. Our syntax for HIITs allows
+any number of inductive-inductive sorts, possibly infinitary higher
+constructors of any dimension and restricts constructors to strictly
+positive ones. It also allows free usage of $\J$ and $\refl$ in HIIT
+specifications.  We also show how to derive the types of the
+eliminators and computation rules from the type formation rules and
+constructors.
 
 The core idea is to represent HIIT specifications as contexts in a
-domain-specific type theory which we call the \emph{theory of signatures}. Type
-formers in the theory of codes are restricted in order to enforce strict
-positivity. For example, natural numbers are defined as the three-element
-context
+domain-specific type theory which we call the \emph{theory of
+  codes}. A context in this theory can be seen as a \emph{code} for a
+HIIT, similarly to how a container \cite{abbot05containers} can be
+seen as a code for a simple inductive type. Type formers in the theory
+of codes are restricted in order to enforce strict positivity. For
+example, natural numbers are defined as the three-element context
 \[
   Nat:\U,\,\,\, zero:\underline{Nat},\,\,\, suc : Nat \ra \underline{Nat}
 \]
 where $Nat$, $zero$ and $suc$ are simply variable names, and underlining
 denotes $\El$ (decoding) for the Tarski-style universe $\U$.
 
-We also show how to derive induction and recursion principles for each
-signature. We use variants of \emph{syntactic logical relation translations} to
-compute notions of \emph{algebras}, \emph{homomorphisms}, \emph{displayed
-  algebras} and \emph{displayed algebra sections}, and then define induction and
-recursion in terms of these notions.
+We use a variant of Bernardy et al.'s logical predicate translation
+\cite{bernardy2010parametricity} to derive the types of motives and
+methods, and a logical relation translation to derive the types of the
+eliminators and computation rules. The target of these translations is
+a type theory with a predicative hierarchy of Russell-style universes
+closed under $\Pi$, $\Sigma$, the equality (identity) type
+$\blank=\blank$ and the unit type $\top$. The source type theory is
+the target type theory extended with rules for the theory of codes.
 
 To our knowledge, this is the first proposal for a definition of
-HIITs. However, we do not provide complete (higher) categorical semantics
-for HIITs, nor do we show that initial algebras exist for specified HIITs.
+HIITs. Proving the existence of the HIITs thus specified is left as
+future work.
 
-\subsection{Overview of the Paper}
+\subsection{Overview of the paper}
 
-We start by describing the theory of HIIT signatures in Section
-\ref{sec:signatures}. Here, we also describe the syntax for an external type
-theory, which serves as the source of constants which are external to a
-signature, like natural numbers in the case of length-indexed vectors. In
-Section \ref{sec:general}, we give a general definition of induction and
-recursion. In Section \ref{sec:coherence} we explain the choice of using
-syntactic translations in the rest of the paper. In Sections TODO to TODO, we
-describe four syntactic translations from the theory of signatures to the syntax
-of the external type theory, respectively computing algebras, homomorphisms,
-displayed algebras and sections of displayed algebras. In Section TODO, we
-consider extending the previous translations with additional components of the
-categorical semantics of HIITs (e.g.\ identity and composition for
-homomorphisms), and explain why the approach in this paper does not make this
-feasible. Section \ref{sec:formalization} describes the Agda formalization and
-the Haskell implementation. We conclude in Section \ref{sec:summary}.
+We start by describing the target type theory in Section
+\ref{sec:target}. In Section \ref{sec:source}, we define the source
+type theory. The source type theory is the target theory extended with
+the theory of codes, i.e.\ the rules to describe HIITs. We also
+provide several examples of HIIT definitions. In Section
+\ref{sec:translation} we define three syntactic translations from the
+source to the target theory, each depending on the previous one:
+first, we compute the types of type formation rules and constructors
+(Section \ref{sec:c}); then, assuming the constructors exist, we
+compute the types of motives and methods (Section \ref{sec:m});
+finally we compute the types of the eliminators together with their
+computation rules (Section \ref{sec:e}). To illustrate these
+operations, we show how they compute on a few example codes: natural
+numbers, the circle, indexed W-types and the two-dimensional sphere
+(Appendix \ref{sec:app}). In Section \ref{sec:adding} we add the
+pieces together by specifying what it means for the target type theory
+to support HIITs. Section \ref{sec:formalisation} describes the
+formalisation and a Haskell implementation. We conclude in Section
+\ref{sec:summary}.
 
-\subsection{Related Work}
+\subsection{Related work}
 
-Schemes for inductive families are given in
-\cite{Dybjer97inductivefamilies,paulinmohring}, and for inductive-recursive
-types in \cite{dybjer00ir}. A symmetric scheme for both inductive and
-coinductive types is given in \cite{henning}. Basold et al. \cite{niels} define
-a syntactic scheme for higher inductive types with only 0-constructors and
-compute the types of induction principles. In \cite{nielsmsc} a semantics is
-given for the same class of HITs but with no recursive equality
-constructors. Dybjer and Moeneclaey define a syntactic scheme for finitary HITs
-and show their existence in a groupoid model \cite{moeneclaey}.
+Inductive types can be specified using external syntactic schemes or
+internal codes. In the former case the type theory is extended with
+derivation rules specifying inductive types. In the latter case there
+is an internal type of codes such that each code represents a valid
+inductive type, and actual types are produced from codes by decoding
+functions. Our development uses the former approach.
 
-Internal codes for simple inductive types such as natural numbers, lists or
-binary trees can be given by containers which are decoded to W-types
-\cite{abbot05containers}. Morris and Altenkirch \cite{morris09indexed} extend
-the notion of container to that of indexed container which specifies indexed
-inductive types. Codes for inductive-recursive types are given in
-\cite{Dybjer99afinite}. Inductive-inductive types were introduced by Forsberg
-\cite{forsberg-phd}. Sojakova \cite{sojakova} defines a subset of HITs called
-W-suspensions by a coding scheme similar to W-types. She proves that the
-induction principle is equivalent to homotopy initiality.
+External schemes for inductive families are given in
+\cite{Dybjer97inductivefamilies,paulinmohring}, for
+inductive-recursive types in \cite{dybjer00ir}. A symmetric scheme for
+both inductive and coinductive types is given in
+\cite{henning}. Basold et al. \cite{niels} define an external
+syntactic scheme for higher inductive types with only 0-constructors
+and compute the types of elimination principles. In \cite{nielsmsc} a
+semantics is given for the same class of HITs but with no recursive
+equality constructors. Dybjer and Moeneclaey define a syntactic scheme
+for finitary HITs and show their existence in a groupoid model
+\cite{moeneclaey}.
 
-Quotient types \cite{hofmann95extensional} are precursors of higher inductive
-types (HITs). The notion of HIT first appeared in \cite{HoTTbook}, however only
-through examples and without a general definition.  Lumsdaine and Shulman give a
-general specification of models of type theory supporting higher inductive types
-\cite{lumsdaineShulman}. They introduce the notion of cell monad with parameters
-and characterize the class of models which have initial algebras for a cell monad
-with parameters. \cite{cubicalhits} develop semantics for several HITs (sphere,
-torus, suspensions, truncations, pushouts) in certain presheaf toposes, and
-extend the syntax of cubical type theory \cite{ctt} with these HITs. Kraus
-\cite{krausprop} and Van Doorn \cite{doorn} construct propositional truncation
-as a sequential colimit. The schemes mentioned so far do not support higher
+Internal codes for simple inductive types such as natural numbers,
+lists or binary trees can be given by containers which are decoded to
+W-types \cite{abbot05containers}. Morris and Altenkirch
+\cite{morris09indexed} extend the notion of container to that of
+indexed container which specifies indexed inductive types. Codes for
+inductive-recursive types are given in
+\cite{Dybjer99afinite}. Inductive-inductive types were introduced by
+Forsberg together with an internal coding scheme
+\cite{forsberg-phd}. Sojakova \cite{sojakova} defines a subset of HITs
+called W-suspensions by an internal coding scheme similar to
+W-types. She proves that the induction principle is equivalent to
+homotopy initiality.
+
+Quotient types \cite{hofmann95extensional} are precursors of higher
+inductive types (HITs). The notion of HIT first appeared in
+\cite{HoTTbook}, however only through examples and without a general
+definition.  Lumsdaine and Shulman give a general specification of
+models of type theory supporting higher inductive types
+\cite{lumsdaineShulman}. They introduce the notion of cell monad with
+parameters and characterise the class of models which have intial
+algebras for a cell monad with parameters. Kraus \cite{krausprop} and
+Van Doorn \cite{doorn} construct propositional truncation as a
+sequential colimit. The schemes mentioned so far do not support higher
 inductive-inductive types.
 
-The article of Altenkirch et al. \cite{gabe} gives a specification of quotient
-inductive-inductive types (QIITs), i.e.\ set-truncated HIITs. Signatures are
-given as lists of functors which can be interpreted as complete categories of
-algebras, and completeness is used to talk about notions of induction and
-recursion.  However, no strict positivity restriction is given, nor a
-construction of initial algebras.
+The closest to our work is the article of Altenkirch et
+al. \cite{gabe} which gives a categorical specification of quotient
+inductive-inductive types (QIITs), i.e.\ set-truncated higher
+inductive-inductive types. Sorts are specified as a list of functors
+into $\Set$ where the domain of the functor is a category constructed
+from results of the previous functors, thus encoding dependencies of
+later sorts on previous ones. The constructors are specified mutually
+with their category of algebras and underlying carrier functor. The
+specification supports set-level equality constructors. From a
+specification of a QIIT they derive the type of the eliminator and
+show that this corresponds to initiality.
 
-Closely related to the current work is the paper by the current authors and
-Altenkirch \cite{kaposi2019constructing}, which also concerns QIITs. There,
-signatures for QIITs are essentially a restriction of the signatures given here,
-but in contrast to the current work, the restricted quotient setting enables
-building initial algebras and detailed categorical semantics.
+The logical predicate syntactic translation was introduced by Bernardy
+et al. \cite{bernardy2010parametricity}. The idea that a context can
+be seen as a definition of an inductive type and the logical predicate
+translation can be used to derive the types of motives and methods was
+described in \cite[Section 5.3]{ttintt}. Logical relations are used to
+derive the computation rules in \cite[Section 4.3]{kaposi-phd},
+however only for closed QIITs. Syntactic translations in the context
+of the calculus of inductive constructions are discussed in
+\cite{next700}. Logical relations and parametricity can also be used
+to justify the \emph{existence} of inductive types in a type theory
+with an impredicative universe \cite{atkey}. In contrast, we only use
+logical relations to \emph{describe} HIITs.
 
-The logical predicate syntactic translation was introduced by Bernardy et
-al. \cite{bernardy2010parametricity}. The idea that a context can be seen as a
-definition of an inductive type and the logical predicate translation can be
-used to derive the types of motives and methods was described in \cite[Section
-  5.3]{ttintt}. Logical relations are used to derive the computation rules in
-\cite[Section 4.3]{kaposi-phd}, but only for closed QIITs. Syntactic
-translations in the context of the calculus of inductive constructions are
-discussed in \cite{next700}. Logical relations and parametricity can also be
-used to justify the existence of inductive types in a type theory with an
-impredicative universe \cite{atkey}.
+%=====================================================================
 
-\section{Signatures for HIITs}
-\label{sec:signatures}
-
-TODO
-
-%% \section{Target type theory}
-%% \label{sec:target}
+\section{Target type theory}
+\label{sec:target}
 
 In this section we describe the target type theory. It is the target
 of our translations, and it also serves as a source of constants which
@@ -544,13 +575,11 @@ The unit type is denoted $\hat{\top}$ with constructor $\tt$.
 
 %=====================================================================
 
-%% \section{Source type theory}
-%% \label{sec:source}
+\section{Source type theory}
+\label{sec:source}
 
 \begin{figure}
-
 (1) Contexts and variables
-
 \[
 \begin{gathered}
   \infer{\hat{\Gamma}\vdash\cdot}{\vdashh\hat{\Gamma}}
@@ -568,10 +597,7 @@ The unit type is denoted $\hat{\top}$ with constructor $\tt$.
   \infer{\targetass\Delta,y:B\vdash x : A}{\targetass\Delta\vdash x : A && \targetass\Delta\vdash B}
 \end{gathered}
 \]
-
-\vspace{0.5em}
 (2) Universe
-
 \[
 \begin{gathered}
   \infer{\targetass\Delta \vdash \U}{\targetass\vdash\Delta}
@@ -581,10 +607,7 @@ The unit type is denoted $\hat{\top}$ with constructor $\tt$.
   \infer{\targetass\Delta \vdash \underline{a}}{\targetass\Delta \vdash a : \U}
 \end{gathered}
 \]
-
-\vspace{0.5em}
 (3) Inductive parameters
-
 \[
 \begin{gathered}
   \infer{\targetass\Delta \vdash (x:a)\ra B}{\targetass\Delta \vdash a : \U && \targetass\Delta,x:\underline{a} \vdash B}
@@ -594,10 +617,7 @@ The unit type is denoted $\hat{\top}$ with constructor $\tt$.
   \infer{\targetass\Delta \vdash t\, u : B[x \mapsto u]}{\targetass\Delta \vdash t : (x:a)\ra B && \targetass\Delta \vdash u : \underline{a}}
 \end{gathered}
 \]
-
-\vspace{0.5em}
 (4) Equality
-
 \[
 \begin{gathered}
   \infer{\targetass\Delta \vdash t=_a u : \U}{\targetass\Delta \vdash a : \U && \targetass\Delta \vdash t : \underline{a} && \targetass\Delta \vdash u : \underline{a}}
@@ -626,10 +646,7 @@ The unit type is denoted $\hat{\top}$ with constructor $\tt$.
         && \targetass\Delta \vdash pr : \underline{p[x\mapsto t, z\mapsto \refl]}
       }
 \]
-
-\vspace{0.5em}
 (5) Non-inductive parameters
-
 \[
 \begin{gathered}
   \infer{\hat{\Gamma}\semicol\Delta \vdash (\hat{x}\in \hat{A})\ra B}{\hat{\Gamma}\vdashh\hat{A}\in\Type_0 && \hat{\Gamma}\semicol\vdash\Delta && (\hat{\Gamma}\commah\hat{x}\in \hat{A})\semicol \Delta \vdash B}
@@ -641,10 +658,7 @@ The unit type is denoted $\hat{\top}$ with constructor $\tt$.
   \infer{\hat{\Gamma}\semicol\Delta \vdash t\, \hat{u} : B[\hat{x}\mapsto \hat{u}]}{\hat{\Gamma}\semicol\Delta \vdash t : (\hat{x}\in \hat{A})\ra B && \hat{\Gamma}\vdashh \hat{u} \in \hat{A}}
 \end{gathered}
 \]
-
-\vspace{0.5em}
 (6) Infinitary parameters
-
 \[
 \begin{gathered}
   \infer{\hat{\Gamma}\semicol\Delta \vdash (\hat{x}\in \hat{A})\ra b : \U}{\hat{\Gamma}\vdashh\hat{A}\in\Type_0 && \hat{\Gamma}\semicol\vdash\Delta && (\hat{\Gamma}\commah\hat{x}\in \hat{A})\semicol \Delta \vdash b : \U}
@@ -657,7 +671,8 @@ The unit type is denoted $\hat{\top}$ with constructor $\tt$.
         {\hat{\Gamma}\semicol\Delta \vdash t : \underline{(\hat{x}\in \hat{A})\ra b} && \hat{\Gamma}\vdash \hat{u} \in \hat{A}}
 \end{gathered}
 \]
-\caption{The theory of HIIT signatures. Substitution and weakening are implicit, we assume fresh
+\caption{The theory of HIIT codes (part of the source type
+  theory). Substitution and weakening are implicit, we assume fresh
   names everywhere and consider $\alpha$-convertible terms equal. The
   $\hat{\Gamma};$ assumptions are not used or changed in parts
   (1)--(4).}
@@ -672,7 +687,7 @@ following judgement kinds.
   & \hat{\Gamma}\semicol\Delta\vdash t : A \hspace{3em} && \text{$t$ is a term of type $A$ in context $\Delta$ and target context $\hat{\Gamma}$}
 \end{alignat*}
 We name the subset of rules of the source theory which derives these
-judgments \emph{the theory of codes}. The derivation rules are listed
+judgements \emph{the theory of codes}. The derivation rules are listed
 in figure \ref{fig:codes}. A context $\Delta$ for which
 $\hat{\Gamma}\vdash\Delta$ can be derived represents a specification of a
 HIIT.
@@ -723,21 +738,19 @@ as well. We can now define the circle HIT as the following context:
 \[
 \cdot,\,\,\,S^1:\U,\,\,\,base:\underline{S^1},\,\,\,loop:\underline{base =_{S^1} base}
 \]
-
 The $\J$ rule allows constructors to mention operations on paths as
 well. For instance, the definition of the torus depends on path
 composition, which can be defined using $\J$: given $p:\underline{t=_a
   u}$ and $q:\underline{u=_a v}$, $p \sqcdot q$ abbreviates
 $\J_{a\,u\,x.z.(t=x)}\,p\,_v\,q : \underline{t=_a v}$. The torus is
 given as follows.
-
 \begin{alignat*}{5}
   & \cdot,\,\,\,T^2:\U,\,\,\,b : \underline{T^2},\,\,\, p:\underline{b =_{T^2} b},\,\,\,q:\underline{b=_{T^2} b},\,\,\, t:\underline{p\sqcdot q=_{(b=_{T^2} b)} q\sqcdot p}
 \end{alignat*}
 With the equality type at hand, we can define a full well-typed syntax
-of type theory as given e.g.\ in \cite{ttintt} as an inductive type
-(see the examples in the formalization described in Section
-\ref{sec:formalization}).
+of type theory as given e.g. in \cite{ttintt} as an inductive type
+(see the examples in the formalisation described in Section
+\ref{sec:formalisation}).
 
 So far we were only able to define closed HIITs, which excludes lists
 of a given type or the integers as given in the introduction. This is
@@ -813,92 +826,8 @@ target theory type, and no such functions can be formed.
 
 %=====================================================================
 
-\section{General Definitions for Induction and Recursion}
-\label{sec:general}
-
-Armed with a definition for HIIT signatures, we would like to have of notions of
-\emph{induction} and \emph{recursion} for each signature. However, instead of
-trying to directly extract them from signatures, it is more helpful to have more
-fundamental (categorical) semantic concepts: \emph{algebras},
-\emph{homomorphisms}, \emph{displayed algebras} and \emph{sections of displayed
-  algebras}. Then, we can express induction and recursion using these.
-
-Let us first consider natural numbers, and see how the usual definition of
-induction arises.
-
-For $\Nat$, algebras are simply a triple consisting of a type, a value and an
-endofunction. Below, we leave universe indices explicit, and we use the notation
-of the external type theory described in Section \ref{sec:signatures}.
-\begin{alignat*}{5}
-& \Alg : \mathsf{Type} \\
-& \Alg \equiv (N : \mathsf{Type}) \times N \times (N \ra N)
-\end{alignat*}
-
-\noindent Displayed $\Nat$-algebras (sometimes called fibered algebras, as in \cite{sojakova})
-are likewise triples, but depending on a $\Nat$-algebra.
-\begin{alignat*}{5}
-& \DisplayedAlg : \Alg \ra \mathsf{Type} && \\
-& \DisplayedAlg\,(N,\,z,\,s) \equiv && \\
-&  \hspace{3em} (N^D : N \ra \mathsf{Type})\times (z^D : N^D\,z)\times ((n : N)\ra N^D\,n\ra N^D\,(s\,n))
-\end{alignat*}
-
-\noindent  Homomorphisms, as usual in mathematics, are structure-preserving functions:
-\begin{alignat*}{5}
-& \Morphism : \Alg \ra \Alg \ra \mathsf{Type} && \\
-& \Morphism\,(N_0,\,z_0,\,s_0)\,(N_1,\,z_1,\,s_1) \equiv && \\
-&  \hspace{3em} (N^M : N_0 \ra N_1)\times (z^M : N^M\,z_0 = z_1)\times ((n : N_0)\ra N^M\,(s_0\,n) = s_1\,(N^M\,n))
-\end{alignat*}
-
-\noindent Sections of displayed algebras can be viewed as a dependently typed analogue of homomorphisms:
-\begin{alignat*}{5}
-& \Section : (\alpha : \Alg) \ra \DisplayedAlg\,\,\alpha \ra \mathsf{Type} && \\
-& \Section\,(N,\,z,\,s)\,(N^D,\,z^D,\,s^D) \equiv && \\
-&  \hspace{3em} (N^S : (n : N) \ra N^D\,n)\times (z^S : N^S\,z = z^D)\times ((n : N)\ra N^S\,(s\,n) = s^D\,(N^S\,n))
-\end{alignat*}
-
-\noindent Now, we can reformulate induction for $\Nat$. First, we assume that
-there exists a distinguished $\Nat$-algebra, named $\mathsf{InitialAlg}$. The
-induction principle has the following type:
-\[
- \mathsf{Induction} : (M : \mathsf{\DisplayedAlg}\,\,\mathsf{InitialAlg}) \ra \Section\, M
-\]
-\noindent Unfolding the definitions, it is apparent that this is the same notion
-of $\Nat$-induction as we gave before. The initial algebra consists of type and value
-constructors, the induction motives and methods are bundled into a displayed
-algebra, and as result we get a section, containing an eliminator function together
-with its $\beta$-rules. Additionally, we can define recursion using homomorphisms:
-\[
-\mathsf{Recursion} : (\alpha : \Alg) \ra \Morphism\,\mathsf{InitialAlg}\,\alpha
-\]
-This corresponds to \emph{weak initiality} in the sense of category theory: for
-each algebra, there is a morphism from the weakly initial algebra to it. Strong initiality
-in the setting of higher inductive types is called \emph{homotopy initiality} \cite{sojakova},
-and it is defined as follows for $\Nat$:
-\begin{alignat*}{5}
-\mathsf{Initiality} : (\alpha : \Alg) \ra \mathsf{isContr}\,(\Morphism\,\mathsf{InitialAlg}\,\alpha)
-\end{alignat*}
-
-\noindent where $\mathsf{isContr}\,A \equiv (a : A)\times((a' : A)\ra a = a')$. Hence, there is a unique morphism from the initial algebra, but in the setting of homotopy type theory, unique inhabitation is viewed instead as contractibility.
-
-Observe that the definitions for $\mathsf{Induction}$, $\mathsf{Recursion}$ and
-$\mathsf{Initiality}$ need not refer to natural numbers, and can be used similarly
-in cases of other structures. Thus, the task in the following is to derive algebras,
-homomorphisms, displayed algebras and sections from HIIT signatures, in a way
-which generalizes beyond the current $\Nat$ example to indexed types,
-induction-induction and higher constructors. We will do this by induction on the
-syntax of the theory of signatures. However, we first need to clarify the formal
-justification of this operation.
-
-\section{Coherence Problems and Syntactic Translations}
-\label{sec:coherence}
-
-TODO
-
-
-%% --------------------------------------------------------------------------------
-
-%% \section{A syntactic translation from the source to the target theory}
-%% \label{sec:translation}
+\section{A syntactic translation from the source to the target theory}
+\label{sec:translation}
 
 An inductive type is specified by a context in the theory of codes
 defined in the previous section. In this section we define the
@@ -962,275 +891,254 @@ $\beta$-rules introduced in the theory of codes.
 
 %---------------------------------------------------------------------
 
-\section{Algebras}
-\label{sec:algebras}
+\subsection{Type formation rules and constructors}
+\label{sec:c}
 
-Given a context in the theory of signatures, $\blank^\A$ computes the
-corresponding notion of algebras as an iterated $\Sigma$-type in the external
-syntax. It is specified as follows.
+Given a context in the theory of codes, $\blank^\C$ returns the types
+of type formation rules and constructors as an iterated $\Sigma$-type
+in the target theory. It is specified as follows.
 \[
-\infer{\hat{\Gamma}\vdashh\Delta^\A\in\Type_1}{\hat{\Gamma}\vdash\Delta}
+\infer{\hat{\Gamma}\vdashh\Delta^\C\in\Type_1}{\hat{\Gamma}\vdash\Delta}
 \hspace{2em}
-\infer{\hat{\Gamma}\vdashh A^\A \in \Delta^\A\rah \Type_1}{\hat{\Gamma}\semicol\Delta\vdash A}
+\infer{\hat{\Gamma}\vdashh A^\C \in \Delta^\C\rah \Type_1}{\hat{\Gamma}\semicol\Delta\vdash A}
 \hspace{2em}
-\infer{\hat{\Gamma}\vdashh t^\A \in (\hat{\gamma}\in\Delta^\A)\rah  A^\A\,\hat{\gamma}}{\hat{\Gamma}\semicol\Delta\vdash t : A}
+\infer{\hat{\Gamma}\vdashh t^\C \in (\hat{\gamma}\in\Delta^\C)\rah  A^\C\,\hat{\gamma}}{\hat{\Gamma}\semicol\Delta\vdash t : A}
 \]
-
-The $\blank^\A$ translation is essentially the standard interpretation of
-signatures, where every construction in the source syntax is interpreted with a
-corresponding {\color{BrickRed}brick red} construction in the target syntax. The
-only notable change is in the interpretation of contexts: a source context is
-interpreted as an iterated $\Sigma$-type.
-
-\begingroup
+Given a context depending on the target context $\hat{\Gamma}$,
+$\blank^\C$ returns a type in $\hat{\Gamma}$. Given a type in context
+$\Delta$ it returns a family over $\Delta^\C$. A term is interpreted
+by a dependent function in the target theory. The implementation of
+$\blank^\C$ is essentially the standard model, where everything is
+interpreted by its {\color{BrickRed}brick red} counterpart, except for
+contexts which are interpreted as iterated $\Sigma$-types.\begingroup
 \allowdisplaybreaks
 \begin{alignat*}{5}
-  & \cdot^\A && :\equiv \hat{\top} \\
-  & (\Delta,x:A)^\A && :\equiv (\hat{\gamma}\in\Delta^\A)\timesh A^\A\,\hat{\gamma} \\
-  & x^\A\,\hat{\gamma} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma} \\ % TODO: write De Bruijn versions
-  & \U^\A\,\hat{\gamma} && :\equiv \Type_0 \\
-  & (\underline{a})^\A\,\hat{\gamma} && :\equiv a^\A\,\hat{\gamma} \\
-  & ((x:a)\ra B)^\A\,\hat{\gamma} && :\equiv (\hat{x}\in a^\A\,\hat{\gamma})\rah  B^\A\,(\hat{\gamma}\commah\hat{x}) \\
-  & (t\,u)^\A\,\hat{\gamma} && :\equiv (t^\A\,\hat{\gamma})\,(u^\A\,\hat{\gamma}) \\
-  & ((\hat{x}\in \hat{A})\ra B)^\A\,\hat{\gamma} && :\equiv (\hat{x}\in \hat{A})\rah  B^\A\,\hat{\gamma} \\
-  & (t\,\hat{u})^\A\,\hat{\gamma} && :\equiv (t^\A\,\hat{\gamma})\,\hat{u} \\
-  & (t=_a u)^\A\,\hat{\gamma} && :\equiv t^\A\,\hat{\gamma} \eqh u^\A\,\hat{\gamma} \\
-  & \refl^\A\,\hat{\gamma} && :\equiv \hat{\refl} \\
-  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\A\,\hat{\gamma} && :\equiv \hat{\J}_{(a^\A\,\hat{\gamma})\,(t^\A\,\hat{\gamma})\,(\hat{\lambda} \hat{x}\,\hat{z}.p^\A\,(\hat{\gamma}\commah\hat{x}\commah\hat{z}))}\,(pr^\A\,\hat{\gamma})\,_{(u^\A\,\hat{\gamma})}\,(eq^\A\,\hat{\gamma}) \\
-  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\A\,\hat{\gamma} && :\equiv \hat{\refl} \\
-  & ((\hat{x}\in \hat{A})\ra b)^\A\,\hat{\gamma} && :\equiv (\hat{x}\in \hat{A})\rah  b^\A\,\hat{\gamma} \\
-  & (t\,\hat{u})^\A\,\hat{\gamma} && :\equiv (t^\A\,\hat{\gamma})\,\hat{u}
+  & \cdot^\C && :\equiv \hat{\top} \\
+  & (\Delta,x:A)^\C && :\equiv (\hat{\gamma}\in\Delta^\C)\timesh A^\C\,\hat{\gamma} \\
+  & x^\C\,\hat{\gamma} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma} \\ % TODO: write De Bruijn versions
+  & \U^\C\,\hat{\gamma} && :\equiv \Type_0 \\
+  & (\underline{a})^\C\,\hat{\gamma} && :\equiv a^\C\,\hat{\gamma} \\
+  & ((x:a)\ra B)^\C\,\hat{\gamma} && :\equiv (\hat{x}\in a^\C\,\hat{\gamma})\rah  B^\C\,(\hat{\gamma}\commah\hat{x}) \\
+  & (t\,u)^\C\,\hat{\gamma} && :\equiv (t^\C\,\hat{\gamma})\,(u^\C\,\hat{\gamma}) \\
+  & ((\hat{x}\in \hat{A})\ra B)^\C\,\hat{\gamma} && :\equiv (\hat{x}\in \hat{A})\rah  B^\C\,\hat{\gamma} \\
+  & (t\,\hat{u})^\C\,\hat{\gamma} && :\equiv (t^\C\,\hat{\gamma})\,\hat{u} \\
+  & (t=_a u)^\C\,\hat{\gamma} && :\equiv t^\C\,\hat{\gamma} \eqh u^\C\,\hat{\gamma} \\
+  & \refl^\C\,\hat{\gamma} && :\equiv \hat{\refl} \\
+  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\C\,\hat{\gamma} && :\equiv \hat{\J}_{(a^\C\,\hat{\gamma})\,(t^\C\,\hat{\gamma})\,(\hat{\lambda} \hat{x}\,\hat{z}.p^\C\,(\hat{\gamma}\commah\hat{x}\commah\hat{z}))}\,(pr^\C\,\hat{\gamma})\,_{(u^\C\,\hat{\gamma})}\,(eq^\C\,\hat{\gamma}) \\
+  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\C\,\hat{\gamma} && :\equiv \hat{\refl} \\
+  & ((\hat{x}\in \hat{A})\ra b)^\C\,\hat{\gamma} && :\equiv (\hat{x}\in \hat{A})\rah  b^\C\,\hat{\gamma} \\
+  & (t\,\hat{u})^\C\,\hat{\gamma} && :\equiv (t^\C\,\hat{\gamma})\,\hat{u}
 \end{alignat*}\endgroup
 
-For example, $\blank^\A$ acts as follows on signature for circles:
+For example, $\blank^\C$ acts as follows on the topological circle:
 \begin{alignat*}{5}
-  & && (\cdot,\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\A \equiv \hat{\top}\timesh(\hat{S^1}\in\Type_0)\timesh(\hat{b}\in \hat{S^1})\timesh(\hat{loop\in b=b})
+  & && (\cdot,\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\C \equiv \hat{\top}\timesh(\hat{S^1}\in\Type_0)\timesh(\hat{b}\in \hat{S^1})\timesh(\hat{loop\in b=b})
 \end{alignat*}
-
-Note that the resulting left-nested $\Sigma$ type could be written explicitly as
-below, without syntactic sugar. We shall keep to the more readable notation
-from now on.
+The resulting left-nested $\Sigma$ type could be written explicitly as below. We shall keep to the more readable notation from now on.
 \begin{alignat*}{5}
   & \Big(\hat{x''}\in\big(\hat{x'}\in(\hat{x}\in\hat{\top})\timesh\Type_0\big)\timesh\hat{\proj_2}\,\hat{x'}\Big)\timesh(\hat{\proj_2}\,\hat{x''}\eqh \hat{\proj_2}\,\hat{x''})
 \end{alignat*}
 
 %---------------------------------------------------------------------
 
+\subsection{Motives and methods}
+\label{sec:m}
 
-\section{From Logical Relations to Homomorphisms}
-\label{sec:morphisms}
+Given a code for an inductive type and the constructors specified by
+the code, the operation $\blank^\M$ returns the induction motives and methods.
 
-TODO
-
-\section{Displayed Algebras}
-\label{sec:displayed}
-
-The $\blank^\D$ translation computes displayed algebras for a signature. Recall
-from Section \ref{sec:general} that displayed algebras serve as bundles of
-induction motives and methods.
-
-$\blank^\D$ is essentially an unary logical predicate translation over the
-$\blank^\A$ model. It is related to the logical predicate translation of
-Bernardy et al.\ \cite{bernardy12parametricity}, but our implementation differs
-by interpreting contexts as $\Sigma$-types instead of extended contexts.
-
-We fix a level $i$ for the universe we would like to eliminate into. For each
-context $\Delta$, $\Delta^\D$ is a predicate over the standard interpretation
-$\Delta^\A$. For a type $\Delta\vdash A$, $A^\D$ is a predicate over $A^\A$,
-which also depends on $\hat{\gamma}\in\Delta^\A$ and a witness of
-$\Delta^\D\,\hat{\gamma}$. All of these may refer to a target theory context
-$\hat{\Gamma}$.
+$\blank^\M$ is a variant of the unary logical predicate translation of
+Bernardy et al.\ \cite{bernardy12parametricity}. We fix a level $i$
+for the universe we would like to eliminate into. For each context
+$\Delta$, $\Delta^\M$ is a predicate over the standard interpretation
+$\Delta^\C$. For a type $\Delta\vdash A$, $A^\M$ is a predicate over
+$A^\C$, which also depends on $\hat{\gamma}\in\Delta^\C$ and a witness
+of $\Delta^\M\,\hat{\gamma}$. All of these may refer to a target
+theory context $\hat{\Gamma}$.
 \[
-\infer{\hat{\Gamma}\vdashh\Delta^\D \in \Delta^\A\rah \Type_{i+1}}{\hat{\Gamma}\vdash\Delta}
+\infer{\hat{\Gamma}\vdashh\Delta^\M \in \Delta^\C\rah \Type_{i+1}}{\hat{\Gamma}\vdash\Delta}
 \hspace{2em}
-\infer{\hat{\Gamma}\vdashh A^\D \in (\hat{\gamma}\in\Delta^\A)\rah \Delta^\D\,\hat{\gamma}\rah  A^\A\,\hat{\gamma}\rah \Type_{i+1}}{\hat{\Gamma}\semicol\Delta\vdash A}
+\infer{\hat{\Gamma}\vdashh A^\M \in (\hat{\gamma}\in\Delta^\C)\rah \Delta^\M\,\hat{\gamma}\rah  A^\C\,\hat{\gamma}\rah \Type_{i+1}}{\hat{\Gamma}\semicol\Delta\vdash A}
 \]
-For a term $t$, $t^\D$ witnesses that the predicate corresponding to
-its type holds for $t^\A$. This is often called a \emph{fundamental
+For a term $t$, $t^\M$ witnesses that the predicate corresponding to
+its type holds for $t^\C$. This is often called a \emph{fundamental
   theorem} in the literature on logical predicates.
 \[
-\infer{\hat{\Gamma}\vdashh t^\D \in (\hat{\gamma}\in\Delta^\A)(\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma})\rah  A^\D\,\hat{\gamma}\,\hat{\gamma^D}\,(t^\A\,\hat{\gamma})}{\hat{\Gamma}\semicol\Delta\vdash t : A}
+\infer{\hat{\Gamma}\vdashh t^\M \in (\hat{\gamma}\in\Delta^\C)(\hat{\gamma^M}\in\Delta^\M\,\hat{\gamma})\rah  A^\M\,\hat{\gamma}\,\hat{\gamma^M}\,(t^\C\,\hat{\gamma})}{\hat{\Gamma}\semicol\Delta\vdash t : A}
 \]
-We introduce the following shorthand: $t\,\hat{\gamma}\,\hat{\gamma^D}$ is
+We introduce the following shorthand: $t\,\hat{\gamma}\,\hat{\gamma^M}$ is
 abbreviated as $t\,\hat{\gamma^2}$ for some $t$ expression. The
-implementation of $\blank^\D$ is given below.  \begingroup
+implementation of $\blank^\M$ is given below.  \begingroup
 \allowdisplaybreaks
 \begin{alignat*}{5}
-  & \cdot^\D\,\hat{\gamma} && :\equiv \hat{\top} \\
-  & (\Delta,\,x:A)^\D\,(\hat{\gamma}\commah\,\hat{t}) && :\equiv (\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma})\timesh A^\D\,\hat{\gamma^2}\,\hat{t} \\
-  & x^\D\,\hat{\gamma^2} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^D} \\ % TODO: De Bruijn
-  & \U^\D\,\hat{\gamma^2}\,\hat{A} && :\equiv \hat{A} \rah  \Type_{i} \\
-  & (\underline{a})^\D\,\hat{\gamma^2}\,\hat{t} && :\equiv a^\D\,\hat{\gamma^2}\,\hat{t} \\
-  & ((x:a)\ra B)^\D\,\hat{\gamma^2}\,\hat{f} && :\equiv (\hat{x}\in a^\A\,\hat{\gamma})(\hat{x^D}\in a^\D\,\hat{\gamma^2}\,\hat{x}) \rah  B^\D\,(\hat{\gamma}\commah\hat{x})\,(\hat{\gamma^D}\commah\hat{x^D})\,(\hat{f}\,\hat{x}) \\
-  & (t\,u)^\D\,\hat{\gamma^2} && :\equiv (t^\D\,\hat{\gamma^2})\,( u^\A\,\hat{\gamma})\,(u^\D\,\hat{\gamma^2}) \\
-  & ((\hat{x}\in \hat{A})\ra B)^\D\,\hat{\gamma^2}\,\hat{f} && :\equiv (\hat{x}\in \hat{A})\rah  B^\D\,\hat{\gamma^2}\,(\hat{f}\,\hat{x}) \\
-  & (t\,\hat{u})^\D\,\hat{\gamma^2} && :\equiv t^\D\,\hat{\gamma^2}\,\hat{u} \\
-  & (t=_a u)^\D\,\hat{\gamma^2}\,\hat{e} && :\equiv \TR_{(a^\D\,\hat{\gamma^2})}\,\hat{e}\,(t^\D\,\hat{\gamma^2}) \eqh u^\D\hat{\gamma^2} \\
-  & (\refl_t)^\D\,\hat{\gamma^2} && :\equiv \hat{\refl}_{(t^\D\,\hat{\gamma^2})} \\
-  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\D\,\hat{\gamma^2} && :\equiv \hat{\J}\,\big(\hat{\J}\,(pr^\D\,\hat{\gamma^2})\,(eq^\A\,\hat{\gamma})\big)\,(eq^\D\,\hat{\gamma^2}) \\
-  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\D\,\hat{\gamma^2} && :\equiv \hat{\refl} \\
-  & ((\hat{x}\in \hat{A})\ra b)^\D\,\hat{\gamma^2}\,\hat{f} && :\equiv (\hat{x}\in \hat{A})\rah  b^\D\,\hat{\gamma^2}\,(\hat{f}\,\hat{x}) \\
-  & (t\,\hat{u})^\D\,\hat{\gamma^2} && :\equiv t^\D\,\hat{\gamma^2}\,\hat{u}
+  & \cdot^\M\,\hat{\gamma} && :\equiv \hat{\top} \\
+  & (\Delta,\,x:A)^\M\,(\hat{\gamma}\commah\,\hat{t}) && :\equiv (\hat{\gamma^M}\in\Delta^\M\,\hat{\gamma})\timesh A^\M\,\hat{\gamma^2}\,\hat{t} \\
+  & x^\M\,\hat{\gamma^2} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^M} \\ % TODO: De Bruijn
+  & \U^\M\,\hat{\gamma^2}\,\hat{A} && :\equiv \hat{A} \rah  \Type_{i} \\
+  & (\underline{a})^\M\,\hat{\gamma^2}\,\hat{t} && :\equiv a^\M\,\hat{\gamma^2}\,\hat{t} \\
+  & ((x:a)\ra B)^\M\,\hat{\gamma^2}\,\hat{f} && :\equiv (\hat{x}\in a^\C\,\hat{\gamma})(\hat{x^M}\in a^\M\,\hat{\gamma^2}\,\hat{x}) \rah  B^\M\,(\hat{\gamma}\commah\hat{x})\,(\hat{\gamma^M}\commah\hat{x^M})\,(\hat{f}\,\hat{x}) \\
+  & (t\,u)^\M\,\hat{\gamma^2} && :\equiv (t^\M\,\hat{\gamma^2})\,( u^\C\,\hat{\gamma})\,(u^\M\,\hat{\gamma^2}) \\
+  & ((\hat{x}\in \hat{A})\ra B)^\M\,\hat{\gamma^2}\,\hat{f} && :\equiv (\hat{x}\in \hat{A})\rah  B^\M\,\hat{\gamma^2}\,(\hat{f}\,\hat{x}) \\
+  & (t\,\hat{u})^\M\,\hat{\gamma^2} && :\equiv t^\M\,\hat{\gamma^2}\,\hat{u} \\
+  & (t=_a u)^\M\,\hat{\gamma^2}\,\hat{e} && :\equiv \TR_{(a^\M\,\hat{\gamma^2})}\,\hat{e}\,(t^\M\,\hat{\gamma^2}) \eqh u^\M\hat{\gamma^2} \\
+  & (\refl_t)^\M\,\hat{\gamma^2} && :\equiv \hat{\refl}_{(t^\M\,\hat{\gamma^2})} \\
+  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\M\,\hat{\gamma^2} && :\equiv \hat{\J}\,\big(\hat{\J}\,(pr^\M\,\hat{\gamma^2})\,(eq^\C\,\hat{\gamma})\big)\,(eq^\M\,\hat{\gamma^2}) \\
+  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\M\,\hat{\gamma^2} && :\equiv \hat{\refl} \\
+  & ((\hat{x}\in \hat{A})\ra b)^\M\,\hat{\gamma^2}\,\hat{f} && :\equiv (\hat{x}\in \hat{A})\rah  b^\M\,\hat{\gamma^2}\,(\hat{f}\,\hat{x}) \\
+  & (t\,\hat{u})^\M\,\hat{\gamma^2} && :\equiv t^\M\,\hat{\gamma^2}\,\hat{u}
 \end{alignat*}\endgroup
-The predicate for a context is given by iterating $\blank^\D$ for its
+The predicate for a context is given by iterating $\blank^\M$ for its
 constituent types. For a variable, the corresponding witness is looked
-up from $\hat{\gamma^D}$.
+up from $\hat{\gamma^M}$.
 
-The translation of the universe, given an element of
-$\hat{A}\in\U^\A\,\hat{\gamma}$ (with $\U^\A\,\hat{\gamma}\equiv\Type_0$)
-returns the predicate space over $\hat{A}$. For $\underline{a}$ types, we just
-return the translation of $a$.
+The predicate for the universe, given an element of
+$\hat{A}\in\U^\C\,\hat{\gamma}$ (with $\U^\C\,\hat{\gamma}\equiv\Type_0$) returns the
+predicate space over $\hat{A}$. The predicate for a type $\underline{a}$ is
+given by the predicate for $a$.
 
-The predicate for a function type with small domain expresses preservation of
-predicates (at the domain and codomain types). Witnesses of application are
-given by recursive application of $\blank^\D$. The definitions for the other
-(non-inductive) function spaces are similar, except there is no predicate for
-the domain types, and thus no witnesses are required.
+The predicate for a function type with small domain expresses
+preservation of predicates (at the domain and codomain
+types). Witnesses of application are given by recursive application of
+$\blank^\M$. The definitions for the other (non-inductive) function
+spaces are similar, except there is no predicate for the domain types,
+and thus no witnesses are required.
 
 The predicate for the equality type $t=_a u$, for each
-$\hat{e}\in(t=_a u)^\A\,\hat{\gamma}$, i.e.\ $\hat{e}\in
-t^\A\,\hat{\gamma}\eqh u^\A\,\hat{\gamma}$, says that $t^\D$ and
-$u^\D$ are equal. As these have different types, we have to transport
-over the original equality $\hat{e}$. Hence, induction methods for
-path constructors will be \emph{paths over paths} in the sense of homotopy
-type theory.
-
-$\refl$ is interpreted with just reflexivity in the target syntax.  The
-interpretation of $\J$ is given by a double $\hat{\J}$ application, which
-definition is sourced from \cite{lasson}. Here, we use a shortened $\hat{\J}$
-notation; we refer to the formalization (Section \ref{sec:formalization}) for
-the details.
+$\hat{e}\in(t=_a u)^\C\,\hat{\gamma}$, i.e.\ $\hat{e}\in
+t^\C\,\hat{\gamma}\eqh u^\C\,\hat{\gamma}$, says that $t^\M$ and
+$u^\M$ are equal. As these have different types, we have to transport
+over the original equality $\hat{e}$. The witness for $\refl$ is
+reflexivity in the target theory. The interpretation of $\J$ is given
+by a double $\hat{\J}$ application, which definition is sourced from
+\cite{lasson}. Here, we use a shortened $\hat{\J}$ notation; we refer
+to the formalisation (Section \ref{sec:formalisation}) for the
+details.
 
 Again, let us consider the circle example:
 \begin{alignat*}{5}
-  & && (\cdot,\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\D\,\,(\hat{\tt,\,S^1,\,b,\,loop})\\
-  & \equiv \,\, && \hat{\top}\timesh(\hat{S^{1D}}\in \hat{S^1}\rah\Type_i)\timesh(\hat{b^D}\in \hat{S^{1D}\,b})\timesh(\hat{loop^D\in \TR_{\,S^{1D}}\,loop\,b^D = b^D})
+  & && (\cdot,\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\M\,\,(\hat{\tt,\,S^1,\,b,\,loop})\\
+  & \equiv \,\, && \hat{\top}\timesh(\hat{S^{1M}}\in \hat{S^1}\rah\Type_i)\timesh(\hat{b^M}\in \hat{S^{1M}\,b})\timesh(\hat{loop^M\in \TR_{\,S^{1M}}\,loop\,b^M = b^M})
 \end{alignat*}
-The inputs of $\blank^\D$ here are the signature for the circle (the context in
-black) and an $\hat{S^{1}}$-algebra consisting of three non-$\top$ components.
-It returns a family over the type $\hat{S^1}$, an element of this family
-$\hat{b^D}$ at index $\hat{b}$, and and an equality between $\hat{b^D}$ and
-$\hat{b^D}$ which lies over $\hat{loop}$. This is the same as the usual
-induction motives and methods for the circle, e.g.\ as described in \cite{HoTTbook}.
+The inputs of $\blank^\M$ here are the code for the circle (the
+context in black) and a tuple of the type formation rule
+$\hat{S^{1}}$, the constructor $\hat{b}$ and the equality constructor
+$\hat{loop}$. It returns a family over the type $\hat{S^1}$, an
+element of this family $\hat{b^M}$ at index $\hat{b}$, and and an
+equality between $\hat{b^M}$ and $\hat{b^M}$ which lies over $\hat{loop}$.
 
 %---------------------------------------------------------------------
 
-\section{Displayed Algebra Sections}
-\label{sec:sections}
+\subsection{Eliminators and computation rules}
+\label{sec:e}
 
-TODO: revise when we have homomorphism section, in order to remove redundant
-explanations. Also revise language.
+The operation $\blank^\E$ yields eliminators and computation rules. It
+is a generalised binary logical relation translation where the type of
+the second parameter of the relation may depend on the first
+parameter.
 
-The operation $\blank^\S$ yields displayed algebra sections. It is a generalized
-binary logical relation translation where the type of the second parameter of
-the relation may depend on the first parameter. Displayed algebra sections can
-be viewed as dependent homomorphisms: while homomorphisms are
-structure-preserving families of functions, sections are structure-preserving
-families of dependent functions.
-
-Contexts are interpreted as dependent binary relations between algebras and
-displayed algebras. The universe level $i$ was previously chosen for the
-$\blank^\D$ translation.
+Contexts are interpreted as dependent binary relations between
+constructors and methods. The universe level $i$ was previously chosen
+for the $\blank^\M$ operation.
 \[
-\infer{\hat{\Gamma}\semicol\Delta^\S \in (\hat{\gamma}\in\Delta^\A)\rah \Delta^\D\,\hat{\gamma}\rah \Type_{i}}{\hat{\Gamma}\vdash\Delta}
+\infer{\hat{\Gamma}\semicol\Delta^\E \in (\hat{\gamma}\in\Delta^\C)\rah \Delta^\M\,\hat{\gamma}\rah \Type_{i}}{\hat{\Gamma}\vdash\Delta}
 \]
 Types are interpreted as dependent binary relations which additionally
-depend on ($\hat{\gamma}\commah\,\hat{\gamma^D}\commah\,\hat{\gamma^S}$) interpretations of the
+depend on ($\hat{\gamma}\commah\,\hat{\gamma^M}\commah\,\hat{\gamma^E}$) interpretations of the
 context.
 \[
-\infer{\hat{\Gamma}\vdashh A^\S \in (\hat{\gamma}\in\Delta^\A)(\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma})(\hat{\gamma^S}\in\Delta^\S\,\hat{\gamma}\,\hat{\gamma^D})(\hat{x}\in A^\A\,\hat{\gamma})\rah  A^\D\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{x}\rah \Type_{i}}{\hat{\Gamma}\semicol\Delta\vdash A}
+\infer{\hat{\Gamma}\vdashh A^\E \in (\hat{\gamma}\in\Delta^\C)(\hat{\gamma^M}\in\Delta^\M\,\hat{\gamma})(\hat{\gamma^E}\in\Delta^\E\,\hat{\gamma}\,\hat{\gamma^M})(\hat{x}\in A^\C\,\hat{\gamma})\rah  A^\M\,\hat{\gamma}\,\hat{\gamma^M}\,\hat{x}\rah \Type_{i}}{\hat{\Gamma}\semicol\Delta\vdash A}
 \]
-For a term $t$, $t^\S$ witnesses that the relation corresponding to
-its type holds for $t^\A$ and $t^\D$.
+For a term $t$, $t^\E$ witnesses that the relation corresponding to
+its type holds for $t^\C$ and $t^\M$.
 \[
-\infer{\hat{\Gamma}\vdashh t^\S \in (\hat{\gamma}\in\Delta^\A)(\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma})(\hat{\gamma^S}\in\Delta^\S\,\hat{\gamma}\,\hat{\gamma^D})\rah  A^\S\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{\gamma^S}\,(t^\A\,\hat{\gamma})\,(t^\D\,\hat{\gamma}\,\hat{\gamma^D})}{\hat{\Gamma}\semicol\Delta \vdash t : A}
+\infer{\hat{\Gamma}\vdashh t^\E \in (\hat{\gamma}\in\Delta^\C)(\hat{\gamma^M}\in\Delta^\M\,\hat{\gamma})(\hat{\gamma^E}\in\Delta^\E\,\hat{\gamma}\,\hat{\gamma^M})\rah  A^\E\,\hat{\gamma}\,\hat{\gamma^M}\,\hat{\gamma^E}\,(t^\C\,\hat{\gamma})\,(t^\M\,\hat{\gamma}\,\hat{\gamma^M})}{\hat{\Gamma}\semicol\Delta \vdash t : A}
 \]
-In addition to $\hat{\gamma^2}$, we use $t\,\hat{\gamma^3}$ to abbreviate $t\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{\gamma^S}$. The implementation is the following.
+In addition to $\hat{\gamma^2}$, we use $t\,\hat{\gamma^3}$ to abbreviate $t\,\hat{\gamma}\,\hat{\gamma^M}\,\hat{\gamma^E}$. The implementation is the following.
 %% \begingroup \allowdisplaybreaks
 \begin{alignat*}{5}
-  & \cdot^\S\,\hat{\gamma}\,\hat{\gamma^D} && :\equiv \hat{\top} \\
-  & (\Delta,\,x:A)^\S\,(\hat{\gamma},\hat{t})\,(\hat{\gamma^D},\hat{t^D}) && :\equiv (\hat{\gamma^S}\in\Delta^\S\hat{\gamma^2})\timesh A^\S\,\hat{\gamma^3}\,\hat{t}\,\hat{t^D} \\
-  & x^\S\,\hat{\gamma^3} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^S} \\ % TODO: De Bruijn
-  & \U^\S\,\hat{\gamma^3}\,\hat{A}\,\hat{A^D} && :\equiv (\hat{x}\in \hat{A})\rah  \hat{A^D}\,\hat{x} \\
-  & (\underline{a})^\S\,\hat{\gamma^3}\,\hat{t}\,\hat{t^D} && :\equiv a^\S\,\hat{\gamma^3}\,\hat{t} \eqh \hat{t^D} \\
-  & ((x:a)\ra B)^\S\,\hat{\gamma^3}\,\hat{f}\,\hat{f^D} && :\equiv (\hat{x}\in a^\A\,\hat{\gamma})\rah  B^\S\,(\hat{\gamma,x})\,(\hat{\gamma^D,}\,a^\S\,\hat{\gamma^3}\,\hat{x})\,(\hat{\gamma^S,}\,\hat{\refl}) \\
-  & && \hspace{8.4em} (\hat{f}\,\hat{x})\,\big(\hat{f^D}\,\hat{x}\,(a^\S\,\hat{\gamma^3}\,\hat{x})\big) \\
-  & (t\,u)^\S\,\hat{\gamma^3} && :\equiv \hat{\J}\,(t^\S\,\hat{\gamma^3}\,( u^\A\,\hat{\gamma}))\,(u^\S\,\hat{\gamma^3}) \\
-  & ((\hat{x}\in \hat{A})\ra B)^\S\,\hat{\gamma^3}\,\hat{f}\,\hat{f^D} && :\equiv (\hat{x}\in \hat{A})\rah B^\S\,\hat{\gamma^3}\,(\hat{f}\,\hat{x})\,(\hat{f^D}\,\hat{x}) \\
-  & (t\,\hat{u})^\S\,\hat{\gamma^3} && :\equiv t^\S\,\hat{\gamma^3}\,\hat{u} \\
-  & (t=_a u)^\S\,\hat{\gamma^3}\,\hat{e} && :\equiv \TR\,(t^\S\,\hat{\gamma^3})\big(\TR\,(u^\S\,\hat{\gamma^3})\,(\apd\,(a^\S\,\hat{\gamma^3})\,\hat{e})\big) \\
-  & (\refl_t)^\S\,\hat{\gamma^3} && :\equiv \hat{\J}\,\hat{\refl}\,(t^\S\,\hat{\gamma^3}) \\
-  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\S\,\hat{\gamma^3} && :\equiv \\
-  & && \hspace{-10em}\hat{\J}\,\bigg(\hat{\J}\,\Big(\hat{\J}\,\big(\hat{\J}\,(\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\,\hat{pr^D}\,\hat{pr^S}.\,\hat{pr^S})\,(t^\S\,\hat{\gamma^3})\,\\
-  & && \hspace{-9em}(\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2})\,(\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^3})\,(pr^\D\,\hat{\gamma^2})\,(pr^\S\,\hat{\gamma^3})\big)\,eq^\A\,\hat{\gamma}\Big)\,u^\S\,\hat{\gamma^3}\bigg)\,(eq^\S\,\hat{\gamma^3}) \\
-  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\S\,\hat{\gamma^3} && :\equiv \\
-  & && \hspace{-10em}\hat{\J}\,\big(\hat{\J}\,(\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\hat{.}\,\hat{\refl})\,(t^\S\,\hat{\gamma^3})\,(\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2})\,(\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^3})\big)\,(pr^\S\,\hat{\gamma^3})\\
-  & ((\hat{x}\in \hat{A})\ra b)^\S\,\hat{\gamma^3\,f\,t} && :\equiv b^\S\,\hat{\gamma^3}\,(\hat{f}\,\hat{t}) \\
-  & (t\,\hat{u})^\S\,\hat{\gamma^3} && :\equiv \ap\,(\hat{\lambda} \hat{f.}\hat{f}\,\hat{u})\,(t^\S\,\hat{\gamma^3})
+  & \cdot^\E\,\hat{\gamma}\,\hat{\gamma^M} && :\equiv \hat{\top} \\
+  & (\Delta,\,x:A)^\E\,(\hat{\gamma},\hat{t})\,(\hat{\gamma^M},\hat{t^M}) && :\equiv (\hat{\gamma^E}\in\Delta^\E\hat{\gamma^2})\timesh A^\E\,\hat{\gamma^3}\,\hat{t}\,\hat{t^M} \\
+  & x^\E\,\hat{\gamma^3} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^E} \\ % TODO: De Bruijn
+  & \U^\E\,\hat{\gamma^3}\,\hat{A}\,\hat{A^M} && :\equiv (\hat{x}\in \hat{A})\rah  \hat{A^M}\,\hat{x} \\
+  & (\underline{a})^\E\,\hat{\gamma^3}\,\hat{t}\,\hat{t^M} && :\equiv a^\E\,\hat{\gamma^3}\,\hat{t} \eqh \hat{t^M} \\
+  & ((x:a)\ra B)^\E\,\hat{\gamma^3}\,\hat{f}\,\hat{f^M} && :\equiv (\hat{x}\in a^\C\,\hat{\gamma})\rah  B^\E\,(\hat{\gamma,x})\,(\hat{\gamma^M,}\,a^\E\,\hat{\gamma^3}\,\hat{x})\,(\hat{\gamma^E,}\,\hat{\refl}) \\
+  & && \hspace{8.4em} (\hat{f}\,\hat{x})\,\big(\hat{f^M}\,\hat{x}\,(a^\E\,\hat{\gamma^3}\,\hat{x})\big) \\
+  & (t\,u)^\E\,\hat{\gamma^3} && :\equiv \hat{\J}\,(t^\E\,\hat{\gamma^3}\,( u^\C\,\hat{\gamma}))\,(u^\E\,\hat{\gamma^3}) \\
+  & ((\hat{x}\in \hat{A})\ra B)^\E\,\hat{\gamma^3}\,\hat{f}\,\hat{f^M} && :\equiv (\hat{x}\in \hat{A})\rah B^\E\,\hat{\gamma^3}\,(\hat{f}\,\hat{x})\,(\hat{f^M}\,\hat{x}) \\
+  & (t\,\hat{u})^\E\,\hat{\gamma^3} && :\equiv t^\E\,\hat{\gamma^3}\,\hat{u} \\
+  & (t=_a u)^\E\,\hat{\gamma^3}\,\hat{e} && :\equiv \TR\,(t^\E\,\hat{\gamma^3})\big(\TR\,(u^\E\,\hat{\gamma^3})\,(\apd\,(a^\E\,\hat{\gamma^3})\,\hat{e})\big) \\
+  & (\refl_t)^\E\,\hat{\gamma^3} && :\equiv \hat{\J}\,\hat{\refl}\,(t^\E\,\hat{\gamma^3}) \\
+  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\E\,\hat{\gamma^3} && :\equiv \\
+  & && \hspace{-10em}\hat{\J}\,\bigg(\hat{\J}\,\Big(\hat{\J}\,\big(\hat{\J}\,(\hat{\lambda}\,\hat{p^M}\,\hat{p^E}\,\hat{pr^M}\,\hat{pr^E}.\hat{pr^E})\,(t^\E\,\hat{\gamma^3})\,\\
+  & && \hspace{-9em}(\hat{\mathsf{uncurry}}\,p^\M\,\hat{\gamma^2})\,(\hat{\mathsf{uncurry}}\,p^\E\,\hat{\gamma^3})\,(pr^\M\,\hat{\gamma^2})\,(pr^\E\,\hat{\gamma^3})\big)\,eq^\C\,\hat{\gamma}\Big)\,u^\E\,\hat{\gamma^3}\bigg)\,(eq^\E\,\hat{\gamma^3}) \\
+  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\E\,\hat{\gamma^3} && :\equiv \\
+  & && \hspace{-10em}\hat{\J}\,\big(\hat{\J}\,(\hat{\lambda}\,\hat{p^M}\,\hat{p^E}\hat{.}\,\hat{\refl})\,(t^\E\,\hat{\gamma^3})\,(\hat{\mathsf{uncurry}}\,p^\M\,\hat{\gamma^2})\,(\hat{\mathsf{uncurry}}\,p^\E\,\hat{\gamma^3})\big)\,(pr^\E\,\hat{\gamma^3})\\
+  & ((\hat{x}\in \hat{A})\ra b)^\E\,\hat{\gamma^3\,f\,t} && :\equiv b^\E\,\hat{\gamma^3}\,(\hat{f}\,\hat{t}) \\
+  & (t\,\hat{u})^\E\,\hat{\gamma^3} && :\equiv \ap\,(\hat{\lambda} \hat{f.}\hat{f}\,\hat{u})\,(t^\E\,\hat{\gamma^3})
 \end{alignat*}
 %% \endgroup
 
-The $\U^\S$ and $(\underline{a})^\S$ definitions are the key points of
-the $\blank^\S$ operation. The definitions for the other $\blank^\S$
+The $\U^\E$ and $(\underline{a})^\E$ definitions are the key points of
+the $\blank^\E$ operation. The definitions for the other $\blank^\E$
 cases are largely determined by these.
 
-The $\U^\S$ rule yields the type of the eliminator for a type
+The $\U^\E$ rule yields the type of the eliminator for a type
 formation rule. In the natural numbers example above, the non-indexed
-$Nat : \U$ sort is interpreted as $\hat{n^S} \in (\hat{x}\in
-\hat{n})\rah \hat{n^D}\,\hat{x}$. For indexed sorts, the indices are
-first processed by the $\blank^\S$ cases for inductive and non-inductive
+$Nat : \U$ sort is interpreted as $\hat{n^E} \in (\hat{x}\in
+\hat{n})\rah \hat{n^M}\,\hat{x}$. For indexed sorts, the indices are
+first processed by the $\blank^\E$ cases for inductive and non-inductive
 parameters, until the ultimate $\U$ return type is reached. Hence, the
 eliminator for a sort is always a function.
 
-Analogously, the $\blank^\S$ result type for a point or path constructor is
+Analogously, the $\blank^\E$ result type for a point or path constructor is
 always a $\beta$-rule, i.e.\ a function type ending in an equality. To
-see why, consider the $(\underline{a})^\S$ definition. It expresses
-that applications of $a^\S$ eliminators must be equal to the
-corresponding $\hat{t^D}$ induction methods. Hence, for path and point
-constructor types, $\blank^\S$ works by first processing all inductive and
+see why, consider the $(\underline{a})^\E$ definition. It expresses
+that applications of $a^\E$ eliminators must be equal to the
+corresponding $\hat{t^M}$ induction methods. Hence, for path and point
+constructor types, $\blank^\E$ works by first processing all inductive and
 non-inductive indices, then finally returning an equality type.
 
-Let us also consider the $((x:a)\ra B)^\S$ case for inductive
+Let us also consider the $((x:a)\ra B)^\E$ case for inductive
 parameters. Here, we make crucial use of the fact that the domain type
-$a$ is small. This provides us $a^\S\,\hat{\gamma^3\,x}$, which we use
-to witness the $a^\D\,\hat{\gamma^2}\,\hat{x}$ hypothesis for
-$B^\S$. Without the size restriction on inductive parameters (which
-enforces strict positivity), the $\blank^\S$ operation would not be
-possible at all, because $a^\S$ for a large $a$ type would be merely
+$a$ is small. This provides us $a^\E\,\hat{\gamma^3\,x}$, which we use
+to witness the $a^\M\,\hat{\gamma^2}\,\hat{x}$ hypothesis for
+$B^\E$. Without the size restriction on inductive parameters (which
+enforces strict positivity), the $\blank^\E$ operation would not be
+possible at all, because $a^\E$ for a large $a$ type would be merely
 an opaque relation instead of an eliminator function.
 
 Here, we only provide abbreviated definitions for the $t\,u$, $t=_a
 u$, $\refl$, $\J$ and $\J\beta$ cases. In the $\J$ case, we write
-$\hat{\mathsf{uncurry}}\,p^\D$ for
-$\hat{\lambda\,\gamma\,\gamma^D\,x\,x^D\,z\,z^D.}\,p^\D\,(\hat{\gamma,x,z})\,(\hat{\gamma^D,x^D,z^D})$
+$\hat{\mathsf{uncurry}}\,p^\M$ for
+$\hat{\lambda\,\gamma\,\gamma^M\,x\,x^M\,z\,z^M.}\,p^\M\,(\hat{\gamma,x,z})\,(\hat{\gamma^M,x^M,z^M})$
 and analogously elsewhere. The full definitions can be found in the
-Agda formalization. The definitions are highly constrained by the
+Agda formalisation. The definitions are highly constrained by the
 required types, and not particularly difficult to implement with the
 help of a proof assistant; they all involve doing successive path
 induction on all equalities available from induction hypotheses, with
 appropriately generalized induction motives.
 
-The full $(\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\S$ definition is quite
+The full $(\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\E$ definition is quite
 large, and, for instance, yields a very large $\beta$-rule for the
 higher inductive torus definition (the reader can confirm this using
 the Haskell implementation). Nevertheless, an implementation focused
-on practicality may provide smaller specialized $\blank^\S$ definitions for
+on practicality may provide smaller specialized $\blank^\E$ definitions for
 commonly used equality operations such as composition or inverses.
 
 The circle example is a bit more interesting here:
 \begin{alignat*}{5}
-  & && (\cdot,\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\S\,\,(\hat{\tt,\,S^1,\,b,\,loop})\,(\hat{\tt,\,S^{1M},\,b^D,\,loop^D}) \\
-  & \equiv \,\, && \hat{\top}\timesh(\hat{S^{1E}}\in (\hat{x}\in\hat{S^1})\hat{\,\ra\,}\hat{S^{1M}\,x})\timesh(\hat{b^S}\in \hat{S^{1E}\,\,b = b^D})\\
-  & && \hspace{0.75em}\timesh(\hat{loop^S\,\,\in\,\,} \TR\,_{(\hat{\lambda x. \TR\,_{S^{1M}}\,loop\,x\,=\,b^D})}\,\hat{b^S}\,(\TR\,_{(\hat{\lambda} \hat{x}. \TR\,_{\hat{S^{1M}}}\,\hat{loop}\,(\hat{S^{1E}\,b})\,\eqh\,\hat{x})}\,\hat{b^S}\,(\apd\,\hat{S^{1E}\,loop}))\,\\
-  & && \hspace{5.5em} \hat{=\,loop^D})
+  & && (\cdot,\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\E\,\,(\hat{\tt,\,S^1,\,b,\,loop})\,(\hat{\tt,\,S^{1M},\,b^M,\,loop^M}) \\
+  & \equiv \,\, && \hat{\top}\timesh(\hat{S^{1E}}\in (\hat{x}\in\hat{S^1})\hat{\,\ra\,}\hat{S^{1M}\,x})\timesh(\hat{b^E}\in \hat{S^{1E}\,\,b = b^M})\\
+  & && \hspace{0.75em}\timesh(\hat{loop^E\,\,\in\,\,} \TR\,_{(\hat{\lambda x. \TR\,_{S^{1M}}\,loop\,x\,=\,b^M})}\,\hat{b^E}\,(\TR\,_{(\hat{\lambda} \hat{x}. \TR\,_{\hat{S^{1M}}}\,\hat{loop}\,(\hat{S^{1E}\,b})\,\eqh\,\hat{x})}\,\hat{b^E}\,(\apd\,\hat{S^{1E}\,loop}))\,\\
+  & && \hspace{5.5em} \hat{=\,loop^M})
 \end{alignat*}
 In homotopy type theory, the $\beta$-rule for $loop$ is usually just
-$\apd\,\hat{S^{1E}\,loop}\,\hat{\,=\,loop^D}$, but here all
+$\apd\,\hat{S^{1E}\,loop}\,\hat{\,=\,loop^M}$, but here all
 $\beta$-rules are propositional, so we need to transport with
-$\hat{b^S}$ to make the equation well-typed. When computing the type
-of $\hat{loop^S}$, we start with $(\underline{b
-  =b})^S\,\,\hat{\gamma^3}\,\,\hat{loop}\,\,\hat{loop^D}$. Next, this
-evaluates to $(b=b)^\S\,\hat{\gamma^3}\,\hat{loop}\eqh\hat{loop^D}$,
+$\hat{b^E}$ to make the equation well-typed. When computing the type
+of $\hat{loop^E}$, we start with $(\underline{b
+  =b})^E\,\,\hat{\gamma^3}\,\,\hat{loop}\,\,\hat{loop^M}$. Next, this
+evaluates to $(b=b)^\E\,\hat{\gamma^3}\,\hat{loop}\eqh\hat{loop^M}$,
 and then we unfold the left hand side to get the doubly-transported
 expression in the result.
 
@@ -1249,51 +1157,46 @@ W :\equiv (\cdot,\,\,\,w:(\hat{i} \in \hat{I})\ra\U,\,\,\,sup: (\hat{s} \in \hat
 \]
 We pick a universe level $j$ for elimination. The interpretations of $W$ are the following, omitting leading $\hat{\top}$ components:
 \begin{alignat*}{5}
-  & \rlap{$W^\A \equiv (\hat{w}\in \hat{I}\rah\Type_0)\timesh((\hat{s}\in \hat{S})\rah((\hat{p}\in \hat{P\,s})\rah \hat{w}\,(\hat{in\,s\,p}))\rah \hat{w}\,(\hat{out\,s}))$}\\
-  & W^\D\,(\hat{w, sup}) && \equiv\, && (\hat{w^D} \in (\hat{i}\in \hat{I})\rah \hat{w\,i}\rah \Type_j)\\
+  & \rlap{$W^\C \equiv (\hat{w}\in \hat{I}\rah\Type_0)\timesh((\hat{s}\in \hat{S})\rah((\hat{p}\in \hat{P\,s})\rah \hat{w}\,(\hat{in\,s\,p}))\rah \hat{w}\,(\hat{out\,s}))$}\\
+  & W^\M\,(\hat{w, sup}) && \equiv\, && (\hat{w^M} \in (\hat{i}\in \hat{I})\rah \hat{w\,i}\rah \Type_j)\\
   & && \hspace{0.23em}\timesh && \big((\hat{s\in S})(\hat{f}\in (\hat{p\in P\,s})\rah \hat{w}\,(\hat{in\,s\,p}))\\
-  & && && \rah ((\hat{p\in P\,s})\rah \hat{w^D}\,(\hat{in\,s\,p})\,(\hat{f\,p}))\rah \hat{w^D}\,(\hat{out\,s})\,(\hat{sup\,s\,f})\big) \\
-  & \rlap{$ W^\S\,(\hat{w, sup})\,(\hat{w^D,sup^D}) \equiv $} \\
-  & && && (\hat{w^S} \in (\hat{i \in I})(\hat{x \in w\,i})\rah \hat{w^D\,i\,x})\\
+  & && && \rah ((\hat{p\in P\,s})\rah \hat{w^M}\,(\hat{in\,s\,p})\,(\hat{f\,p}))\rah \hat{w^M}\,(\hat{out\,s})\,(\hat{sup\,s\,f})\big) \\
+  & \rlap{$ W^\E\,(\hat{w, sup})\,(\hat{w^M,sup^M}) \equiv $} \\
+  & && && (\hat{w^E} \in (\hat{i \in I})(\hat{x \in w\,i})\rah \hat{w^M\,i\,x})\\
   & && \hspace{0.23em}\timesh && \big((\hat{s\in S})(\hat{f}\in (\hat{p\in P\,s})\rah \hat{w}\,(\hat{in\,s\,p}))\\
-  & && && \rah \hat{w^S}\,(\hat{out\,s})\,(\hat{sup\,\,s\,f}) \eqh \hat{sup^D\,s\,f}\,(\hat{\lambda} \hat{p.}\, \hat{w^S}\,(\hat{in\,s\,p})\,(\hat{f\,p}))\big)
+  & && && \rah \hat{w^E}\,(\hat{out\,s})\,(\hat{sup\,\,s\,f}) \eqh \hat{sup^M\,s\,f}\,(\hat{\lambda} \hat{p.}\, \hat{w^E}\,(\hat{in\,s\,p})\,(\hat{f\,p}))\big)
 \end{alignat*}
 
 %=====================================================================
 
-\section{On Extension to Categorical Semantics}
-\label{sec:categorical}
+\section{Existence of HIITs}
+\label{sec:adding}
 
-TODO
-
-%% \section{Existence of HIITs}
-%% \label{sec:adding}
-
-%% The target type theory supports HIITs if whenever we can derive
-%% $\hat{\Gamma}\vdash\Delta$ in the source theory, the following rules are
-%% admissible.
-%% \[
-%% \infer{\hat{\Gamma}\vdashh\hat{\con}_\Delta\in \Delta^\C}{\vspace{1em}}
-%% \hspace{5em}
-%% \infer{\hat{\Gamma}\vdashh\hat{\elim}_\Delta\,\hat{m}\in\Delta^\E\,\hat{\con}_\Delta\,\hat{m}}{\hat{\Gamma}\vdashh \hat{m}\in \Delta^\M\,\hat{\con}_\Delta}
-%% \]
-%% We can add HIITs to the target theory by extending it with the theory
-%% of codes (making the target and the source theory the same) and adding
-%% the above rules with the additional assumption of
-%% $\hat{\Gamma}\vdash\Delta$. However, this only adds HIITs with weak
-%% computation rules. To make the computation rules definitional, we
-%% would probably need a two-level target type theory with an equality
-%% having an equality reflection rule as in Voevodsky's homotopy type
-%% system \cite{hts} or Andromeda \cite{andromeda}.
+The target type theory supports HIITs if whenever we can derive
+$\hat{\Gamma}\vdash\Delta$ in the source theory, the following rules are
+admissible.
+\[
+\infer{\hat{\Gamma}\vdashh\hat{\con}_\Delta\in \Delta^\C}{\vspace{1em}}
+\hspace{5em}
+\infer{\hat{\Gamma}\vdashh\hat{\elim}_\Delta\,\hat{m}\in\Delta^\E\,\hat{\con}_\Delta\,\hat{m}}{\hat{\Gamma}\vdashh \hat{m}\in \Delta^\M\,\hat{\con}_\Delta}
+\]
+We can add HIITs to the target theory by extending it with the theory
+of codes (making the target and the source theory the same) and adding
+the above rules with the additional assumption of
+$\hat{\Gamma}\vdash\Delta$. However, this only adds HIITs with weak
+computation rules. To make the computation rules definitional, we
+would probably need a two-level target type theory with an equality
+having an equality reflection rule as in Voevodsky's homotopy type
+system \cite{hts} or Andromeda \cite{andromeda}.
 
 %=====================================================================
 
-\section{Formalization and Implementation}
-\label{sec:formalization}
+\section{Formalisation and implementation}
+\label{sec:formalisation}
 
 There are three additional development artifacts to the current work:
-a Haskell implementation, a shallow Agda formalization and a deep Agda
-formalization. All three are available from the homepage of the first
+a Haskell implementation, a shallow Agda formalisation and a deep Agda
+formalisation. All three are available from the homepage of the first
 author.
 
 The Haskell implementation takes as input a file which contains a
@@ -1308,25 +1211,25 @@ paper, indexed W-types \cite{morris09indexed}, the dense completion
 checked that our implementation computes the expected elimination
 principles in these cases.
 
-The shallow Agda formalization embeds both the source and target theories
+The shallow Agda formalisation embeds both the source and target theories
 shallowly into Agda: it represents types as Agda types, functions as
 Agda functions, and so on. We also leave the $\blank^\C$ operation
 implicit. We state each case of the $\blank^\M$ and $\blank^\E$
 translations as Agda functions from all induction hypotheses to the
 result type of the translation, which lets us ``typecheck'' the
-translation. We have found that this style of formalization is
+translation. We have found that this style of formalisation is
 conveniently light, but remains detailed enough to be useful. We also
 generated some of the code of the Haskell implementation from this
-formalization.
+formalisation.
 
-The deep Agda formalization still uses a shallow embedding of the
+The deep Agda formalisation still uses a shallow embedding of the
 target type theory, but it uses a deep embedding of the source theory,
-in the style of \cite{ttintt}. In the formalization we merge the three
+in the style of \cite{ttintt}. In the formalisation we merge the three
 translations into a single model construction. This allows us to prove
 strict preservation of definitional equalities in the substitution
 calculus of the source theory, in contrast to the shallow
-formalization, where we cannot reason about definitional equalities of
-Agda terms. Due to technical challenges, this formalization uses
+formalisation, where we cannot reason about definitional equalities of
+Agda terms. Due to technical challenges, this formalisation uses
 transport instead of $\J$ in the source theory, but this still covers
 a rather large class of HIIT definitions.
 
@@ -1364,7 +1267,7 @@ encoding is also \emph{direct} in the sense that the types of
 constructors and eliminators are exactly as required and not merely up
 to isomorphisms.
 
-In this paper we only \emph{specified} HIITs and characterized their
+In this paper we only \emph{specified} HIITs and characterised their
 induction principles. Proving their \emph{existence} is left as
 further work. This would likely involve reducing HIITs to basic
 building blocks such as W-types and quotient types.
@@ -1381,7 +1284,7 @@ $\mathsf{trunc}$, we would only be able to eliminate from the internal
 type theory into a set. This would preclude the definition of even the
 $\blank^\C$ operation, which corresponds to the standard model. A
 possible solution to this problem would be to add all the higher
-coherence laws to the syntax (e.g.\ the pentagon law for the
+coherence laws to the syntax (e.g. the pentagon law for the
 composition of substitutions) and then prove that the syntax is a
 set. For this however, we would probably need a two-level metatheory
 as in \cite{semisegal}.
@@ -1393,8 +1296,7 @@ category of algebras corresponding to the context. In the future, we
 would like to prove that these categories have initial algebras given
 by terms in the theory of codes.
 
-\bibliographystyle{plain}
-\bibliography{b}
+%=====================================================================
 
 \appendix
 \section{Elimination principle computed for the two-dimensional sphere}
@@ -1434,5 +1336,6 @@ $\hat{\apd}\,(\hat{\apd}\,\hat{S^{2E}})\,\hat{surf}\,\hat{=}\,\hat{surf^M}$.
 
 %=====================================================================
 
+\bibliography{b}
 
 \end{document}
