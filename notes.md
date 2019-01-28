@@ -25,6 +25,8 @@ Updates for Agda formalization and Haskell demo
 
   Overview
 
+  (Ambrus: equality in the inductive-inductive example)
+
 2. Theory of signatures
 
   - Motivation: features, dependencies
