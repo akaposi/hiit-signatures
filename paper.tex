@@ -1127,8 +1127,8 @@ the details.
 
 Again, let us consider the circle example:
 \begin{alignat*}{5}
-  & && (\boldsymbol{\cdot},\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\D\,\,(\hat{\tt,\,S^1,\,b,\,loop})\\
-  & \equiv \,\, && \hat{\top}\timesh(\hat{S^{1D}}\in \hat{S^1}\rah\Type_i)\timesh(\hat{b^D}\in \hat{S^{1D}\,b})\timesh(\hat{loop^D\in \TR_{\,S^{1D}}\,loop\,b^D = b^D})
+  & && (\boldsymbol{\cdot},\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\D\,\,\hat{(}\hat{\tt,\,S^1,\,b,\,loop}\hat{)}\\
+  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{1D}}\in \hat{S^1}\rah\Type_i\hat{)}\timesh\hat{(}\hat{b^D}\in \hat{S^{1D}\,b}\hat{)}\timesh\hat{(}\hat{loop^D\in \TR_{\,S^{1D}}\,loop\,b^D = b^D}\hat{)}
 \end{alignat*}
 The inputs of $\blank^\D$ here are the signature for the circle (the context in
 black) and an $\hat{S^{1}}$-algebra consisting of three non-$\top$ components.
@@ -1142,8 +1142,7 @@ induction motives and methods for the circle, e.g.\ as described in \cite{HoTTbo
 \section{Displayed Algebra Sections}
 \label{sec:sections}
 
-TODO: revise when we have homomorphism section, in order to remove redundant
-explanations. Also revise language.
+TODO: REWRITE to remove redundacy from homomorphism section.
 
 The operation $\blank^\S$ yields displayed algebra sections. It is a generalized
 binary logical relation translation where the type of the second parameter of
@@ -1156,41 +1155,42 @@ Contexts are interpreted as dependent binary relations between algebras and
 displayed algebras. The universe level $i$ was previously chosen for the
 $\blank^\D$ translation.
 \[
-\infer{\hat{\Gamma}\semicol\Delta^\S \in (\hat{\gamma}\in\Delta^\A)\rah \Delta^\D\,\hat{\gamma}\rah \Type_{i}}{\hat{\Gamma}\vdash\Delta}
+\infer{\hat{\Gamma}\semicol\Delta^\S \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\rah \Delta^\D\,\hat{\gamma}\rah \Type_{i}}{\hat{\Gamma}\vdash\Delta}
 \]
-Types are interpreted as dependent binary relations which additionally
-depend on ($\hat{\gamma}\commah\,\hat{\gamma^D}\commah\,\hat{\gamma^S}$) interpretations of the
+Types are interpreted as dependent binary relations which additionally depend on
+$\hat{\gamma}$, $\hat{\gamma^D}$, $\hat{\gamma^S}$ interpretations of the
 context.
 \[
-\infer{\hat{\Gamma}\vdashh A^\S \in (\hat{\gamma}\in\Delta^\A)(\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma})(\hat{\gamma^S}\in\Delta^\S\,\hat{\gamma}\,\hat{\gamma^D})(\hat{x}\in A^\A\,\hat{\gamma})\rah  A^\D\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{x}\rah \Type_{i}}{\hat{\Gamma}\semicol\Delta\vdash A}
+\infer{\hat{\Gamma}\vdashh A^\S \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\hat{(}\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma}\hat{)}\hat{(}\hat{\gamma^S}\in\Delta^\S\,\hat{\gamma}\,\hat{\gamma^D}\hat{)}\hat{(}\hat{x}\in A^\A\,\hat{\gamma}\hat{)}\rah  A^\D\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{x}\rah \Type_{i}}{\hat{\Gamma}\semicol\Delta\vdash A}
 \]
 For a term $t$, $t^\S$ witnesses that the relation corresponding to
 its type holds for $t^\A$ and $t^\D$.
 \[
-\infer{\hat{\Gamma}\vdashh t^\S \in (\hat{\gamma}\in\Delta^\A)(\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma})(\hat{\gamma^S}\in\Delta^\S\,\hat{\gamma}\,\hat{\gamma^D})\rah  A^\S\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{\gamma^S}\,(t^\A\,\hat{\gamma})\,(t^\D\,\hat{\gamma}\,\hat{\gamma^D})}{\hat{\Gamma}\semicol\Delta \vdash t : A}
+\infer{\hat{\Gamma}\vdashh t^\S \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\hat{(}\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma}\hat{)}\hat{(}\hat{\gamma^S}\in\Delta^\S\,\hat{\gamma}\,\hat{\gamma^D}\hat{)}\rah  A^\S\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{\gamma^S}\,\hat{(}t^\A\,\hat{\gamma}\hat{)}\,\hat{(}t^\D\,\hat{\gamma}\,\hat{\gamma^D}\hat{)}}{\hat{\Gamma}\semicol\Delta \vdash t : A}
 \]
 In addition to $\hat{\gamma^2}$, we use $t\,\hat{\gamma^3}$ to abbreviate $t\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{\gamma^S}$. The implementation is the following.
-%% \begingroup \allowdisplaybreaks
+\begingroup
+%% \allowdisplaybreaks
 \begin{alignat*}{5}
   & \boldsymbol{\cdot}^\S\,\hat{\gamma}\,\hat{\gamma^D} && :\equiv \hat{\top} \\
-  & (\Delta,\,x:A)^\S\,(\hat{\gamma},\hat{t})\,(\hat{\gamma^D},\hat{t^D}) && :\equiv (\hat{\gamma^S}\in\Delta^\S\hat{\gamma^2})\timesh A^\S\,\hat{\gamma^3}\,\hat{t}\,\hat{t^D} \\
+  & (\Delta,\,x:A)^\S\,(\hat{\gamma},\hat{t})\,(\hat{\gamma^D},\hat{t^D}) && :\equiv \hat{(}\hat{\gamma^S}\in\Delta^\S\hat{\gamma^2}\hat{)}\timesh A^\S\,\hat{\gamma^3}\,\hat{t}\,\hat{t^D} \\
   & x^\S\,\hat{\gamma^3} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^S} \\ % TODO: De Bruijn
-  & \U^\S\,\hat{\gamma^3}\,\hat{A}\,\hat{A^D} && :\equiv (\hat{x}\in \hat{A})\rah  \hat{A^D}\,\hat{x} \\
+  & \U^\S\,\hat{\gamma^3}\,\hat{A}\,\hat{A^D} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  \hat{A^D}\,\hat{x} \\
   & (\underline{a})^\S\,\hat{\gamma^3}\,\hat{t}\,\hat{t^D} && :\equiv a^\S\,\hat{\gamma^3}\,\hat{t} \eqh \hat{t^D} \\
-  & ((x:a)\ra B)^\S\,\hat{\gamma^3}\,\hat{f}\,\hat{f^D} && :\equiv (\hat{x}\in a^\A\,\hat{\gamma})\rah  B^\S\,(\hat{\gamma,x})\,(\hat{\gamma^D,}\,a^\S\,\hat{\gamma^3}\,\hat{x})\,(\hat{\gamma^S,}\,\hat{\refl}) \\
-  & && \hspace{8.4em} (\hat{f}\,\hat{x})\,\big(\hat{f^D}\,\hat{x}\,(a^\S\,\hat{\gamma^3}\,\hat{x})\big) \\
-  & (t\,u)^\S\,\hat{\gamma^3} && :\equiv \hat{\J}\,(t^\S\,\hat{\gamma^3}\,( u^\A\,\hat{\gamma}))\,(u^\S\,\hat{\gamma^3}) \\
-  & ((\hat{x}\in \hat{A})\ra B)^\S\,\hat{\gamma^3}\,\hat{f}\,\hat{f^D} && :\equiv (\hat{x}\in \hat{A})\rah B^\S\,\hat{\gamma^3}\,(\hat{f}\,\hat{x})\,(\hat{f^D}\,\hat{x}) \\
+  & ((x:a)\ra B)^\S\,\hat{\gamma^3}\,\hat{f}\,\hat{f^D} && :\equiv \hat{(}\hat{x}\in a^\A\,\hat{\gamma}\hat{)}\rah  B^\S\,\hat{(}\hat{\gamma,x}\hat{)}\,\hat{(}\hat{\gamma^D,}\,a^\S\,\hat{\gamma^3}\,\hat{x}\hat{)}\,\hat{(}\hat{\gamma^S,}\,\hat{\refl}\hat{)} \\
+  & && \hspace{8.4em} \hat{(}\hat{f}\,\hat{x}\hat{)}\,\hat{\big(}\hat{f^D}\,\hat{x}\,\hat{(}a^\S\,\hat{\gamma^3}\,\hat{x}\hat{)}\hat{\big)} \\
+  & (t\,u)^\S\,\hat{\gamma^3} && :\equiv \hat{\J}\,\hat{(}t^\S\,\hat{\gamma^3}\,\hat{(} u^\A\,\hat{\gamma}\hat{)}\hat{)}\,\hat{(}u^\S\,\hat{\gamma^3}\hat{)} \\
+  & ((\hat{x}\in \hat{A})\ra B)^\S\,\hat{\gamma^3}\,\hat{f}\,\hat{f^D} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah B^\S\,\hat{\gamma^3}\,\hat{(}\hat{f}\,\hat{x}\hat{)}\,\hat{(}\hat{f^D}\,\hat{x}\hat{)} \\
   & (t\,\hat{u})^\S\,\hat{\gamma^3} && :\equiv t^\S\,\hat{\gamma^3}\,\hat{u} \\
-  & (t=_a u)^\S\,\hat{\gamma^3}\,\hat{e} && :\equiv \TR\,(t^\S\,\hat{\gamma^3})\big(\TR\,(u^\S\,\hat{\gamma^3})\,(\apd\,(a^\S\,\hat{\gamma^3})\,\hat{e})\big) \\
-  & (\refl_t)^\S\,\hat{\gamma^3} && :\equiv \hat{\J}\,\hat{\refl}\,(t^\S\,\hat{\gamma^3}) \\
+  & (t=_a u)^\S\,\hat{\gamma^3}\,\hat{e} && :\equiv \TR\,\hat{(}t^\S\,\hat{\gamma^3}\hat{)}\hat{\big(}\TR\,\hat{(}u^\S\,\hat{\gamma^3}\hat{)}\,\hat{(}\apd\,\hat{(}a^\S\,\hat{\gamma^3}\hat{)}\,\hat{e}\hat{)}\hat{\big)} \\
+  & (\refl_t)^\S\,\hat{\gamma^3} && :\equiv \hat{\J}\,\hat{\refl}\,\hat{(}t^\S\,\hat{\gamma^3}\hat{)} \\
   & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\S\,\hat{\gamma^3} && :\equiv \\
-  & && \hspace{-10em}\hat{\J}\,\bigg(\hat{\J}\,\Big(\hat{\J}\,\big(\hat{\J}\,(\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\,\hat{pr^D}\,\hat{pr^S}.\,\hat{pr^S})\,(t^\S\,\hat{\gamma^3})\,\\
-  & && \hspace{-9em}(\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2})\,(\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^3})\,(pr^\D\,\hat{\gamma^2})\,(pr^\S\,\hat{\gamma^3})\big)\,eq^\A\,\hat{\gamma}\Big)\,u^\S\,\hat{\gamma^3}\bigg)\,(eq^\S\,\hat{\gamma^3}) \\
+  & && \hspace{-10em}\hat{\J}\,\hat{\bigg(}\hat{\J}\,\hat{\Big(}\hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\,\hat{pr^D}\,\hat{pr^S}.\,\hat{pr^S}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^3}\hat{)}\,\\
+  & && \hspace{-9em}\hat{(}\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^3}\hat{)}\,\hat{(}pr^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}pr^\S\,\hat{\gamma^3}\hat{)}\hat{\big)}\,eq^\A\,\hat{\gamma}\hat{\Big)}\,u^\S\,\hat{\gamma^3}\hat{\bigg)}\,\hat{(}eq^\S\,\hat{\gamma^3}\hat{)} \\
   & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\S\,\hat{\gamma^3} && :\equiv \\
-  & && \hspace{-10em}\hat{\J}\,\big(\hat{\J}\,(\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\hat{.}\,\hat{\refl})\,(t^\S\,\hat{\gamma^3})\,(\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2})\,(\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^3})\big)\,(pr^\S\,\hat{\gamma^3})\\
-  & ((\hat{x}\in \hat{A})\ra b)^\S\,\hat{\gamma^3\,f\,t} && :\equiv b^\S\,\hat{\gamma^3}\,(\hat{f}\,\hat{t}) \\
-  & (t\,\hat{u})^\S\,\hat{\gamma^3} && :\equiv \ap\,(\hat{\lambda} \hat{f.}\hat{f}\,\hat{u})\,(t^\S\,\hat{\gamma^3})
+  & && \hspace{-10em}\hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\hat{.}\,\hat{\refl}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^3}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^3}\hat{)}\hat{\big)}\,\hat{(}pr^\S\,\hat{\gamma^3}\hat{)}\\
+  & ((\hat{x}\in \hat{A})\ra b)^\S\,\hat{\gamma^3\,f\,t} && :\equiv b^\S\,\hat{\gamma^3}\,\hat{(}\hat{f}\,\hat{t}\hat{)} \\
+  & (t\,\hat{u})^\S\,\hat{\gamma^3} && :\equiv \ap\,\hat{(}\hat{\lambda} \hat{f.}\hat{f}\,\hat{u}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^3}\hat{)}
 \end{alignat*}
 %% \endgroup
 
@@ -1200,8 +1200,8 @@ cases are largely determined by these.
 
 The $\U^\S$ rule yields the type of the eliminator for a type
 formation rule. In the natural numbers example above, the non-indexed
-$Nat : \U$ sort is interpreted as $\hat{n^S} \in (\hat{x}\in
-\hat{n})\rah \hat{n^D}\,\hat{x}$. For indexed sorts, the indices are
+$Nat : \U$ sort is interpreted as $\hat{\hat{n^S} \in (\hat{x}\in
+\hat{n})\rah \hat{n^D}\,\hat{x}}$. For indexed sorts, the indices are
 first processed by the $\blank^\S$ cases for inductive and non-inductive
 parameters, until the ultimate $\U$ return type is reached. Hence, the
 eliminator for a sort is always a function.
@@ -1243,10 +1243,10 @@ commonly used equality operations such as composition or inverses.
 
 The circle example is a bit more interesting here:
 \begin{alignat*}{5}
-  & && (\boldsymbol{\cdot},\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\S\,\,(\hat{\tt,\,S^1,\,b,\,loop})\,(\hat{\tt,\,S^{1M},\,b^D,\,loop^D}) \\
-  & \equiv \,\, && \hat{\top}\timesh(\hat{S^{1E}}\in (\hat{x}\in\hat{S^1})\hat{\,\ra\,}\hat{S^{1M}\,x})\timesh(\hat{b^S}\in \hat{S^{1E}\,\,b = b^D})\\
-  & && \hspace{0.75em}\timesh(\hat{loop^S\,\,\in\,\,} \TR\,_{(\hat{\lambda x. \TR\,_{S^{1M}}\,loop\,x\,=\,b^D})}\,\hat{b^S}\,(\TR\,_{(\hat{\lambda} \hat{x}. \TR\,_{\hat{S^{1M}}}\,\hat{loop}\,(\hat{S^{1E}\,b})\,\eqh\,\hat{x})}\,\hat{b^S}\,(\apd\,\hat{S^{1E}\,loop}))\,\\
-  & && \hspace{5.5em} \hat{=\,loop^D})
+  & && (\boldsymbol{\cdot},\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\S\,\,\hat{(}\hat{\tt,\,S^1,\,b,\,loop}\hat{)}\,\hat{(}\hat{\tt,\,S^{1M},\,b^D,\,loop^D}\hat{)} \\
+  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{1E}}\in \hat{(}\hat{x}\in\hat{S^1}\hat{)}\hat{\,\ra\,}\hat{S^{1M}\,x}\hat{)}\timesh\hat{(}\hat{b^S}\in \hat{S^{1E}\,\,b = b^D}\hat{)}\\
+  & && \hspace{0.75em}\timesh\hat{(}\hat{loop^S\,\,\in\,\,} \TR\,_{\hat{(}\hat{\lambda x. \TR\,_{S^{1M}}\,loop\,x\,=\,b^D}\hat{)}}\,\hat{b^S}\,\hat{(}\TR\,_{\hat{(}\hat{\lambda} \hat{x}. \TR\,_{\hat{S^{1M}}}\,\hat{loop}\,\hat{(}\hat{S^{1E}\,b}\hat{)}\,\eqh\,\hat{x}\hat{)}}\,\hat{b^S}\,\hat{(}\apd\,\hat{S^{1E}\,loop}\hat{)}\hat{)}\,\\
+  & && \hspace{5.5em} \hat{=\,loop^D}\hat{)}
 \end{alignat*}
 In homotopy type theory, the $\beta$-rule for $loop$ is usually just
 $\apd\,\hat{S^{1E}\,loop}\,\hat{\,=\,loop^D}$, but here all
@@ -1263,24 +1263,24 @@ computed for the two-dimensional sphere.
 
 For another example for the translations, we consider indexed W-types
 which can describe a large class of inductive definitions
-\cite{morris09indexed}. Suppose we are in the target context $\hat{I}
+\cite{morris09indexed}. Suppose we are in the external context $\hat{I}
 \in \Type_{\hat{0}}\commah\hat{S} \in \Type_{\hat{0}}\commah\hat{P} \in \hat{S} \rah
 \Type_{\hat{0}}\commah\hat{out} \in \hat{S} \rah \hat{I}\commah\hat{in} \in
-(\hat{s} \in \hat{S})\rah \hat{P}\,\hat{s}\rah \hat{I}$. Then, the
+\hat{(}\hat{s} \in \hat{S}\hat{)}\rah \hat{P}\,\hat{s}\rah \hat{I}$. Then, the
 code for the corresponding indexed W-type is the following:
 \[
 W :\equiv (\boldsymbol{\cdot},\,\,\,w:(\hat{i} \in \hat{I})\ra\U,\,\,\,sup: (\hat{s} \in \hat{S})\ra((\hat{p} \in \hat{P\,s})\ra w\,(\hat{in\,s\,p}))\ra \underline{w\,(\hat{out\,s})})
 \]
 We pick a universe level $j$ for elimination. The interpretations of $W$ are the following, omitting leading $\hat{\top}$ components:
 \begin{alignat*}{5}
-  & \rlap{$W^\A \equiv (\hat{w}\in \hat{I}\rah\Type_{\hat{0}})\timesh((\hat{s}\in \hat{S})\rah((\hat{p}\in \hat{P\,s})\rah \hat{w}\,(\hat{in\,s\,p}))\rah \hat{w}\,(\hat{out\,s}))$}\\
-  & W^\D\,(\hat{w, sup}) && \equiv\, && (\hat{w^D} \in (\hat{i}\in \hat{I})\rah \hat{w\,i}\rah \Type_j)\\
-  & && \hspace{0.23em}\timesh && \big((\hat{s\in S})(\hat{f}\in (\hat{p\in P\,s})\rah \hat{w}\,(\hat{in\,s\,p}))\\
-  & && && \rah ((\hat{p\in P\,s})\rah \hat{w^D}\,(\hat{in\,s\,p})\,(\hat{f\,p}))\rah \hat{w^D}\,(\hat{out\,s})\,(\hat{sup\,s\,f})\big) \\
-  & \rlap{$ W^\S\,(\hat{w, sup})\,(\hat{w^D,sup^D}) \equiv $} \\
-  & && && (\hat{w^S} \in (\hat{i \in I})(\hat{x \in w\,i})\rah \hat{w^D\,i\,x})\\
-  & && \hspace{0.23em}\timesh && \big((\hat{s\in S})(\hat{f}\in (\hat{p\in P\,s})\rah \hat{w}\,(\hat{in\,s\,p}))\\
-  & && && \rah \hat{w^S}\,(\hat{out\,s})\,(\hat{sup\,\,s\,f}) \eqh \hat{sup^D\,s\,f}\,(\hat{\lambda} \hat{p.}\, \hat{w^S}\,(\hat{in\,s\,p})\,(\hat{f\,p}))\big)
+  & \rlap{$W^\A \equiv \hat{(}\hat{w}\in \hat{I}\rah\Type_{\hat{0}}\hat{)}\timesh\hat{(}\hat{(}\hat{s}\in \hat{S}\hat{)}\rah\hat{(}\hat{(}\hat{p}\in \hat{P\,s}\hat{)}\rah \hat{w}\,\hat{(}\hat{in\,s\,p}\hat{)}\hat{)}\rah \hat{w}\,\hat{(}\hat{out\,s}\hat{)}\hat{)}$}\\
+  & W^\D\,\hat{(}\hat{w, sup}\hat{)} && \equiv\, && \hat{(}\hat{w^D} \in \hat{(}\hat{i}\in \hat{I}\hat{)}\rah \hat{w\,i}\rah \Type_{\hat{j}}\hat{)}\\
+  & && \hspace{0.23em}\timesh && \hat{\big(}\hat{(}\hat{s\in S}\hat{)}\hat{(}\hat{f}\in \hat{(}\hat{p\in P\,s}\hat{)}\rah \hat{w}\,\hat{(}\hat{in\,s\,p}\hat{)}\hat{)}\\
+  & && && \rah \hat{(}\hat{(}\hat{p\in P\,s}\hat{)}\rah \hat{w^D}\,\hat{(}\hat{in\,s\,p}\hat{)}\,\hat{(}\hat{f\,p}\hat{)}\hat{)}\rah \hat{w^D}\,\hat{(}\hat{out\,s}\hat{)}\,\hat{(}\hat{sup\,s\,f}\hat{)}\hat{\big)} \\
+  & \rlap{$ W^\S\,\hat{(}\hat{w, sup}\hat{)}\,\hat{(}\hat{w^D,sup^D}\hat{)} \equiv $} \\
+  & && && \hat{(}\hat{w^S} \in \hat{(}\hat{i \in I}\hat{)}\hat{(}\hat{x \in w\,i}\hat{)}\rah \hat{w^D\,i\,x}\hat{)}\\
+  & && \hspace{0.23em}\timesh && \hat{\big(}\hat{(}\hat{s\in S}\hat{)}\hat{(}\hat{f}\in \hat{(}\hat{p\in P\,s}\hat{)}\rah \hat{w}\,\hat{(}\hat{in\,s\,p}\hat{)}\hat{)}\\
+  & && && \rah \hat{w^S}\,\hat{(}\hat{out\,s}\hat{)}\,\hat{(}\hat{sup\,\,s\,f}\hat{)} \eqh \hat{sup^D\,s\,f}\,\hat{(}\hat{\lambda} \hat{p.}\, \hat{w^S}\,\hat{(}\hat{in\,s\,p}\hat{)}\,\hat{(}\hat{f\,p}\hat{)}\hat{)}\hat{\big)}
 \end{alignat*}
 
 %=====================================================================
@@ -1431,30 +1431,29 @@ theory of codes.
 \]
 The sphere-algebras are computed as follows.
 \begin{alignat*}{5}
-  & && \Gamma^\C \equiv \hat{\top}\timesh(\hat{S^2}\in\Type_{\hat{0}})\timesh(\hat{b}\in \hat{S^2})\timesh(\hat{surf\in \hat{\refl_{\hat{b}}}=_{(\hat{b}=_{\hat{S^2}}\hat{b})}\hat{\refl_{\hat{b}}}})
+  & && \Gamma^\C \equiv \hat{\top}\timesh\hat{(}\hat{S^2}\in\Type_{\hat{0}}\hat{)}\timesh\hat{(}\hat{b}\in \hat{S^2}\hat{)}\timesh\hat{(}\hat{surf\in \hat{\refl_{\hat{b}}}=_{\hat{(}\hat{b}=_{\hat{S^2}}\hat{b}\hat{)}}\hat{\refl_{\hat{b}}}}\hat{)}
 \end{alignat*}
 Given a sphere-algebra and fixing a universe level $i$, the motives
 and methods are computed as follows.
 \begin{alignat*}{5}
-  & && \Gamma^\M\,\,(\hat{\tt,\,S^2,\,b,\,surf})\\
-  & \equiv \,\, && \hat{\top}\timesh(\hat{S^{2M}}\in \hat{S^2}\rah\Type_i) \\
-  & && \hspace{0.75em} \timesh(\hat{b^M}\in \hat{S^{2M}\,b}) \\
-  & && \hspace{0.75em} \timesh(\hat{surf^M\in \TR_{(\TR_{S^{2M}}\,\blank\,b^M=b^M)}\,surf\,\refl_{b^M} = \refl_{b^M}})
+  & && \Gamma^\M\,\,\hat{(}\hat{\tt,\,S^2,\,b,\,surf}\hat{)}\\
+  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{2M}}\in \hat{S^2}\rah\Type_i\hat{)} \\
+  & && \hspace{0.75em} \timesh\hat{(}\hat{b^M}\in \hat{S^{2M}\,b}\hat{)} \\
+  & && \hspace{0.75em} \timesh\hat{(}\hat{surf^M\in \TR_{\hat{(}\TR_{S^{2M}}\,\blank\,b^M=b^M\hat{)}}\,surf\,\refl_{b^M} = \refl_{b^M}}\hat{)}
 \end{alignat*}
-Given a sphere-algebra and the motives and methods for this algebra,
-the types of the elimination principles are computed as follows.
+Given a sphere-algebra and a displayed algebra over it, we get the type of sections:
 \begin{alignat*}{5}
-  & && \Gamma^\E\,\,(\hat{\tt,\,S^2,\,b,\,surf})\,(\hat{\tt,\,S^{2M},\,b^M,\,surf^M}) \\
-  & \equiv \,\, && \hat{\top}\timesh(\hat{S^{2E}}\in (\hat{x}\in\hat{S^2})\hat{\,\ra\,}\hat{S^{2M}\,x}) \\
-  & && \hspace{0.75em} \timesh(\hat{b^E}\in \hat{S^{2E}\,\,b = b^M})\\
-  & && \hspace{0.75em} \timesh\bigg(\hat{surf^E\,\,\in\,\,} \TR\,\Big(\hat{\J\,\refl\,b^E}\Big)\,\Big(\TR\,\big(\hat{\J\,\refl\,b^E}\big)\,\big(\hat{\apd}\,(\hat{\lambda} \hat{x}.\TR\,\hat{b^E}\,(\TR\,\hat{b^E}\,(\hat{\apd}\,\hat{S^{2E}}\,\hat{x})))\,\hat{surf}\big)\Big) \\
-  & && \hspace{5.5em} \hat{=} \,\hat{surf^M}\bigg)
+  & && \Gamma^\E\,\,\hat{(}\hat{\tt,\,S^2,\,b,\,surf}\hat{)}\,\hat{(}\hat{\tt,\,S^{2M},\,b^M,\,surf^M}\hat{)} \\
+  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{2E}}\in \hat{(}\hat{x}\in\hat{S^2}\hat{)}\hat{\,\ra\,}\hat{S^{2M}\,x}\hat{)} \\
+  & && \hspace{0.75em} \timesh\hat{(}\hat{b^E}\in \hat{S^{2E}\,\,b = b^M}\hat{)}\\
+  & && \hspace{0.75em} \timesh\hat{\bigg(}\hat{surf^E\,\,\in\,\,} \TR\,\hat{\Big(}\hat{\J\,\refl\,b^E}\hat{\Big)}\,\hat{\Big(}\TR\,\hat{\big(}\hat{\J\,\refl\,b^E}\hat{\big)}\,\hat{\big(}\hat{\apd}\,\hat{(}\hat{\lambda} \hat{x}.\TR\,\hat{b^E}\,\hat{(}\TR\,\hat{b^E}\,\hat{(}\hat{\apd}\,\hat{S^{2E}}\,\hat{x}\hat{)}\hat{)}\hat{)}\,\hat{surf}\hat{\big)}\hat{\Big)} \\
+  & && \hspace{5.5em} \hat{=} \,\hat{surf^M}\hat{\bigg)}
 \end{alignat*}
 Note that if $\hat{b^E}$ is a definitional equality (that is, we have
 $\hat{S^{2E}\,\,b} \equiv \hat{b^M}$), the occurrences of $\hat{b^E}$
 in the type of $\hat{surf^E}$ can be replaced by $\hat{\refl}$. In
 this case the type of $\hat{surf^E}$ becomes the expected
-$\hat{\apd}\,(\hat{\apd}\,\hat{S^{2E}})\,\hat{surf}\,\hat{=}\,\hat{surf^M}$.
+$\hat{\apd}\,\hat{(}\hat{\apd}\,\hat{S^{2E}}\hat{)}\,\hat{surf}\,\hat{=}\,\hat{surf^M}$.
 
 %=====================================================================
 
