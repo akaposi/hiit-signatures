@@ -43,7 +43,7 @@
 \newcommand{\Con}{\mathsf{Con}}
 \newcommand{\Ty}{\mathsf{Ty}}
 \newcommand{\Tm}{\mathsf{Tm}}
-\newcommand{\Tms}{\mathsf{Tms}}
+\newcommand{\Sub}{\mathsf{Sub}}
 \newcommand{\R}{\mathsf{R}}
 \newcommand{\TM}{\mathsf{TM}}
 \newcommand{\NE}{\mathsf{NE}}
@@ -188,6 +188,9 @@
 \newcommand{\DisplayedAlg}{\mathsf{DisplayedAlg}}
 \newcommand{\Morphism}{\mathsf{Morphism}}
 \newcommand{\Section}{\mathsf{Section}}
+\newcommand{\ass}{\mathsf{ass}}
+\newcommand{\idl}{\mathsf{idl}}
+\newcommand{\idr}{\mathsf{idr}}
 
 %% END OF ABBREVS
 %% --------------------------------------------------------------------------------
@@ -269,7 +272,7 @@ well-known induction principle:
 \noindent $P$ is a family of types (or: a proof-relevant predicate) over natural
 numbers, which is called the \emph{induction motive}. The arguments $pz$ and
 $ps$ are called the \emph{induction methods}. The behavior of induction is
-described by a \emph{computation-rule} ($\beta$-rule) for each constructor
+described by a \emph{computation rule} ($\beta$-rule) for each constructor
 and induction method:
 \begin{alignat*}{5}
   & \Elim\Nat\,P\,pz\,ps\,\zero && \equiv pz \\
@@ -403,15 +406,16 @@ theory, which serves as the source of constants which are external to a
 signature, like natural numbers in the case of length-indexed vectors. In
 Section \ref{sec:general}, we give a general definition of induction and
 recursion. In Section \ref{sec:coherence} we explain the choice of using
-syntactic translations in the rest of the paper. In Sections TODO to TODO, we
-describe four syntactic translations from the theory of signatures to the syntax
-of the external type theory, respectively computing algebras, homomorphisms,
-displayed algebras and sections of displayed algebras. In Section TODO, we
-consider extending the previous translations with additional components of the
-categorical semantics of HIITs (e.g.\ identity and composition for
-homomorphisms), and explain why the approach in this paper does not make this
-feasible. Section \ref{sec:formalization} describes the Agda formalization and
-the Haskell implementation. We conclude in Section \ref{sec:summary}.
+syntactic translations in the rest of the paper. In Sections \ref{sec:algebras}
+to \ref{sec:sections}, we describe four syntactic translations from the theory
+of signatures to the syntax of the external type theory, respectively computing
+algebras, homomorphisms, displayed algebras and sections of displayed
+algebras. In Section \ref{sec:categorical}, we consider extending the previous
+translations with additional components of the categorical semantics of HIITs
+(e.g.\ identity and composition for homomorphisms), and explain why the approach
+in this paper does not make this feasible. Section \ref{sec:formalization}
+describes the Agda formalization and the Haskell implementation. We conclude in
+Section \ref{sec:summary}.
 
 \subsection{Related Work}
 
@@ -522,7 +526,7 @@ of path induction.
 
 \[
 \begin{gathered}
-  \infer{\hat{\Gamma}\vdash\cdot}{\vdashh\hat{\Gamma}}
+  \infer{\hat{\Gamma}\vdash\cdot}{\vdashh\,\hat{\Gamma}}
 \end{gathered}
 \hspace{2em}
 \begin{gathered}
@@ -646,13 +650,14 @@ notated in {\color{BrickRed}brick red} color. Although every judgement is valid
 up to a context in the external type theory, note that none of the rules in
 (1)--(4) depend on or change these assumptions, and even after that, we do not
 refer to any particular type former from the external theory. We describe the
-external theory in more detail in Section TODO. Also, the rules presented here
-are informal and optimized for readability; we describe the Agda formalizations
-in Section \ref{sec:formalization}. We explain the rules for the theory of
-signatures in order now.
+external theory in more detail in Section \ref{sec:external}. Also, the rules
+presented here are informal and optimized for readability; we describe the Agda
+formalizations in Section \ref{sec:formalization}. We explain the rules for the
+theory of signatures in order now.
 
-(1) The rules for context formation and variables are standard. We assume fresh
-names everywhere to avoid name capture, and leave weakenings implicit.
+(1) The rules for context formation and variables are standard. We build
+signatures in a well-formed external context.  We assume fresh names everywhere
+to avoid name capture, and leave weakenings implicit.
 
 (2) There is a universe $\U$, with decoding written as an underline instead of
 usual $\El$, to bolster readability. With this part of the syntax, we can already
@@ -777,18 +782,20 @@ a small type to an external type, and no such functions can be formed.
 \subsection{External type theory}
 \label{sec:external}
 
-We describe the external type theory here. It serves two purposes: it is a
-source of types external to a HIIT signature, and it also serves as the target
-for the syntactic translations described in Sections TODO to TODO. It is not
-essential that we use the same theory for both purposes; we do so only because
-it simplifies the presentation. Also, we need not specify the external theory in
-formal detail, as it is a standard type theory. We only need to make some
-assumptions about supported type formers. We generally keep the notation close
-to Agda, and use {\color{BrickRed}brick red} color to distinguish from
-constructions in the theory of signatures.
+The external syntax serves two purposes: it is a source of types external to a
+HIIT signature, and it also serves as the target for the syntactic translations
+described in Sections \ref{sec:algebras} to \ref{sec:sections}. It is not
+essential that we use the same theory for both purposes; we do so only to
+simplify the presentation by skipping an additional translation or embedding
+step. Also, we do not specify the external theory in formal detail, since it is
+a standard type theory. We only make some assumptions about supported type
+formers. We generally keep the notation close to Agda, and use
+{\color{BrickRed}brick red} color to distinguish from constructions in the
+theory of signatures.
 
-There is a cumulative Russell-style hierarchy of universes $\Type_{\hat{i}}$, with
-universes closed under $\Pi$, $\Sigma$, equality and unit types.
+There is a cumulative Russell-style hierarchy of universes $\Type_{\hat{i}}$,
+with universes closed under $\Pi$, $\Sigma$, equality and unit
+types. Importantly, we do not assume uniqueness of identity proofs.
 
 Dependent function space is denoted $\hat{(\hat{x}\in \hat{A})\rah \hat{B}}$. We
 write $\hat{A}\rah \hat{B}$ if $\hat{B}$ does not depend on $\hat{x}$, and $\rah
@@ -847,14 +854,17 @@ induction arises.
 
 For $\Nat$, algebras are simply a triple consisting of a type, a value and an
 endofunction. Below, we leave universe indices explicit, and we use the notation
-of the external type theory described in Section \ref{sec:signatures}.
+of the external type theory described in Section \ref{sec:external}.
 \begin{alignat*}{5}
 & \Alg : \mathsf{Type} \\
 & \Alg \equiv (N : \mathsf{Type}) \times N \times (N \ra N)
 \end{alignat*}
 
-\noindent Displayed $\Nat$-algebras (sometimes called fibered algebras, as in \cite{sojakova})
-are likewise triples, but depending on a $\Nat$-algebra.
+\noindent Displayed $\Nat$-algebras (sometimes called fibered algebras, as in
+\cite{sojakova}) are likewise triples, but each component depends on the
+corresponding components of a $\Nat$-algebra. We borrow the term ``displayed''
+from Ahrens and Lumsdaine \cite{displayedCategories}, as our displayed algebras
+generalize their displayed categories.
 \begin{alignat*}{5}
 & \DisplayedAlg : \Alg \ra \mathsf{Type} && \\
 & \DisplayedAlg\,(N,\,z,\,s) \equiv && \\
@@ -872,7 +882,7 @@ are likewise triples, but depending on a $\Nat$-algebra.
 \begin{alignat*}{5}
 & \Section : (\alpha : \Alg) \ra \DisplayedAlg\,\,\alpha \ra \mathsf{Type} && \\
 & \Section\,(N,\,z,\,s)\,(N^D,\,z^D,\,s^D) \equiv && \\
-&  \hspace{3em} (N^S : (n : N) \ra N^D\,n)\times (z^S : N^S\,z = z^D)\times ((n : N)\ra N^S\,(s\,n) = s^D\,(N^S\,n))
+&  \hspace{3em} (N^S : (n : N) \ra N^D\,n)\times (z^S : N^S\,z = z^D)\times ((n : N)\ra N^S\,(s\,n) = s^D\,n\,(N^S\,n))
 \end{alignat*}
 
 \noindent Now, we can reformulate induction for $\Nat$. First, we assume that
@@ -910,13 +920,202 @@ homomorphisms and sections yield a function for each type constructor and a
 $\beta$-rule for each point or path constructor.
 
 We will compute algebras and the other notions by induction on the syntax of the
-theory of signatures. However, first we need to clarify the formal justifications
-behind these computations.
+theory of signatures. However, first we need to clarify the formal foundations
+of these computations.
 
-\section{Coherence Problems and Syntactic Translations}
+\section{The Coherence Problem and Syntactic Translations}
 \label{sec:coherence}
 
-TODO
+The next task would be to define a computation which takes as input a
+$\hat{\Gamma}\vdash\Delta$ signature, and returns the corresponding type of
+algebras in some type theory. This would behave as a ``standard'' model of
+signatures, which simply maps each construction in the syntax to its
+metatheoretical counterpart: types to types, universe to universe,
+functions to functions, and so on.
+
+However, it is important to interpret signatures into a theory without
+uniqueness of identity proofs (UIP), because we are considering \emph{higher}
+inductive types, and hence must remain compatible with higher-dimensional
+interpretations. In particular, we need to interpret type constructors in
+signatures into type universes which are not truncated to any homotopy level. In
+this setting, even the mundane $\alpha : (N : \mathsf{Type}) \times N \times (N
+\ra N)$ natural number algebras may have arbitrary higher-dimensional structure.
+
+On first look, we might think that the simplest way to formalize the algebra
+interpretation is the following:
+\begin{enumerate}
+\item Assume as metatheory a type theory without UIP.
+\item In this setting, define a formal syntax of the theory of signatures.
+\item Give a standard interpretation of signatures into the UIP-free metatheory.
+\end{enumerate}
+
+It may come as a surprise that realizing the above steps is an \emph{open
+  problem}, for any syntax of a dependent type theory. We call the problem of
+interpreting syntaxes of type theories into a UIP-free metatheory a
+\emph{coherence problem}. This issue appears to arise with all known ways of
+defining syntaxes for dependent type theories.
+
+In the following, we first consider the coherence problem in two settings: with
+intrinsically typed higher inductive-inductive syntaxes, then with conventional
+syntaxes involving preterms and inductively defined typing and conversion
+relations. Then, we present syntactic translations as a partial solution to the
+coherence problem.
+
+\subsection{Interpreting intrinsic syntax}
+Following Altenkirch and Kaposi \cite{ttintt}, one might define the syntax of a
+type theory as an initial category with families (CwF) \cite{dybjer1995internal}
+extended with additional type formers. The CwF part provides a calculus and
+equational theory for explicit substitutions, upon which one can build
+additional type structure. We present an excerpt below:
+
+\begin{alignat*}{5}
+  & \Con && : \Set && \text{contexts} \\
+  & \Ty  && : \Con\ra\Set && \text{types} \\
+  & \Sub  && : \Con\ra\Con\ra\Set && \text{substitutions} \\
+  & \Tm  && : (\Gamma:\Con)\ra\Ty\,\Gamma\ra\Set \hspace{2em} && \text{terms} \\
+  & \cdot && : \Con && \text{empty context} \\
+  & \blank\rhd\blank && : (\Gamma:\Con)\ra\Ty\,\Gamma\ra\Con && \text{context extension} \\
+  & \blank[\blank] && : \Ty\,\Delta\ra\Sub\,\Gamma\,\Delta\ra\Ty\,\Gamma && \text{type substitution} \\
+  & \id && : \Sub\,\Gamma\,\Gamma && \text{identity substitution} \\
+  & [\id] && : A[\id] = A && \text{action of}\,\,\id\,\,\text{on types}\\
+  & \blank\circ\blank && : \Sub\,\Theta\,\Delta\ra\Sub\,\Gamma\,\Theta\ra\Sub\,\Gamma\,\Delta && \text{substitution composition} \\
+  & \blank[\blank] && : \Tm\,\Delta\,A\ra(\sigma:\Sub\,\Gamma\,\Delta)\ra\Tm\,\Gamma\,(A[\sigma])\hspace{1em} && \text{term substitution} \\
+  & ... && \\
+  & \U && : \Ty\,\Gamma && \text{universe} \\
+  & {\U[]} && : \U[\sigma] = \U && \text{substituting the universe} \\
+  & \El && : \Tm\,\Gamma\,\U \ra \Ty\,\Gamma && \text{decoding} \\
+  & \Pi && : (A:\Ty\,\Gamma)\ra\Ty\,(\Gamma\rhd A)\ra\Ty\,\Gamma && \text{functions} \\
+  & ... &&
+\end{alignat*}
+
+This notion of syntax is much more compact and often much more convenient to use
+than extrinsic syntaxes. It is in essence ``merely'' a formalization of CwFs,
+which are often used in categorical semantics of type theory. However, its
+rigorous metatheory is subject to ongoing research (including the current
+paper). In a set-truncated setting, the current authors and Altenkirch have
+previously developed semantics and constructed initial algebras
+\cite{kaposi2019constructing}, but here we need to work in a non-truncated
+theory.
+
+\subsubsection{Set-truncation}
+Additionally, we need to set-truncate the syntax by adding the following constructors:
+\begin{alignat*}{5}
+  & \mathsf{setTy}  && : (A\,B : \Ty\,\Gamma)(p\,q : A = B)\ra p = q \\
+  & \mathsf{setTm}  && : (t\,u : \Tm\,\Gamma\,A)(p\,q : t = u)\ra p = q \\
+  & \mathsf{setSub} && : (\sigma\,\delta : \Sub\,\Gamma\,\Delta)(p\,q : \sigma = \delta)\ra p = q
+\end{alignat*}
+
+\noindent We can omit the rule for contexts, as it is derivable from the above ones. Set
+truncation forces definitional equality of the syntax (as defined by equality
+constructors in the HIIT signature) to be proof irrelevant. If we omit
+set-truncation, then the defined HIIT becomes very different from what we expect
+the syntax to be.
+
+We can easily show that the non-truncated syntax does not form sets. For
+example, $\U[]$ and $[\id]$ are two proofs of $\U[\id] = \U$, and they are not
+forced to be equal. Assuming univalence, we can give a model where types are
+interpreted as closed metatheoretic types, $\U$ is interpreted as metatheoretic
+$\Bool$, $[\id]$ is interpreted as $\refl : A = A$ for some metatheoretic $A$
+type, and $\U[]$ is interpreted as the $\Bool$ negation equivalence, thereby
+formally distinguishing $\U[]$ and $[\id]$. Hence, by Hedberg's theorem
+\cite{hedberg}, the syntax does not have decidable equality. This also implies
+that the non-truncated intrinsic syntax is not constructible from set quotients
+of extrinsic terms (since those always form sets). The non-truncated syntax just
+does not seem to be a sensible notion. This situation is similar to how
+categories in homotopy type theory need to have set-truncated objects
+\cite{ahrens2015univalent}.
+
+Unfortunately, set-truncation makes it impossible to interpret syntactic types
+as elements of a UIP-free metatheoretic $\mathsf{Type}_i$ universe. This is
+because we must provide interpretations for all set-truncation constructors,
+which amounts to shoving that the interpretations of $\Ty$, $\Con$, $\Sub$ are
+all sets. However, we cannot show $\mathsf{Type}_i$ to be a set without UIP.
+
+A possible solution would be to add \emph{all higher coherences} instead of
+set-truncating, which would yield something like an ($\omega$, 1)-CwF, but this
+is also an open research problem \cite{altenkirch2018towards, finster2019structure}.
+
+\subsection{Interpreting extrinsic syntax}
+An extrinsic syntax for type theory is defined the following way:
+\begin{enumerate}
+\item We inductively define a \emph{presyntax}: sets of preterms, pretypes,
+      precontexts, and possibly presubstitutions. These are not assumed to
+      be well-formed, and only serve as raw material for expressions.
+\item We give mutual inductive definitions for the following relations on presyntax:
+      well-formedness, typing and conversion.
+\end{enumerate}
+
+This is the conventional way of presenting the syntax; see
+e.g.\ \cite{winterhalter2019eliminating} for a detailed machine-checked
+formalization in this style. The main advantage compared to the intrinsic syntax
+is that this only requires conservative inductive definitions in the metatheory,
+which are also natively supported in current proof assistants, unlike HIITs. The
+main disadvantage is verbosity, lower level of abstraction, and a difficulty of
+pinning down a notion of model for the syntax.
+
+What about interpreting extrinsic syntax into a UIP-free universe? It is widely
+accepted that extrinsic syntaxes have standard interpretations in set-truncated
+metatheories, although carrying this out in formal detail is technically
+challenging. Streicher's seminal work \cite{streicher2012semantics} laid out a
+template for doing this: first we construct a family of partial functions from
+the presyntax to the semantic domain, then we prove afterwards that these
+functions are total on well-formed input.
+
+However, the coherence problem arises still: it is required that definitional
+equality is proof irrelevant. In a type-theoretic setting, this means that we
+need to propositionally truncate the conversion relation. This again prevents us
+from interpreting the syntax into a UIP-free universe. We have to interpret
+definitional equality in the syntax as propositional equality in the metatheory,
+but since the former is propositionally truncated, we can only eliminate it into
+propositions, and metatheoretic equality types are not propositions in general.
+
+Could we define a conversion relation which is propositional, but not truncated?
+For example, conversion could be defined in terms of a deterministic conversion
+checking algorithm. But then a complication is that we do not have a proof that
+conversion checking is \emph{total} and \emph{stable under substitution}, while
+still in the process of defining the syntax.
+
+Alternatively, we could first define a normalization algorithm for an extrinsic
+syntax in a UIP-free metatheory, and then try to interpret \emph{only normal
+  forms}. Abel, \"Ohman and Vezzosi demonstrated a UIP-free conversion checking
+algorithm in type theory \cite{abel2017decidability}, which suggests that
+UIP-free normalization may be possible as well. But since this normal form
+interpretation is a major technical challenge, and it has not been carried out
+yet, we cannot use it to justify constructions in the current paper.
+
+\subsection{Syntactic translations}
+We can circumvent the coherence problem in the following way:
+\begin{enumerate}
+\item Define a \emph{source} and a \emph{target} syntax in any suitable metatheory,
+      where the target theory does not have UIP. The source and target theories
+      do no necessarily need to differ.
+\item Interpret the source syntax into the target syntax.
+\end{enumerate}
+
+For extrinsic syntaxes, it is generally understood that a syntactic translation
+has to preserve definitional equalities in the source syntax. For intrinsic
+syntaxes, preservation of definitional equality is automatically enforced by the
+equality constructors. See Boulier et al.\ \cite{next700} for a showcase of
+syntactic translations.
+
+Now, we can take the source syntax to be the theory of signatures from Section
+\ref{sec:tos}, and the target syntax to be the external syntax from Section
+\ref{sec:external}. Truncation in the source syntax is not an issue here,
+because the target syntax is likewise truncated, so we can translate into it.
+
+However, using syntactic translations is also a significant restriction. As
+always, we must map equal inputs to equal outputs, but now the notion of
+equality for outputs coincides with definitional equality in the syntax of the
+target theory, which is far more restrictive than propositional equality. Recall
+the weak $\beta$-rule for $\J$ in the theory of signatures in Section
+\ref{sec:tos}: if we instead used a strict equality, then the translations in
+Sections \ref{sec:morphisms} and \ref{sec:sections} would not work, because they
+map $\J_{a\,t\,\,(x.z.p)}\,pr\,_t\,\refl$ and $pr$ to terms which are equal
+propositionally, but not definitionally. This restriction also prevents us from
+defining more translations which cover other parts of the categorical
+semantics, e.g.\ composition of homomorphisms. We return to this topic in
+Section \ref{sec:categorical}.
+
 
 %% --------------------------------------------------------------------------------
 
