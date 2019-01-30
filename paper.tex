@@ -1191,8 +1191,8 @@ We shall keep to the short notation from now on.
 \label{sec:morphisms}
 
 In this section, we specify the $\blank^\M$ translation, which computes
-homomorphisms of algebras. However, it is illustrative to first consider a
-logical relation interpretation, and move to homomorphisms from that. For
+homomorphisms of algebras. We do so by first considering a logical relation
+interpretation, and then refining it towards computing homomorphisms. For
 dependent type theories, logical relation models are well-known (see
 e.g.\ \cite{atkey}), so they are certainly applicable to our restricted syntax
 as well.
@@ -1286,51 +1286,15 @@ Now, the $\beta$-rule for successors is as expected:
 
 Note that this singleton contraction is not possible for a general non-strictly
 positive function space. We rely on the domain being small: $(\underline{a})^\M$
-yields an equation, but for general $\hat{\Gamma;\,}\Delta\vdash A$ types, $A^\M$ only yields
-an unknown relation.
+yields an equation, but for general $\hat{\Gamma;\,}\Delta\vdash A$ types,
+$A^\M$ only yields an unknown relation.
 
-\subsection{The full homomorphism interpretation} We list below the $\blank^\M$
-interpretations for the syntax. For brevity, we mostly leave $\hat{\gamma_0}$
-and $\hat{\gamma_1}$ implicit, notating only $\hat{\gamma^M}$ where necessary.
-We also omit some subscript parameters from $\hat{\J}$ applications.
-
-\begingroup
-\allowdisplaybreaks
-\begin{alignat*}{5}
-  & \boldsymbol{\cdot}^\M\hat{\gamma_0\,\gamma_1} && :\equiv \hat{\top} \\
-  & (\Delta,x:A)^\M\,\hat{\gamma_0\,\gamma_1} && :\equiv \hat{(\gamma^M : \blc{\Delta^\M}\,\gamma_0\,\gamma_1)\times \blc{A^\M}\,\gamma^M} \\
-  & x^\M\,\hat{\gamma^M} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^M} \\
-  & \U^\M\,\hat{\gamma^M\,A_0\,A_1} && :\equiv \hat{A_0\ra A_1} \\
-  & (\underline{a})^\M\,\hat{\gamma^M\,t_0\,\,t_1} && :\equiv \hat{
-    \blc{a^\M}\,\gamma^M\,t_0 = t_1} \\
-  & ((x:a)\ra B)^\M\,\hat{\gamma^M\,f_0\,f_1} && :\equiv \\
-  & && \hat{\hspace{-8em}(x_0 : \blc{a^\A}\,\gamma_0)\ra \blc{B^\M}\,(\gamma_0,\,x_0)\,(\gamma_1,\,\blc{a^\M}\,\gamma^M\,x_0)\,(\gamma^M,\,\refl)\,
-    (f_0\,x_0)\,(f_1\,(\blc{a^\M}\,\gamma^M\,x_0))}\\
-  & (t\,u)^\M\,\hat{\gamma^M} && :\equiv  \hat{\J\,(\blc{t^\M}\,\gamma^M\,(\blc{u^\A}\,\gamma_0))\,(\blc{u^\M}\,\gamma^\M) }\\
-  & ((\hat{x:A})\ra B)^\M\,\hat{\gamma^M\,f_0\,f_1} && :\equiv \hat{(x : A)\ra \blc{B^\M}\,\gamma^M\,(f_0\,x)\,(f_1\,x)} \\
-  & (t\,\hat{u})^\M\,\hat{\gamma^M} && :\equiv t^\M\,\hat{\gamma^M\,u} \\
-  & (t=_a u)^\M\,\hat{\gamma^M} && :\equiv
-    \hat{\lambda\,e.\,(\blc{t^\M}\,\gamma^M\,^{-1})\sqcdot\ap\,(\blc{a^\M}\,\gamma^M)\,e\sqcdot\,\blc{u^\M}\,\gamma^M}\\
-  & (\refl_t)^\M\,\hat{\gamma^M} && :\equiv \hat{\inv\,(\blc{t^\M}\,\gamma^M)}\\
-  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\M\,\hat{\gamma^M} && :\equiv\\
-  & && \hspace{-10em}\hat{\J\,\bigg(\J\,\Big(\J\,\big(\J\,(\lambda\,p_1\,p^M\,pr_1\,pr^M.\, pr^M)\,(\blc{t^\M}\,\gamma^M)}  \\
-  & && \hspace{-9em}\hat{
-      (\mathsf{uncurry}\,\blc{p^\A}\,\gamma_1)\,(\mathsf{uncurry}\,\blc{p^\M}\,\gamma^M)\,
-      (\blc{pr^\A}\,\gamma_1)\,(\blc{pr^\M}\,\gamma^M)\big)\,
-        (\blc{eq^\A}\,\gamma_0)\Big)(\blc{u^\M}\,\gamma^M)\bigg)(\blc{eq^\M}\,\gamma^M)   }\\
-  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\M\,\hat{\gamma^M} && :\equiv\\
-  & && \hspace{-9em}\hat{
-    \J\,\big(\J\,(\lambda\,p_1\,p^M.\,\refl)\,(\blc{t^\M}\,\gamma^M)\,
-      (\mathsf{uncurry}\,\blc{p^\A}\,\gamma_1)\,
-      (\mathsf{uncurry}\,\blc{p^\M}\,\gamma^M)\big)
-      (\blc{pr^\M}\,\gamma^M)
-    }\\
-  & ((\hat{x}\in \hat{A})\ra b)^\M\,\hat{\gamma^M} && :\equiv
-       \hat{\lambda f\,x.\,\,\blc{b^\M}\,\gamma^M\,(f\,x)} \\
-  & (t\,\hat{u})^\M\,\hat{\gamma^M} && :\equiv
-       \hat{\ap\,(\lambda f.\,f\,u)\,(\blc{t^\M}\,\gamma^M)}
-\end{alignat*}
-\endgroup
+$\blank^\M$ is very similar to the translation to displayed algebra sections,
+which is discussed in Section \ref{sec:sections}. In essence, $\blank^\M$ is a
+non-dependently typed version of the section translation. We will discuss in
+more detail the interpretations of equalities and the other function types in
+Section \ref{sec:sections}, and we leave the rest of the homomorphism
+translation to Appendix \ref{sec:morphismrules}.
 
 
 %% --------------------------------------------------------------------------------
@@ -1431,20 +1395,20 @@ induction motives and methods for the circle, e.g.\ as described in \cite{HoTTbo
 \section{Displayed Algebra Sections}
 \label{sec:sections}
 
-The operation $\blank^\S$ yields displayed algebra sections. It is a generalized
-binary logical relation translation where the type of the second parameter of
-the relation may depend on the first parameter. Displayed algebra sections can
-be viewed as dependent homomorphisms: while homomorphisms are
-structure-preserving families of functions, sections are structure-preserving
-families of dependent functions.
+TODO revision
 
-Contexts are interpreted as dependent binary relations between algebras and
+The operation $\blank^\S$ yields displayed algebra sections. Sections can be
+viewed as dependent homomorphisms: while homomorphisms are structure-preserving
+families of functions, sections are structure-preserving families of dependent
+functions.
+
+Contexts are interpreted as dependent relations between algebras and
 displayed algebras. The universe level $i$ was previously chosen for the
 $\blank^\M$ and $\blank^\D$ translations.
 \[
 \infer{\hat{\Gamma}\semicol\Delta^\S \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\rah \Delta^\D\,\hat{\gamma}\rah \Type_{\hat{i}}}{\hat{\Gamma}\vdash\Delta}
 \]
-Types are interpreted as dependent binary relations which additionally depend on
+Types are interpreted as dependent relations which additionally depend on
 $\hat{\gamma}$, $\hat{\gamma^D}$, $\hat{\gamma^S}$ interpretations of the
 context.
 \[
@@ -1455,11 +1419,12 @@ its type holds for $t^\A$ and $t^\D$.
 \[
 \infer{\hat{\Gamma}\vdashh t^\S \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\hat{(}\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma}\hat{)}\hat{(}\hat{\gamma^S}\in\Delta^\S\,\hat{\gamma}\,\hat{\gamma^D}\hat{)}\rah  A^\S\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{\gamma^S}\,\hat{(}t^\A\,\hat{\gamma}\hat{)}\,\hat{(}t^\D\,\hat{\gamma}\,\hat{\gamma^D}\hat{)}}{\hat{\Gamma}\semicol\Delta \vdash t : A}
 \]
-Here, we mostly notate $\hat{\gamma^S}$ parameters and applications, making
-$\hat{\gamma^D}$-s implicit in addition to $\hat{\gamma}$-s. The implementation
-is the following.
+We present the implementation below. Here, we make $\hat{\gamma^D}$-s implicit
+in addition to $\hat{\gamma}$-s, and mostly notate $\hat{\gamma^S}$ parameters
+and applications,
+
 \begingroup
-%% \allowdisplaybreaks
+\allowdisplaybreaks
 \begin{alignat*}{5}
   & \boldsymbol{\cdot}^\S\,\hat{\gamma}\,\hat{\gamma^D} && :\equiv \hat{\top} \\
   & (\Delta,\,x:A)^\S\,(\hat{\gamma},\hat{t})\,(\hat{\gamma^D},\hat{t^D}) && :\equiv \hat{(}\hat{\gamma^S}\in\Delta^\S\hat{\gamma^2}\hat{)}\timesh A^\S\,\hat{\gamma^S}\,\hat{t}\,\hat{t^D} \\
@@ -1474,7 +1439,7 @@ is the following.
   & (t=_a u)^\S\,\hat{\gamma^S}\,\hat{e} && :\equiv \TR\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)}\hat{\big(}\TR\,\hat{(}u^\S\,\hat{\gamma^S}\hat{)}\,\hat{(}\apd\,\hat{(}a^\S\,\hat{\gamma^S}\hat{)}\,\hat{e}\hat{)}\hat{\big)} \\
   & (\refl_t)^\S\,\hat{\gamma^S} && :\equiv \hat{\J}\,\hat{\refl}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)} \\
   & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\S\,\hat{\gamma^S} && :\equiv \\
-  & && \hspace{-10em}\hat{\J}\,\hat{\bigg(}\hat{\J}\,\hat{\Big(}\hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\,\hat{pr^D}\,\hat{pr^S}.\,\hat{pr^S}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)}\,\\
+  & && \hspace{-10em}\hat{\J}\,\hat{\bigg(}\hat{\J}\,\hat{\Big(}\hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\,\hat{pr^D}\,\hat{pr^S}\hat{.}\,\hat{pr^S}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)}\,\\
   & && \hspace{-9em}\hat{(}\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^S}\hat{)}\,\hat{(}pr^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}pr^\S\,\hat{\gamma^S}\hat{)}\hat{\big)}\,(eq^\A\,\hat{\gamma})\hat{\Big)}\,(u^\S\,\hat{\gamma^S})\hat{\bigg)}\,\hat{(}eq^\S\,\hat{\gamma^S}\hat{)} \\
   & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\S\,\hat{\gamma^S} && :\equiv \\
   & && \hspace{-10em}\hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\hat{.}\,\hat{\refl}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^S}\hat{)}\hat{\big)}\,\hat{(}pr^\S\,\hat{\gamma^S}\hat{)}\\
@@ -1547,30 +1512,9 @@ evaluates to $(b=b)^\S\,\hat{\gamma^3}\,\hat{loop}\eqh\hat{loop^D}$,
 and then we unfold the left hand side to get the doubly-transported
 expression in the result.
 
-In Appendix \ref{sec:app}, we show how the elimination principle is
-computed for the two-dimensional sphere.
-
-For another example for the translations, we consider indexed W-types
-which can describe a large class of inductive definitions
-\cite{morris09indexed}. Suppose we are in the external context $\hat{I}
-\in \Type_{\hat{0}}\commah\hat{S} \in \Type_{\hat{0}}\commah\hat{P} \in \hat{S} \rah
-\Type_{\hat{0}}\commah\hat{out} \in \hat{S} \rah \hat{I}\commah\hat{in} \in
-\hat{(}\hat{s} \in \hat{S}\hat{)}\rah \hat{P}\,\hat{s}\rah \hat{I}$. Then, the
-code for the corresponding indexed W-type is the following:
-\[
-W :\equiv (\boldsymbol{\cdot},\,\,\,w:(\hat{i} \in \hat{I})\ra\U,\,\,\,sup: (\hat{s} \in \hat{S})\ra((\hat{p} \in \hat{P\,s})\ra w\,(\hat{in\,s\,p}))\ra \underline{w\,(\hat{out\,s})})
-\]
-We pick a universe level $j$ for elimination. The interpretations of $W$ are the following, omitting leading $\hat{\top}$ components:
-\begin{alignat*}{5}
-  & \rlap{$W^\A \equiv \hat{(}\hat{w}\in \hat{I}\rah\Type_{\hat{0}}\hat{)}\timesh\hat{(}\hat{(}\hat{s}\in \hat{S}\hat{)}\rah\hat{(}\hat{(}\hat{p}\in \hat{P\,s}\hat{)}\rah \hat{w}\,\hat{(}\hat{in\,s\,p}\hat{)}\hat{)}\rah \hat{w}\,\hat{(}\hat{out\,s}\hat{)}\hat{)}$}\\
-  & W^\D\,\hat{(}\hat{w, sup}\hat{)} && \equiv\, && \hat{(}\hat{w^D} \in \hat{(}\hat{i}\in \hat{I}\hat{)}\rah \hat{w\,i}\rah \Type_{\hat{j}}\hat{)}\\
-  & && \hspace{0.23em}\timesh && \hat{\big(}\hat{(}\hat{s\in S}\hat{)}\hat{(}\hat{f}\in \hat{(}\hat{p\in P\,s}\hat{)}\rah \hat{w}\,\hat{(}\hat{in\,s\,p}\hat{)}\hat{)}\\
-  & && && \rah \hat{(}\hat{(}\hat{p\in P\,s}\hat{)}\rah \hat{w^D}\,\hat{(}\hat{in\,s\,p}\hat{)}\,\hat{(}\hat{f\,p}\hat{)}\hat{)}\rah \hat{w^D}\,\hat{(}\hat{out\,s}\hat{)}\,\hat{(}\hat{sup\,s\,f}\hat{)}\hat{\big)} \\
-  & \rlap{$ W^\S\,\hat{(}\hat{w, sup}\hat{)}\,\hat{(}\hat{w^D,sup^D}\hat{)} \equiv $} \\
-  & && && \hat{(}\hat{w^S} \in \hat{(}\hat{i \in I}\hat{)}\hat{(}\hat{x \in w\,i}\hat{)}\rah \hat{w^D\,i\,x}\hat{)}\\
-  & && \hspace{0.23em}\timesh && \hat{\big(}\hat{(}\hat{s\in S}\hat{)}\hat{(}\hat{f}\in \hat{(}\hat{p\in P\,s}\hat{)}\rah \hat{w}\,\hat{(}\hat{in\,s\,p}\hat{)}\hat{)}\\
-  & && && \rah \hat{w^S}\,\hat{(}\hat{out\,s}\hat{)}\,\hat{(}\hat{sup\,\,s\,f}\hat{)} \eqh \hat{sup^D\,s\,f}\,\hat{(}\hat{\lambda} \hat{p.}\, \hat{w^S}\,\hat{(}\hat{in\,s\,p}\hat{)}\,\hat{(}\hat{f\,p}\hat{)}\hat{)}\hat{\big)}
-\end{alignat*}
+In Appendix \ref{sec:app}, we show how the type of displayed algebra sections is
+computed for the two-dimensional sphere. In Appendix \ref{sec:wtypes}, we show
+the same for indexed W-types.
 
 %=====================================================================
 
@@ -1710,11 +1654,65 @@ by terms in the theory of codes.
 \bibliography{b}
 
 \appendix
-\section{Elimination principle computed for the two-dimensional sphere}
+\section{The homomorphism interpretation}
+\label{sec:morphismrules}
+
+We list below the $\blank^\M$ interpretations for the syntax. For brevity, we
+mostly leave $\hat{\gamma_0}$ and $\hat{\gamma_1}$ implicit, notating only
+$\hat{\gamma^M}$ where necessary.  We also omit some subscript parameters from
+$\hat{\J}$ applications. The interpretation follows the same pattern as in the
+case of $\blank^\S$; the main difference is the interpretation of the universe
+as non-dependent function space. Additionally, the equality type former and
+reflexivity admit slightly nicer translations, since the lack of type dependency
+allows us to use composition and $\hat{\inv}$ (which was noted in Section
+\ref{sec:external}) instead of raw transports and path induction.
+
+
+\begingroup
+\allowdisplaybreaks
+\begin{alignat*}{5}
+  & \boldsymbol{\cdot}^\M\hat{\gamma_0\,\gamma_1} && :\equiv \hat{\top} \\
+  & (\Delta,x:A)^\M\,\hat{\gamma_0\,\gamma_1} && :\equiv \hat{(\gamma^M : \blc{\Delta^\M}\,\gamma_0\,\gamma_1)\times \blc{A^\M}\,\gamma^M} \\
+  & x^\M\,\hat{\gamma^M} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^M} \\
+  & \U^\M\,\hat{\gamma^M\,A_0\,A_1} && :\equiv \hat{A_0\ra A_1} \\
+  & (\underline{a})^\M\,\hat{\gamma^M\,t_0\,\,t_1} && :\equiv \hat{
+    \blc{a^\M}\,\gamma^M\,t_0 = t_1} \\
+  & ((x:a)\ra B)^\M\,\hat{\gamma^M\,f_0\,f_1} && :\equiv \\
+  & && \hat{\hspace{-8em}(x_0 : \blc{a^\A}\,\gamma_0)\ra \blc{B^\M}\,(\gamma_0,\,x_0)\,(\gamma_1,\,\blc{a^\M}\,\gamma^M\,x_0)\,(\gamma^M,\,\refl)\,
+    (f_0\,x_0)\,(f_1\,(\blc{a^\M}\,\gamma^M\,x_0))}\\
+  & (t\,u)^\M\,\hat{\gamma^M} && :\equiv  \hat{\J\,(\blc{t^\M}\,\gamma^M\,(\blc{u^\A}\,\gamma_0))\,(\blc{u^\M}\,\gamma^\M) }\\
+  & ((\hat{x:A})\ra B)^\M\,\hat{\gamma^M\,f_0\,f_1} && :\equiv \hat{(x : A)\ra \blc{B^\M}\,\gamma^M\,(f_0\,x)\,(f_1\,x)} \\
+  & (t\,\hat{u})^\M\,\hat{\gamma^M} && :\equiv t^\M\,\hat{\gamma^M\,u} \\
+  & (t=_a u)^\M\,\hat{\gamma^M} && :\equiv
+    \hat{\lambda\,e.\,(\blc{t^\M}\,\gamma^M\,^{-1})\sqcdot\ap\,(\blc{a^\M}\,\gamma^M)\,e\sqcdot\,\blc{u^\M}\,\gamma^M}\\
+  & (\refl_t)^\M\,\hat{\gamma^M} && :\equiv \hat{\inv\,(\blc{t^\M}\,\gamma^M)}\\
+  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\M\,\hat{\gamma^M} && :\equiv\\
+  & && \hspace{-10em}\hat{\J\,\bigg(\J\,\Big(\J\,\big(\J\,(\lambda\,p_1\,p^M\,pr_1\,pr^M.\, pr^M)\,(\blc{t^\M}\,\gamma^M)}  \\
+  & && \hspace{-9em}\hat{
+      (\mathsf{uncurry}\,\blc{p^\A}\,\gamma_1)\,(\mathsf{uncurry}\,\blc{p^\M}\,\gamma^M)\,
+      (\blc{pr^\A}\,\gamma_1)\,(\blc{pr^\M}\,\gamma^M)\big)\,
+        (\blc{eq^\A}\,\gamma_0)\Big)(\blc{u^\M}\,\gamma^M)\bigg)(\blc{eq^\M}\,\gamma^M)   }\\
+  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\M\,\hat{\gamma^M} && :\equiv\\
+  & && \hspace{-9em}\hat{
+    \J\,\big(\J\,(\lambda\,p_1\,p^M.\,\refl)\,(\blc{t^\M}\,\gamma^M)\,
+      (\mathsf{uncurry}\,\blc{p^\A}\,\gamma_1)\,
+      (\mathsf{uncurry}\,\blc{p^\M}\,\gamma^M)\big)
+      (\blc{pr^\M}\,\gamma^M)
+    }\\
+  & ((\hat{x}\in \hat{A})\ra b)^\M\,\hat{\gamma^M} && :\equiv
+       \hat{\lambda f\,x.\,\,\blc{b^\M}\,\gamma^M\,(f\,x)} \\
+  & (t\,\hat{u})^\M\,\hat{\gamma^M} && :\equiv
+       \hat{\ap\,(\lambda f.\,f\,u)\,(\blc{t^\M}\,\gamma^M)}
+\end{alignat*}
+\endgroup
+
+
+
+\section{Displayed algebra sections for the two-dimensional sphere}
 \label{sec:app}
 
-The two-dimensional sphere is given by the following context in the
-theory of codes.
+The two-dimensional sphere is given by the following signature:
+
 \[
 \Gamma :\equiv \Big(\boldsymbol{\cdot},\,\,\,S^2:\U,\,\,\,b:\underline{S^2},\,\,\,surf:\underline{\refl_{b} =_{(b=_{S^2} b)} \refl_{b}}\Big)
 \]
@@ -1726,7 +1724,7 @@ Given a sphere-algebra and fixing a universe level $i$, the motives
 and methods are computed as follows.
 \begin{alignat*}{5}
   & && \Gamma^\M\,\,\hat{(}\hat{\tt,\,S^2,\,b,\,surf}\hat{)}\\
-  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{2M}}\in \hat{S^2}\rah\Type_i\hat{)} \\
+  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{2M}}\in \hat{S^2}\rah\Type_{\hat{i}}\hat{)} \\
   & && \hspace{0.75em} \timesh\hat{(}\hat{b^M}\in \hat{S^{2M}\,b}\hat{)} \\
   & && \hspace{0.75em} \timesh\hat{(}\hat{surf^M\in \TR_{\hat{(}\TR_{S^{2M}}\,\blank\,b^M=b^M\hat{)}}\,surf\,\refl_{b^M} = \refl_{b^M}}\hat{)}
 \end{alignat*}
@@ -1744,7 +1742,30 @@ in the type of $\hat{surf^E}$ can be replaced by $\hat{\refl}$. In
 this case the type of $\hat{surf^E}$ becomes the expected
 $\hat{\apd}\,\hat{(}\hat{\apd}\,\hat{S^{2E}}\hat{)}\,\hat{surf}\,\hat{=}\,\hat{surf^M}$.
 
-%=====================================================================
+
+\section{Displayed algebra sections for indexed W-types}
+\label{sec:wtypes}
+
+Indexed W-types can describe a large class of inductive definitions
+\cite{morris09indexed}. Suppose we have the external context $\hat{I}
+\in \Type_{\hat{0}}\commah\hat{S} \in \Type_{\hat{0}}\commah\hat{P} \in \hat{S} \rah
+\Type_{\hat{0}}\commah\hat{out} \in \hat{S} \rah \hat{I}\commah\hat{in} \in
+\hat{(}\hat{s} \in \hat{S}\hat{)}\rah \hat{P}\,\hat{s}\rah \hat{I}$. Then, the
+code for the corresponding indexed W-type is the following:
+\[
+W :\equiv (\boldsymbol{\cdot},\,\,\,w:(\hat{i} \in \hat{I})\ra\U,\,\,\,sup: (\hat{s} \in \hat{S})\ra((\hat{p} \in \hat{P\,s})\ra w\,(\hat{in\,s\,p}))\ra \underline{w\,(\hat{out\,s})})
+\]
+We pick a universe level $j$ for elimination. The interpretations of $W$ are the following, omitting leading $\hat{\top}$ components:
+\begin{alignat*}{5}
+  & \rlap{$W^\A \equiv \hat{(}\hat{w}\in \hat{I}\rah\Type_{\hat{0}}\hat{)}\timesh\hat{(}\hat{(}\hat{s}\in \hat{S}\hat{)}\rah\hat{(}\hat{(}\hat{p}\in \hat{P\,s}\hat{)}\rah \hat{w}\,\hat{(}\hat{in\,s\,p}\hat{)}\hat{)}\rah \hat{w}\,\hat{(}\hat{out\,s}\hat{)}\hat{)}$}\\
+  & W^\D\,\hat{(}\hat{w, sup}\hat{)} && \equiv\, && \hat{(}\hat{w^D} \in \hat{(}\hat{i}\in \hat{I}\hat{)}\rah \hat{w\,i}\rah \Type_{\hat{j}}\hat{)}\\
+  & && \hspace{0.23em}\timesh && \hat{\big(}\hat{(}\hat{s\in S}\hat{)}\hat{(}\hat{f}\in \hat{(}\hat{p\in P\,s}\hat{)}\rah \hat{w}\,\hat{(}\hat{in\,s\,p}\hat{)}\hat{)}\\
+  & && && \rah \hat{(}\hat{(}\hat{p\in P\,s}\hat{)}\rah \hat{w^D}\,\hat{(}\hat{in\,s\,p}\hat{)}\,\hat{(}\hat{f\,p}\hat{)}\hat{)}\rah \hat{w^D}\,\hat{(}\hat{out\,s}\hat{)}\,\hat{(}\hat{sup\,s\,f}\hat{)}\hat{\big)} \\
+  & \rlap{$ W^\S\,\hat{(}\hat{w, sup}\hat{)}\,\hat{(}\hat{w^D,sup^D}\hat{)} \equiv $} \\
+  & && && \hat{(}\hat{w^S} \in \hat{(}\hat{i \in I}\hat{)}\hat{(}\hat{x \in w\,i}\hat{)}\rah \hat{w^D\,i\,x}\hat{)}\\
+  & && \hspace{0.23em}\timesh && \hat{\big(}\hat{(}\hat{s\in S}\hat{)}\hat{(}\hat{f}\in \hat{(}\hat{p\in P\,s}\hat{)}\rah \hat{w}\,\hat{(}\hat{in\,s\,p}\hat{)}\hat{)}\\
+  & && && \rah \hat{w^S}\,\hat{(}\hat{out\,s}\hat{)}\,\hat{(}\hat{sup\,\,s\,f}\hat{)} \eqh \hat{sup^D\,s\,f}\,\hat{(}\hat{\lambda} \hat{p.}\, \hat{w^S}\,\hat{(}\hat{in\,s\,p}\hat{)}\,\hat{(}\hat{f\,p}\hat{)}\hat{)}\hat{\big)}
+\end{alignat*}
 
 
 \end{document}
