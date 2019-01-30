@@ -46,7 +46,7 @@ apd B f t u p = J (λ u p → tr B p (f t) ≡ f u) refl p
 Π A B = (x : A) → B x
 
 inv : ∀ {α}{A : Set α}{x y : A}(p : x ≡ y) → (p ⁻¹) ◾ p ≡ refl
-inv = J (λ _ p → (p ⁻¹) ◾ p ≡ refl) refl
+inv p = J {_}{_}(λ _ p → (p ⁻¹) ◾ p ≡ refl) refl p
 
 --------------------------------------------------------------------------------
 

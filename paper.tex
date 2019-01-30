@@ -192,6 +192,8 @@
 \newcommand{\ass}{\mathsf{ass}}
 \newcommand{\idl}{\mathsf{idl}}
 \newcommand{\idr}{\mathsf{idr}}
+\newcommand{\inv}{\mathsf{inv}}
+
 
 %% END OF ABBREVS
 %% --------------------------------------------------------------------------------
@@ -800,6 +802,8 @@ There is a cumulative Russell-style hierarchy of universes $\Type_{\hat{i}}$,
 with universes closed under $\Pi$, $\Sigma$, equality and unit
 types. Importantly, we do not assume uniqueness of identity proofs.
 
+The unit type is denoted $\hat{\top}$ with constructor $\tt$.
+
 Dependent function space is denoted $\hat{(\hat{x}\in \hat{A})\rah \hat{B}}$. We
 write $\hat{A}\rah \hat{B}$ if $\hat{B}$ does not depend on $\hat{x}$, and $\rah
 $ associates to the right, $\hat{(\hat{x}\in \hat{A})(\hat{y}\in \hat{B})\rah
@@ -828,17 +832,19 @@ $\hat{t}\in \hat{A}$, $\hat{P}\in (\hat{x}\in \hat{A})\rah
 \hat{P}\,\hat{t}\,\hat{\refl}$ and $\hat{eq} \in
 \hat{t}\eqh_\hat{A}\hat{u}$. Sometimes we omit parameters in subscripts.
 
-We will use the following functions defined using $\hat{\J}$ in the
-standard way. We write $\TR_{\hat{P}}\,\hat{e}\,\hat{t}\in
-\hat{P}\,\hat{v}$ for transport of $\hat{t} \in \hat{P}\,\hat{u}$
-along $\hat{e} \in \hat{u}\eqh \hat{v}$. We write
-$\ap\,\hat{f}\,\hat{e}\in\hat{f}\,\hat{u}\eqh\hat{f}\,\hat{v}$ for
-$\hat{f}:\hat{A}\rah\hat{B}$ and $\hat{e}\in\hat{u}\eqh\hat{v}$,
-$\hat{\apd\,\hat{f}\,\hat{e} \in \TR_{\hat{P}}\,\hat{e}\,(\hat{f}\,\hat{u})
-\eqh \hat{f}\,\hat{v}}$ for $\hat{\hat{f}\in(\hat{x}\in \hat{A})\rah
-\hat{B}}$ and $\hat{e} \in \hat{u}\eqh \hat{v}$.
+We will use the following functions defined using $\hat{\J}$ in the standard
+way. We write $\TR_{\hat{P}}\,\hat{e}\,\hat{t}\in \hat{P}\,\hat{v}$ for
+transport of $\hat{t} \in \hat{P}\,\hat{u}$ along $\hat{e} \in \hat{u}\eqh
+\hat{v}$. We write
+$\ap\,\hat{f}\,\hat{e}\in\hat{f}\,\hat{u}\eqh\hat{f}\,\hat{v}$ where
+$\hat{f}:\hat{A}\rah\hat{B}$ and $\hat{e}\in\hat{u}\eqh\hat{v}$, also
+$\hat{\apd\,\hat{f}\,\hat{e} \in \TR_{\hat{P}}\,\hat{e}\,(\hat{f}\,\hat{u}) \eqh
+  \hat{f}\,\hat{v}}$ where $\hat{\hat{f}\in(\hat{x}\in \hat{A})\rah \hat{B}}$
+and $\hat{e} \in \hat{u}\eqh \hat{v}$. Borrowing notation from the homotopy type
+theory book \cite{HoTTbook}, we write $\hat{p \sqcdot q}$ for transitivity and
+$\hat{p^{-1}}$ for symmetry. We also make use of the groupoid law $\hat{\inv\,p
+  : p^{-1}\sqcdot p = \refl}$.
 
-The unit type is denoted $\hat{\top}$ with constructor $\tt$.
 
 %=====================================================================
 
@@ -1278,14 +1284,53 @@ Now, the $\beta$-rule for successors is as expected:
  & \hat{s^M : (x_0 : N_0)\ra N^M\,(s_0\,x_0)=s_1\,(N^M\,x_0)}
 \end{alignat*}
 
-Note that this singleton contraction is not possible for a general
-non-strictly positive function space. We rely on the domain being small:
-$(\underline{a})^\M$ yields an equation, but for general $\Gamma\vdash A$ types,
-$A^\M$ only yields an unknown relation.
+Note that this singleton contraction is not possible for a general non-strictly
+positive function space. We rely on the domain being small: $(\underline{a})^\M$
+yields an equation, but for general $\hat{\Gamma;\,}\Delta\vdash A$ types, $A^\M$ only yields
+an unknown relation.
 
-\subsection{The full homomorphism interpretation}
+\subsection{The full homomorphism interpretation} We list below the $\blank^\M$
+interpretations for the syntax. For brevity, we mostly leave $\hat{\gamma_0}$
+and $\hat{\gamma_1}$ implicit, notating only $\hat{\gamma^M}$ where necessary.
+We also omit some subscript parameters from $\hat{\J}$ applications.
 
-TDAODKAS
+\begingroup
+\allowdisplaybreaks
+\begin{alignat*}{5}
+  & \boldsymbol{\cdot}^\M\hat{\gamma_0\,\gamma_1} && :\equiv \hat{\top} \\
+  & (\Delta,x:A)^\M\,\hat{\gamma_0\,\gamma_1} && :\equiv \hat{(\gamma^M : \blc{\Delta^\M}\,\gamma_0\,\gamma_1)\times \blc{A^\M}\,\gamma^M} \\
+  & x^\M\,\hat{\gamma^M} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^M} \\
+  & \U^\M\,\hat{\gamma^M\,A_0\,A_1} && :\equiv \hat{A_0\ra A_1} \\
+  & (\underline{a})^\M\,\hat{\gamma^M\,t_0\,\,t_1} && :\equiv \hat{
+    \blc{a^\M}\,\gamma^M\,t_0 = t_1} \\
+  & ((x:a)\ra B)^\M\,\hat{\gamma^M\,f_0\,f_1} && :\equiv \\
+  & && \hat{\hspace{-8em}(x_0 : \blc{a^\A}\,\gamma_0)\ra \blc{B^\M}\,(\gamma_0,\,x_0)\,(\gamma_1,\,\blc{a^\M}\,\gamma^M\,x_0)\,(\gamma^M,\,\refl)\,
+    (f_0\,x_0)\,(f_1\,(\blc{a^\M}\,\gamma^M\,x_0))}\\
+  & (t\,u)^\M\,\hat{\gamma^M} && :\equiv  \hat{\J\,(\blc{t^\M}\,\gamma^M\,(\blc{u^\A}\,\gamma_0))\,(\blc{u^\M}\,\gamma^\M) }\\
+  & ((\hat{x:A})\ra B)^\M\,\hat{\gamma^M\,f_0\,f_1} && :\equiv \hat{(x : A)\ra \blc{B^\M}\,\gamma^M\,(f_0\,x)\,(f_1\,x)} \\
+  & (t\,\hat{u})^\M\,\hat{\gamma^M} && :\equiv t^\M\,\hat{\gamma^M\,u} \\
+  & (t=_a u)^\M\,\hat{\gamma^M} && :\equiv
+    \hat{\lambda\,e.\,(\blc{t^\M}\,\gamma^M\,^{-1})\sqcdot\ap\,(\blc{a^\M}\,\gamma^M)\,e\sqcdot\,\blc{u^\M}\,\gamma^M}\\
+  & (\refl_t)^\M\,\hat{\gamma^M} && :\equiv \hat{\inv\,(\blc{t^\M}\,\gamma^M)}\\
+  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\M\,\hat{\gamma^M} && :\equiv\\
+  & && \hspace{-10em}\hat{\J\,\bigg(\J\,\Big(\J\,\big(\J\,(\lambda\,p_1\,p^M\,pr_1\,pr^M.\, pr^M)\,(\blc{t^\M}\,\gamma^M)}  \\
+  & && \hspace{-9em}\hat{
+      (\mathsf{uncurry}\,\blc{p^\A}\,\gamma_1)\,(\mathsf{uncurry}\,\blc{p^\M}\,\gamma^M)\,
+      (\blc{pr^\A}\,\gamma_1)\,(\blc{pr^\M}\,\gamma^M)\big)\,
+        (\blc{eq^\A}\,\gamma_0)\Big)(\blc{u^\M}\,\gamma^M)\bigg)(\blc{eq^\M}\,\gamma^M)   }\\
+  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\M\,\hat{\gamma^M} && :\equiv\\
+  & && \hspace{-9em}\hat{
+    \J\,\big(\J\,(\lambda\,p_1\,p^M.\,\refl)\,(\blc{t^\M}\,\gamma^M)\,
+      (\mathsf{uncurry}\,\blc{p^\A}\,\gamma_1)\,
+      (\mathsf{uncurry}\,\blc{p^\M}\,\gamma^M)\big)
+      (\blc{pr^\M}\,\gamma^M)
+    }\\
+  & ((\hat{x}\in \hat{A})\ra b)^\M\,\hat{\gamma^M} && :\equiv
+       \hat{\lambda f\,x.\,\,\blc{b^\M}\,\gamma^M\,(f\,x)} \\
+  & (t\,\hat{u})^\M\,\hat{\gamma^M} && :\equiv
+       \hat{\ap\,(\lambda f.\,f\,u)\,(\blc{t^\M}\,\gamma^M)}
+\end{alignat*}
+\endgroup
 
 
 %% --------------------------------------------------------------------------------
@@ -1320,27 +1365,28 @@ predicate interpretation.
 \[
 \infer{\hat{\Gamma}\vdashh t^\D \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\hat{(}\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma}\hat{)}\rah  A^\D\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{(}t^\A\,\hat{\gamma}\hat{)}}{\hat{\Gamma}\semicol\Delta\vdash t : A}
 \]
-We introduce the following shorthand: $t\,\hat{\gamma}\,\hat{\gamma^D}$ is
-abbreviated as $t\,\hat{\gamma^2}$ for some $t$ expression. The
-implementation of $\blank^\D$ is given below.  \begingroup
+The implementation of $\blank^\D$ is given below. We leave
+$\hat{\gamma}$-s mostly implicit, marking only $\hat{\gamma^D}$ witnesses.
+\begingroup
 %% \allowdisplaybreaks
 \begin{alignat*}{5}
-  & \boldsymbol{\cdot}^\D\,\hat{\gamma} && :\equiv \hat{\top} \\
-  & (\Delta,\,x:A)^\D\,(\hat{\gamma}\commah\,\hat{t}) && :\equiv \hat{(}\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma}\hat{)}\timesh A^\D\,\hat{\gamma^2}\,\hat{t} \\
-  & x^\D\,\hat{\gamma^2} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^D} \\ % TODO: De Bruijn
-  & \U^\D\,\hat{\gamma^2}\,\hat{A} && :\equiv \hat{A} \rah  \Type_{\hat{i}} \\
-  & (\underline{a})^\D\,\hat{\gamma^2}\,\hat{t} && :\equiv a^\D\,\hat{\gamma^2}\,\hat{t} \\
-  & ((x:a)\ra B)^\D\,\hat{\gamma^2}\,\hat{f} && :\equiv \hat{(}\hat{x}\in a^\A\,\hat{\gamma}\hat{)}\hat{(}\hat{x^D}\in a^\D\,\hat{\gamma^2}\,\hat{x}\hat{)} \rah  B^\D\,\hat{(}\hat{\gamma}\commah\hat{x}\hat{)}\,\hat{(}\hat{\gamma^D}\commah\hat{x^D}\hat{)}\,\hat{(}\hat{f}\,\hat{x}\hat{)} \\
-  & (t\,u)^\D\,\hat{\gamma^2} && :\equiv \hat{(}t^\D\,\hat{\gamma^2}\hat{)}\,\hat{(} u^\A\,\hat{\gamma}\hat{)}\,\hat{(}u^\D\,\hat{\gamma^2}\hat{)} \\
-  & ((\hat{x}\in \hat{A})\ra B)^\D\,\hat{\gamma^2}\,\hat{f} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  B^\D\,\hat{\gamma^2}\,\hat{(}\hat{f}\,\hat{x}\hat{)} \\
-  & (t\,\hat{u})^\D\,\hat{\gamma^2} && :\equiv t^\D\,\hat{\gamma^2}\,\hat{u} \\
-  & (t=_a u)^\D\,\hat{\gamma^2}\,\hat{e} && :\equiv \TR_{\hat{(}a^\D\,\hat{\gamma^2}\hat{)}}\,\hat{e}\,\hat{(}t^\D\,\hat{\gamma^2}\hat{)} \eqh u^\D\hat{\gamma^2} \\
-  & (\refl_t)^\D\,\hat{\gamma^2} && :\equiv \hat{\refl}_{\hat{(}t^\D\,\hat{\gamma^2}\hat{)}} \\
-  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\D\,\hat{\gamma^2} && :\equiv \hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}pr^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}eq^\A\,\hat{\gamma}\hat{)}\hat{\big)}\,\hat{(}eq^\D\,\hat{\gamma^2}\hat{)} \\
-  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\D\,\hat{\gamma^2} && :\equiv \hat{\refl} \\
-  & ((\hat{x}\in \hat{A})\ra b)^\D\,\hat{\gamma^2}\,\hat{f} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  b^\D\,\hat{\gamma^2}\,\hat{(}\hat{f}\,\hat{x}\hat{)} \\
-  & (t\,\hat{u})^\D\,\hat{\gamma^2} && :\equiv t^\D\,\hat{\gamma^2}\,\hat{u}
-\end{alignat*}\endgroup
+  & \boldsymbol{\cdot}^D\,\hat{\gamma} && :\equiv \hat{\top} \\
+  & (\Delta,\,x:A)^D\,(\hat{\gamma}\commah\,\hat{t}) && :\equiv \hat{(}\hat{\gamma^D}\in\Delta^D\,\hat{\gamma}\hat{)}\timesh A^D\,\hat{\gamma^D}\,\hat{t} \\
+  & x^D\,\hat{\gamma^D} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^D} \\
+  & \U^D\,\hat{\gamma^D}\,\hat{A} && :\equiv \hat{A} \rah  \Type_{\hat{i}} \\
+  & (\underline{a})^D\,\hat{\gamma^D}\,\hat{t} && :\equiv a^\D\,\hat{\gamma^D}\,\hat{t} \\
+  & ((x:a)\ra B)^D\,\hat{\gamma^D}\,\hat{f} && :\equiv \hat{(}\hat{x}\in a^\A\,\hat{\gamma}\hat{)}\hat{(}\hat{x^D}\in a^\D\,\hat{\gamma^D}\,\hat{x}\hat{)} \rah  B^\D\,\hat{(}\hat{\gamma}\commah\hat{x}\hat{)}\,\hat{(}\hat{\gamma^D}\commah\hat{x^D}\hat{)}\,\hat{(}\hat{f}\,\hat{x}\hat{)} \\
+  & (t\,u)^D\,\hat{\gamma^D} && :\equiv \hat{(}t^\D\,\hat{\gamma^D}\hat{)}\,\hat{(} u^\A\,\hat{\gamma}\hat{)}\,\hat{(}u^\D\,\hat{\gamma^D}\hat{)} \\
+  & ((\hat{x}\in \hat{A})\ra B)^D\,\hat{\gamma^D}\,\hat{f} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  B^\D\,\hat{\gamma^D}\,\hat{(}\hat{f}\,\hat{x}\hat{)} \\
+  & (t\,\hat{u})^D\,\hat{\gamma^D} && :\equiv t^\D\,\hat{\gamma^D}\,\hat{u} \\
+  & (t=_a u)^D\,\hat{\gamma^D}\,\hat{e} && :\equiv \TR_{\hat{(}a^\D\,\hat{\gamma^D}\hat{)}}\,\hat{e}\,\hat{(}t^\D\,\hat{\gamma^D}\hat{)} \eqh u^\D\hat{\gamma^D} \\
+  & (\refl_t)^D\,\hat{\gamma^D} && :\equiv \hat{\refl}_{\hat{(}t^\D\,\hat{\gamma^D}\hat{)}} \\
+  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^D\,\hat{\gamma^D} && :\equiv \hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}pr^\D\,\hat{\gamma^D}\hat{)}\,\hat{(}eq^\A\,\hat{\gamma}\hat{)}\hat{\big)}\,\hat{(}eq^\D\,\hat{\gamma^D}\hat{)} \\
+  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^D\,\hat{\gamma^D} && :\equiv \hat{\refl} \\
+  & ((\hat{x}\in \hat{A})\ra b)^D\,\hat{\gamma^D}\,\hat{f} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  b^D\,\hat{\gamma^D}\,\hat{(}\hat{f}\,\hat{x}\hat{)} \\
+  & (t\,\hat{u})^D\,\hat{\gamma^D} && :\equiv t^\D\,\hat{\gamma^D}\,\hat{u}
+\end{alignat*}
+\endgroup
 The predicate for a context is given by iterating $\blank^\D$ for its
 constituent types. For a variable, the corresponding witness is looked up from
 $\hat{\gamma^D}$.
@@ -1409,31 +1455,33 @@ its type holds for $t^\A$ and $t^\D$.
 \[
 \infer{\hat{\Gamma}\vdashh t^\S \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\hat{(}\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma}\hat{)}\hat{(}\hat{\gamma^S}\in\Delta^\S\,\hat{\gamma}\,\hat{\gamma^D}\hat{)}\rah  A^\S\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{\gamma^S}\,\hat{(}t^\A\,\hat{\gamma}\hat{)}\,\hat{(}t^\D\,\hat{\gamma}\,\hat{\gamma^D}\hat{)}}{\hat{\Gamma}\semicol\Delta \vdash t : A}
 \]
-In addition to $\hat{\gamma^2}$, we use $t\,\hat{\gamma^3}$ to abbreviate $t\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{\gamma^S}$. The implementation is the following.
+Here, we mostly notate $\hat{\gamma^S}$ parameters and applications, making
+$\hat{\gamma^D}$-s implicit in addition to $\hat{\gamma}$-s. The implementation
+is the following.
 \begingroup
 %% \allowdisplaybreaks
 \begin{alignat*}{5}
   & \boldsymbol{\cdot}^\S\,\hat{\gamma}\,\hat{\gamma^D} && :\equiv \hat{\top} \\
-  & (\Delta,\,x:A)^\S\,(\hat{\gamma},\hat{t})\,(\hat{\gamma^D},\hat{t^D}) && :\equiv \hat{(}\hat{\gamma^S}\in\Delta^\S\hat{\gamma^2}\hat{)}\timesh A^\S\,\hat{\gamma^3}\,\hat{t}\,\hat{t^D} \\
-  & x^\S\,\hat{\gamma^3} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^S} \\ % TODO: De Bruijn
-  & \U^\S\,\hat{\gamma^3}\,\hat{A}\,\hat{A^D} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  \hat{A^D}\,\hat{x} \\
-  & (\underline{a})^\S\,\hat{\gamma^3}\,\hat{t}\,\hat{t^D} && :\equiv a^\S\,\hat{\gamma^3}\,\hat{t} \eqh \hat{t^D} \\
-  & ((x:a)\ra B)^\S\,\hat{\gamma^3}\,\hat{f}\,\hat{f^D} && :\equiv \hat{(}\hat{x}\in a^\A\,\hat{\gamma}\hat{)}\rah  B^\S\,\hat{(}\hat{\gamma,x}\hat{)}\,\hat{(}\hat{\gamma^D,}\,a^\S\,\hat{\gamma^3}\,\hat{x}\hat{)}\,\hat{(}\hat{\gamma^S,}\,\hat{\refl}\hat{)} \\
-  & && \hspace{8.4em} \hat{(}\hat{f}\,\hat{x}\hat{)}\,\hat{\big(}\hat{f^D}\,\hat{x}\,\hat{(}a^\S\,\hat{\gamma^3}\,\hat{x}\hat{)}\hat{\big)} \\
-  & (t\,u)^\S\,\hat{\gamma^3} && :\equiv \hat{\J}\,\hat{(}t^\S\,\hat{\gamma^3}\,\hat{(} u^\A\,\hat{\gamma}\hat{)}\hat{)}\,\hat{(}u^\S\,\hat{\gamma^3}\hat{)} \\
-  & ((\hat{x}\in \hat{A})\ra B)^\S\,\hat{\gamma^3}\,\hat{f}\,\hat{f^D} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah B^\S\,\hat{\gamma^3}\,\hat{(}\hat{f}\,\hat{x}\hat{)}\,\hat{(}\hat{f^D}\,\hat{x}\hat{)} \\
-  & (t\,\hat{u})^\S\,\hat{\gamma^3} && :\equiv t^\S\,\hat{\gamma^3}\,\hat{u} \\
-  & (t=_a u)^\S\,\hat{\gamma^3}\,\hat{e} && :\equiv \TR\,\hat{(}t^\S\,\hat{\gamma^3}\hat{)}\hat{\big(}\TR\,\hat{(}u^\S\,\hat{\gamma^3}\hat{)}\,\hat{(}\apd\,\hat{(}a^\S\,\hat{\gamma^3}\hat{)}\,\hat{e}\hat{)}\hat{\big)} \\
-  & (\refl_t)^\S\,\hat{\gamma^3} && :\equiv \hat{\J}\,\hat{\refl}\,\hat{(}t^\S\,\hat{\gamma^3}\hat{)} \\
-  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\S\,\hat{\gamma^3} && :\equiv \\
-  & && \hspace{-10em}\hat{\J}\,\hat{\bigg(}\hat{\J}\,\hat{\Big(}\hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\,\hat{pr^D}\,\hat{pr^S}.\,\hat{pr^S}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^3}\hat{)}\,\\
-  & && \hspace{-9em}\hat{(}\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^3}\hat{)}\,\hat{(}pr^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}pr^\S\,\hat{\gamma^3}\hat{)}\hat{\big)}\,eq^\A\,\hat{\gamma}\hat{\Big)}\,u^\S\,\hat{\gamma^3}\hat{\bigg)}\,\hat{(}eq^\S\,\hat{\gamma^3}\hat{)} \\
-  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\S\,\hat{\gamma^3} && :\equiv \\
-  & && \hspace{-10em}\hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\hat{.}\,\hat{\refl}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^3}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^3}\hat{)}\hat{\big)}\,\hat{(}pr^\S\,\hat{\gamma^3}\hat{)}\\
-  & ((\hat{x}\in \hat{A})\ra b)^\S\,\hat{\gamma^3\,f\,t} && :\equiv b^\S\,\hat{\gamma^3}\,\hat{(}\hat{f}\,\hat{t}\hat{)} \\
-  & (t\,\hat{u})^\S\,\hat{\gamma^3} && :\equiv \ap\,\hat{(}\hat{\lambda} \hat{f.}\hat{f}\,\hat{u}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^3}\hat{)}
+  & (\Delta,\,x:A)^\S\,(\hat{\gamma},\hat{t})\,(\hat{\gamma^D},\hat{t^D}) && :\equiv \hat{(}\hat{\gamma^S}\in\Delta^\S\hat{\gamma^2}\hat{)}\timesh A^\S\,\hat{\gamma^S}\,\hat{t}\,\hat{t^D} \\
+  & x^\S\,\hat{\gamma^S} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^S} \\
+  & \U^\S\,\hat{\gamma^S}\,\hat{A}\,\hat{A^D} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  \hat{A^D}\,\hat{x} \\
+  & (\underline{a})^\S\,\hat{\gamma^S}\,\hat{t}\,\hat{t^D} && :\equiv a^\S\,\hat{\gamma^S}\,\hat{t} \eqh \hat{t^D} \\
+  & ((x:a)\ra B)^\S\,\hat{\gamma^S}\,\hat{f}\,\hat{f^D} && :\equiv \hat{(}\hat{x}\in a^\A\,\hat{\gamma}\hat{)}\rah  B^\S\,\hat{(}\hat{\gamma,x}\hat{)}\,\hat{(}\hat{\gamma^D,}\,a^\S\,\hat{\gamma^S}\,\hat{x}\hat{)}\,\hat{(}\hat{\gamma^S,}\,\hat{\refl}\hat{)} \\
+  & && \hspace{8.4em} \hat{(}\hat{f}\,\hat{x}\hat{)}\,\hat{\big(}\hat{f^D}\,\hat{x}\,\hat{(}a^\S\,\hat{\gamma^S}\,\hat{x}\hat{)}\hat{\big)} \\
+  & (t\,u)^\S\,\hat{\gamma^S} && :\equiv \hat{\J}\,\hat{(}t^\S\,\hat{\gamma^S}\,\hat{(} u^\A\,\hat{\gamma}\hat{)}\hat{)}\,\hat{(}u^\S\,\hat{\gamma^S}\hat{)} \\
+  & ((\hat{x}\in \hat{A})\ra B)^\S\,\hat{\gamma^S}\,\hat{f}\,\hat{f^D} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah B^\S\,\hat{\gamma^S}\,\hat{(}\hat{f}\,\hat{x}\hat{)}\,\hat{(}\hat{f^D}\,\hat{x}\hat{)} \\
+  & (t\,\hat{u})^\S\,\hat{\gamma^S} && :\equiv t^\S\,\hat{\gamma^S}\,\hat{u} \\
+  & (t=_a u)^\S\,\hat{\gamma^S}\,\hat{e} && :\equiv \TR\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)}\hat{\big(}\TR\,\hat{(}u^\S\,\hat{\gamma^S}\hat{)}\,\hat{(}\apd\,\hat{(}a^\S\,\hat{\gamma^S}\hat{)}\,\hat{e}\hat{)}\hat{\big)} \\
+  & (\refl_t)^\S\,\hat{\gamma^S} && :\equiv \hat{\J}\,\hat{\refl}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)} \\
+  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\S\,\hat{\gamma^S} && :\equiv \\
+  & && \hspace{-10em}\hat{\J}\,\hat{\bigg(}\hat{\J}\,\hat{\Big(}\hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\,\hat{pr^D}\,\hat{pr^S}.\,\hat{pr^S}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)}\,\\
+  & && \hspace{-9em}\hat{(}\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^S}\hat{)}\,\hat{(}pr^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}pr^\S\,\hat{\gamma^S}\hat{)}\hat{\big)}\,(eq^\A\,\hat{\gamma})\hat{\Big)}\,(u^\S\,\hat{\gamma^S})\hat{\bigg)}\,\hat{(}eq^\S\,\hat{\gamma^S}\hat{)} \\
+  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\S\,\hat{\gamma^S} && :\equiv \\
+  & && \hspace{-10em}\hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\hat{.}\,\hat{\refl}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^S}\hat{)}\hat{\big)}\,\hat{(}pr^\S\,\hat{\gamma^S}\hat{)}\\
+  & ((\hat{x}\in \hat{A})\ra b)^\S\,\hat{\gamma^S\,f\,t} && :\equiv b^\S\,\hat{\gamma^S}\,\hat{(}\hat{f}\,\hat{t}\hat{)} \\
+  & (t\,\hat{u})^\S\,\hat{\gamma^S} && :\equiv \ap\,\hat{(}\hat{\lambda} \hat{f.}\hat{f}\,\hat{u}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)}
 \end{alignat*}
-%% \endgroup
+\endgroup
 
 The $\U^\S$ and $(\underline{a})^\S$ definitions are the key points of
 the $\blank^\S$ operation. The definitions for the other $\blank^\S$
