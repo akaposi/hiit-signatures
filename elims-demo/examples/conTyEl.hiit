@@ -1,0 +1,10 @@
+
+-- A fragment of an inductive-inductive syntax for a type theory
+
+constructors
+  Con  : U;
+  Ty   : Con → U;
+  nil  : Con;
+  cons : (Γ : Con) → Ty Γ → Con;
+  u    : (Γ : Con) → Ty Γ;
+  π    : (Γ : Con)(A : Ty Γ) → Ty (cons Γ A) → Ty Γ;

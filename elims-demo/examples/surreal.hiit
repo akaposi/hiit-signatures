@@ -1,0 +1,36 @@
+
+-- The surreal numbers can be given in a somewhat cheating way:
+-- it is properly a large HIIT, which is not yet supported, but
+-- the type-in-type cheat in the target theory allows it anyway.
+
+constructors
+  No  : U;  -- should be U1
+  lt  : No → No → U;
+  lte : No → No → U;
+  cut : (L R : U)(ls : L → No)(rs : R → No)(p : (l : L)(r : R) → lt (ls l) (rs r)) → No;
+  eq  : (x y : No) → lte x y → lte y x → Id x y;
+
+  mkLte  :
+        (xL xR : U)(xls : xL → No)(xrs : xR → No)(xp : (l : xL)(r : xR) → lt (xls l) (xrs r))
+      → (yL yR : U)(yls : yL → No)(yrs : yR → No)(yp : (l : yL)(r : yR) → lt (yls l) (yrs r))
+      → ((l : xL) → lt (xls l) (cut yL yR yls yrs yp))
+      → ((r : yR) → lt (cut xL xR xls xrs xp) (yrs r))
+      → lte (cut xL xR xls xrs xp) (cut yL yR yls yrs yp);
+
+  truncLte : (x y : No)(p q : lte x y) → Id p q;
+
+  mkLt1 :
+        (xL xR : U)(xls : xL → No)(xrs : xR → No)(xp : (l : xL)(r : xR) → lt (xls l) (xrs r))
+      → (yL yR : U)(yls : yL → No)(yrs : yR → No)(yp : (l : yL)(r : yR) → lt (yls l) (yrs r))
+      → (l : yL)
+      → lte (cut xL xR xls xrs xp) (yls l)
+      → lt (cut xL xR xls xrs xp) (cut yL yR yls yrs yp);
+
+  mkLt2 :
+        (xL xR : U)(xls : xL → No)(xrs : xR → No)(xp : (l : xL)(r : xR) → lt (xls l) (xrs r))
+      → (yL yR : U)(yls : yL → No)(yrs : yR → No)(yp : (l : yL)(r : yR) → lt (yls l) (yrs r))
+      → (r : xR)
+      → lte (xrs r) (cut yL yR yls yrs yp)
+      → lt (cut xL xR xls xrs xp) (cut yL yR yls yrs yp);
+
+  truncLt : (x y : No)(p q : lt x y) → Id p q;

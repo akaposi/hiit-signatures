@@ -1,0 +1,6 @@
+
+constructors
+  I     : U;
+  left  : I;
+  right : I;
+  seg   : Id left right;

@@ -1,0 +1,7 @@
+
+assume
+  A : U;
+constructors
+  T     : U;
+  emb   : A → T;
+  trunc : (t u: T)(p q: Id t u) → Id p q;

@@ -1,0 +1,7 @@
+
+assume
+  S : U;
+  P : S → U;
+constructors
+  W   : U;
+  con : (s: S) → (P s → W) → W;
