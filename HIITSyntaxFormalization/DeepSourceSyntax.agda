@@ -191,3 +191,13 @@ postulate
           (P [ σ ^El a ]T)
           (tr (Tm Γ) ([][]T ◾ ap (P [_]T) (<>∘ σ a t) ◾ [][]T ⁻¹) (pt [ σ ]t))
           ((tr (Tm Γ) ((El[] {σ = σ} ◾ ap El (Id[] {σ = σ}))) (eq [ σ ]t)))
+
+-- Identity of sorts
+--------------------------------------------------------------------------------
+
+postulate
+  IdU     : ∀{Γ}(a b : Tm Γ U) → Ty Γ
+  IdU[]   : ∀{Γ}{a b : Tm Γ U}{Θ}{σ : Sub Θ Γ} → IdU a b [ σ ]T ≡ IdU (tr (Tm Θ) U[] (a [ σ ]t)) (tr (Tm Θ) U[] (b [ σ ]t))
+  reflU   : ∀{Γ}(a : Tm Γ U) → Tm Γ (IdU a a)
+  reflU[] : ∀{Γ}{a : Tm Γ U}{Θ}{σ : Sub Θ Γ} → tr (Tm Θ) IdU[] (reflU a [ σ ]t) ≡ reflU (tr (Tm Θ) U[] (a [ σ ]t))
+  TranspU : ∀{Γ}{a b : Tm Γ U}(p : Tm (Γ ▶ U) U)(pa : Tm Γ (El p [ < a > ]T))(eq : Tm Γ (IdU a b)) → Tm Γ (El p [ < b > ]T)
