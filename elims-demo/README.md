@@ -1,11 +1,20 @@
 # elims-demo
 
-This package contains a type checker and eliminator-generator for
-higher inductive-inductive (HIIT) definitions, based on the paper "A
-Syntax for Higher Inductive-Inductive Types" by Ambrus Kaposi and
-András Kovács. It validates HIIT definitions, then generates types of
-induction methods, eliminators and β-rules in an Agda-checkable
-format.
+This package contains a Haskell implementation for the paper "Signatures
+and Induction Principles for Higher Inductive-Inductive Types", by
+Ambrus Kaposi and András Kovács. It takes as input source files
+containing higher inductive-inductive (HIIT) type definitions.
+
+It validates the HIIT definitions, then generates types
+of induction motives and methods (displayed algebras) and 
+eliminators and computation rules (displayed algebra sections). You
+can then read off induction principles fairly easily (which is
+explained in the paper as well).
+
+Currently, this implementation uses notation from an older version
+of the paper, titled "A Syntax for Higher Inductive-Inductive Types",
+which was published in the postproceedings of FSCD 2018. This version
+will be updated shortly to be in sync with the new paper.
 
 ## Installation
 
