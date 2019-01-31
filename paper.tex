@@ -1524,15 +1524,14 @@ $\hat{\Gamma\vdash}\,\Delta$ and assuming $\hat{\Gamma\vdash \mathsf{InitialAlg}
 \end{alignat*}
 
 However, this is not the full picture. We would also like to have a
-\emph{category} of algebras, with homomorphisms as morphisms, identity
-morphisms, composition together with category laws. This is not without
-difficulties.
+\emph{category} of algebras, with homomorphisms as morphisms. This is not
+without difficulties.
 
-We are working in an UIP-free setting. Here, standard definitions of categories
-feature set-truncated morphisms \cite{HoTTbook}. But we have non-truncated
-notions of algebras and morphisms, so we cannot use the standard
-definitions. One solution is to simply use non-truncated categories; these have
-been previously called ``precategories'' or ``wild categories''
+We are working in an UIP-free setting. In such setting, standard definitions of
+categories feature set-truncated morphisms \cite{HoTTbook}. But we have
+non-truncated notions of algebras and homomorphisms, so we cannot use the
+standard definitions. One solution is to simply use non-truncated categories;
+these have been previously called ``precategories'' or ``wild categories''
 \cite{semisegal}. Sojakova demonstrated \cite{sojakova} that working with wild
 categories internally to type theory is enough to prove equivalence of induction
 and homotopy initiality for a class of higher inductive types, which suggests
@@ -1540,7 +1539,7 @@ that the same might be possible for HIITs. Still, it would be desirable to build
 semantics of HIITs in a richer ($\omega$, 1)-categorical setting.
 
 However, out current approach does not scale to the point where we have to worry
-about higher categories. We explain in the following. The logical next step
+about higher categories. We explain in the following. The natural next step
 towards a categorical semantics would be defining a $\blank^\ID$ translation,
 which computes identity homomorphisms:
 
@@ -1575,10 +1574,37 @@ substitutions in the translation):
 \]
 Here, $\hat{\sigma^\ID\,\gamma}$ yields an equation for functoriality of
 $\hat{\sigma}$. Since the transport is constant, the result is propositionally
-equal to $\hat{\lambda\,x.\, x}$. However, we need to preserve $\U = \U[\sigma]$
-up to definitional equality.
+equal to $\hat{\lambda\,x.\, x}$. However, that is not enough, since we need to
+preserve $\U = \U[\sigma]$ up to definitional equality.
 
+There are numerous unavoidable instances of such failures of strict preservation
+of definitional equalities for $\blank^\ID$, and they similarly arise when we
+try to construct composition of homomorphisms. We consider three potential
+solutions for this strictness problem:
+\begin{enumerate}
+\item Solving the coherence problem. This would allow us to interpret signatures
+      into the metatheory, allowing preservation of definitional equality up
+      to propositional metatheoretic equality.
+\item Reformulating the syntax of signatures so that definitional equalities
+      become weak propositional equalities. We already use weak $\beta$ for $\J$,
+      can we do so elsewhere? However, this would result in an unusual and very
+      inconvenient syntax of signatures, because we would need to weaken even
+      basic substitution rules.
+\item Instead of interpreting signatures into an UIP-free type theory, we
+      interpret them into classical combinatorial structures for higher groupoids
+      and categories, e.g.\ into simplicial sets. The drawback is that now we do not
+      have the convenient synthetic notion of higher structures, provided by the syntax
+      of type theory, and instead we have to manually build up these
+      structures. Needless to say, this makes machine-checked formalization much
+      more difficult. We have found mechanized formalization invaluable for the
+      current paper, and it would be painful to abandon it in further research.
+\end{enumerate}
 
+In summary, solutions for the strictness problems require significant deviation
+from the approach of the current paper, of require significant further research.
+
+%% Nevertheless, the current approach of using syntactic translations is a sweet
+%% spot for computing induction principles in a relatively simple way.
 
 
 %=====================================================================
@@ -1626,16 +1652,15 @@ a rather large class of HIIT definitions.
 
 %=====================================================================
 
-\section{Conclusions and further work}
+\section{Conclusions}
 \label{sec:summary}
 
-Higher inductive-inductive types are useful in defining the well-typed
-syntax of type theory in an abstract way \cite{ttintt}. From a
-universal algebra point of view, they provide initial algebras for
-multi-sorted algebraic theories where the sorts can depend on each
-other. From the perspective of homotopy type theory, they provide
-synthetic versions of homotopy-theoretic constructions such as higher
-dimensional spheres or cell complexes. So far, no general scheme of
+Higher inductive-inductive types are useful in defining the well-typed syntax of
+type theory in an abstract way \cite{ttintt}. From a universal algebra point of
+view, they provide initial algebras for multi-sorted algebraic theories where
+the sorts can depend on each other. From the perspective of homotopy type
+theory, they provide synthetic versions of homotopy-theoretic constructions such
+as higher dimensional spheres or cell complexes. So far, no general scheme of
 HIITs have been proposed. To quote Lumsdaine and Shulman
 \cite{lumsdaineShulman}:
 \begin{quotation}
@@ -1648,44 +1673,40 @@ that covers all cases of interest while remaining meaningful and
 consistent.''
 \end{quotation}
 In this paper we proposed such a syntactic scheme which also includes
-inductive-inductive types. We tackled the problem of complex
-dependencies on previous type formation rules and constructors by a
-well-known method of describing intricate dependencies: the syntax of
-type theory itself. We had to limit the type formers to only allow
-strictly positive definitions, but these restrictions are the only
-things that a type theorist has to learn to understand our codes. Our
-encoding is also \emph{direct} in the sense that the types of
-constructors and eliminators are exactly as required and not merely up
-to isomorphisms.
+inductive-inductive types. We tackled the problem of complex dependencies on
+previous type formation rules and constructors by a well-known method of
+describing intricate dependencies: the syntax of type theory itself. We had to
+limit the type formers to only allow strictly positive definitions, but these
+restrictions are the only things that a type theorist has to learn to understand
+our codes. Our encoding is also \emph{direct} in the sense that the types of
+constructors and eliminators are exactly as required and not merely up to
+isomorphisms.
 
-In this paper we only \emph{specified} HIITs and characterized their
-induction principles. Proving their \emph{existence} is left as
-further work. This would likely involve reducing HIITs to basic
-building blocks such as W-types and quotient types.
+In this paper we only \emph{specified} HIITs and characterized their induction
+principles. Proving their \emph{existence} is left as further work. This would
+likely involve reducing HIITs to basic building blocks such as W-types and
+quotient types.
 
-The theory of codes was defined as part of the syntax of another type
-theory, the target theory. An alternative way would be to define
-the theory of codes internally to a type theoretic metatheory in the
-style of \cite{ttintt}. However, as described in \cite[Section
-  6]{ttintt}, there would be a coherence problem: for the internal
-syntax to be useful, we need to truncate it to be a set (as the
-$\mathsf{trunc}$ constructor did for $\Int$ in the introduction). As
-the eliminator needs to respect the equality given by
-$\mathsf{trunc}$, we would only be able to eliminate from the internal
-type theory into a set. This would preclude the definition of even the
-$\blank^\C$ operation, which corresponds to the standard model. A
-possible solution to this problem would be to add all the higher
-coherence laws to the syntax (e.g.\ the pentagon law for the
-composition of substitutions) and then prove that the syntax is a
-set. For this however, we would probably need a two-level metatheory
+The theory of codes was defined as part of the syntax of another type theory,
+the target theory. An alternative way would be to define the theory of codes
+internally to a type theoretic metatheory in the style of
+\cite{ttintt}. However, as described in \cite[Section 6]{ttintt}, there would be
+a coherence problem: for the internal syntax to be useful, we need to truncate
+it to be a set (as the $\mathsf{trunc}$ constructor did for $\Int$ in the
+introduction). As the eliminator needs to respect the equality given by
+$\mathsf{trunc}$, we would only be able to eliminate from the internal type
+theory into a set. This would preclude the definition of even the $\blank^\C$
+operation, which corresponds to the standard model. A possible solution to this
+problem would be to add all the higher coherence laws to the syntax (e.g.\ the
+pentagon law for the composition of substitutions) and then prove that the
+syntax is a set. For this however, we would probably need a two-level metatheory
 as in \cite{semisegal}.
 
-When working in a metatheory with uniqueness of identity proofs (which
-implies that all HIITs are in essence QIITs), the theory of codes
-admits a category model where the interpretation of a context is the
-category of algebras corresponding to the context. In the future, we
-would like to prove that these categories have initial algebras given
-by terms in the theory of codes.
+When working in a metatheory with uniqueness of identity proofs (which implies
+that all HIITs are in essence QIITs), the theory of codes admits a category
+model where the interpretation of a context is the category of algebras
+corresponding to the context. In the future, we would like to prove that these
+categories have initial algebras given by terms in the theory of codes.
 
 \bibliographystyle{plain}
 \bibliography{b}
