@@ -64,7 +64,7 @@
 \newcommand{\Ne}{\mathsf{Ne}}
 \newcommand{\Nfs}{\mathsf{Nfs}}
 \newcommand{\Nes}{\mathsf{Nes}}
-\newcommand{\ID}{\mathsf{ID}}
+%% \newcommand{\ID}{\mathsf{ID}}
 \newcommand{\id}{\mathsf{id}}
 \newcommand{\nat}{\,\dot{\rightarrow}\,}
 \newcommand{\Nat}{\mathsf{Nat}}
@@ -192,8 +192,7 @@
 \newcommand{\ass}{\mathsf{ass}}
 \newcommand{\idl}{\mathsf{idl}}
 \newcommand{\idr}{\mathsf{idr}}
-\newcommand{\inv}{\mathsf{inv}}
-\newcommand{\ID}{\mathsf{\ID}}
+\renewcommand{\inv}{\mathsf{inv}}
 
 
 %% END OF ABBREVS
@@ -698,10 +697,10 @@ constructors, and arbitrary mixing of type and point constructors.
 (4) $\U$ is closed under the equality type, with eliminator $\J$ and a weak
 (propositional) $\beta$-rule. Weakness is required because the translations in
 Sections \ref{sec:morphisms} and \ref{sec:sections} do not preserve this
-$\beta$-rule strictly. We explain this in more detail in Sections TODO and
-TODO. Adding equality to the theory of codes allows higher constructors and
-inductive equality parameters as well. We can now define the higher-inductive
-circle as the following context:
+$\beta$-rule strictly. We explain this in more detail in Sections
+\ref{sec:coherence} and \ref{sec:categorical}. Adding equality to the theory of
+codes allows higher constructors and inductive equality parameters as well. We
+can now define the higher-inductive circle as the following context:
 \[
 \boldsymbol{\cdot},\,\,\,S^1:\U,\,\,\,base:\underline{S^1},\,\,\,loop:\underline{base =_{S^1} base}
 \]
@@ -1159,7 +1158,7 @@ interpreted as an iterated $\Sigma$-type.
 \begin{alignat*}{5}
   & \boldsymbol{\cdot}^\A && :\equiv \hat{\top} \\
   & (\Delta,x:A)^\A && :\equiv \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\timesh A^\A\,\hat{\gamma} \\
-  & x^\A\,\hat{\gamma} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma} \\ % TODO: write De Bruijn versions
+  & x^\A\,\hat{\gamma} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma} \\
   & \U^\A\,\hat{\gamma} && :\equiv \Type_{\hat{0}} \\
   & (\underline{a})^\A\,\hat{\gamma} && :\equiv a^\A\,\hat{\gamma} \\
   & ((x:a)\ra B)^\A\,\hat{\gamma} && :\equiv \hat{(}\hat{x}\in a^\A\,\hat{\gamma}\hat{)}\rah  B^\A\,\hat{(}\hat{\gamma}\commah\hat{x}\hat{)} \\
@@ -1540,22 +1539,22 @@ semantics of HIITs in a richer ($\omega$, 1)-categorical setting.
 
 However, out current approach does not scale to the point where we have to worry
 about higher categories. We explain in the following. The natural next step
-towards a categorical semantics would be defining a $\blank^\ID$ translation,
+towards a categorical semantics would be defining a $\blank^{\mathsf{ID}}$ translation,
 which computes identity homomorphisms:
 
 \[
-\infer{\hat{\Gamma}\vdashh\Delta^\ID\,\hat{:\,(\gamma : \blc{\Delta^\A})\ra \blc{\Delta^\M}\,\gamma\,\gamma}}
+\infer{\hat{\Gamma}\vdashh\Delta^{\mathsf{ID}}\,\hat{:\,(\gamma : \blc{\Delta^\A})\ra \blc{\Delta^\M}\,\gamma\,\gamma}}
       {\hat{\Gamma}\vdash\Delta}
 \hspace{1em}
 \infer{
-  \hat{\Gamma}\vdashh A^\ID\,\hat{:\,(\gamma : \blc{\Delta^\A})(t : \blc{A^\A}\,\gamma)\ra \blc{A^\M}\,\gamma\,\gamma\,(\blc{\Delta^\ID}\,\gamma)\,t\,t }}
+  \hat{\Gamma}\vdashh A^{\mathsf{ID}}\,\hat{:\,(\gamma : \blc{\Delta^\A})(t : \blc{A^\A}\,\gamma)\ra \blc{A^\M}\,\gamma\,\gamma\,(\blc{\Delta^{\mathsf{ID}}}\,\gamma)\,t\,t }}
       {\hat{\Gamma}\semicol\Delta\vdash A}
 \]
 
 \[
 \infer{
-  \hat{\Gamma}\vdashh t^\ID\,\hat{:\, (\gamma : \blc{\Delta^\A})\ra
-       \blc{t^\M}\,\gamma\,\gamma\,(\blc{\Delta^\ID}\,\gamma) = \blc{A^\ID}\,\gamma\,(\blc{t^\A}\,\gamma) }}
+  \hat{\Gamma}\vdashh t^{\mathsf{ID}}\,\hat{:\, (\gamma : \blc{\Delta^\A})\ra
+       \blc{t^\M}\,\gamma\,\gamma\,(\blc{\Delta^{\mathsf{ID}}}\,\gamma) = \blc{A^{\mathsf{ID}}}\,\gamma\,(\blc{t^\A}\,\gamma) }}
       {\hat{\Gamma}\semicol\Delta\vdash t : A}
 \]
 
@@ -1563,22 +1562,22 @@ Here, the interpretation of terms witnesses functoriality: $t^\M$ maps
 identity morphisms in $\Delta$ to displayed identity morphisms in $A$.
 We translate $\U$ to identity functions:
 \[
-\U^\ID\,\hat{\gamma\,A} :\equiv \hat{\lambda\,(x : A).\, x}
+\U^{\mathsf{ID}}\,\hat{\gamma\,A} :\equiv \hat{\lambda\,(x : A).\, x}
 \]
 Note that $\U$ and $\U[\sigma]$ are definitionally equal in the theory of
 signatures, where $\sigma$ is a parallel substitution. The translation of the
 latter would be the following (omitting many details, including the handling of
 substitutions in the translation):
 \[
-(\U[\sigma])^\ID\,\hat{\gamma\,A} \equiv \hat{\TR_{(\lambda\,x. A\ra A)}\,(\sigma^\ID\,\gamma)\,(\lambda\,x.\, x)}
+(\U[\sigma])^{\mathsf{ID}}\,\hat{\gamma\,A} \equiv \hat{\TR_{(\lambda\,x. A\ra A)}\,(\sigma^{\mathsf{ID}}\,\gamma)\,(\lambda\,x.\, x)}
 \]
-Here, $\hat{\sigma^\ID\,\gamma}$ yields an equation for functoriality of
+Here, $\hat{\sigma^{\mathsf{ID}}\,\gamma}$ yields an equation for functoriality of
 $\hat{\sigma}$. Since the transport is constant, the result is propositionally
 equal to $\hat{\lambda\,x.\, x}$. However, that is not enough, since we need to
 preserve $\U = \U[\sigma]$ up to definitional equality.
 
 There are numerous unavoidable instances of such failures of strict preservation
-of definitional equalities for $\blank^\ID$, and they similarly arise when we
+of definitional equalities for $\blank^{\mathsf{ID}}$, and they similarly arise when we
 try to construct composition of homomorphisms. We consider three potential
 solutions for this strictness problem:
 \begin{enumerate}
@@ -1603,9 +1602,6 @@ solutions for this strictness problem:
 In summary, solutions for the strictness problems require significant deviation
 from the approach of the current paper, of require significant further research.
 
-%% Nevertheless, the current approach of using syntactic translations is a sweet
-%% spot for computing induction principles in a relatively simple way.
-
 
 %=====================================================================
 
@@ -1614,53 +1610,55 @@ from the approach of the current paper, of require significant further research.
 
 There are three additional development artifacts to the current work: a Haskell
 implementation, a shallow Agda formalization and a deep Agda formalization. All
-three are available from the homepage of the first author.
+three are available from \url{https://github.com/akaposi/hiit-signatures}.
 
-The Haskell implementation takes as input a file which contains a
-representation of a $\hat{\Gamma}\vdash\Delta$ specification of a
-HIIT. Then, it checks the input with respect to the rules in Figure
-\ref{sigrules}, and outputs an Agda-checkable file which contains the
-results of the $\blank^\C$, $\blank^\M$ and $\blank^\E$
-translations. It comes with examples, including the ones in this
-paper, indexed W-types \cite{morris09indexed}, the dense completion
-\cite[Appendix A.1.3]{forsberg-phd} and several HITs from
-\cite{HoTTbook} including the definition of Cauchy reals. It can be
-checked that our implementation computes the expected elimination
+The Haskell implementation takes as input a file which contains a of a
+$\hat{\Gamma}\vdash\Delta$ signature. Then, it checks the input with respect to
+the rules in Figure \ref{sigrules}, and outputs an Agda-checkable file which
+contains algebras, homomorphisms, displayed algebras and sections for the
+input signature.
+
+It comes with examples, including the ones in this paper, the
+inductive-inductive dense completion \cite[Appendix A.1.3]{forsberg-phd} and
+several HITs from \cite{HoTTbook} including the definition of Cauchy reals. It
+can be checked that our implementation computes the expected elimination
 principles in these cases.
 
 The shallow Agda formalization embeds both the source and target theories
-shallowly into Agda: it represents types as Agda types, functions as
-Agda functions, and so on. We also leave the $\blank^\C$ operation
-implicit. We state each case of the $\blank^\M$ and $\blank^\E$
-translations as Agda functions from all induction hypotheses to the
-result type of the translation, which lets us ``typecheck'' the
-translation. We have found that this style of formalization is
-conveniently light, but remains detailed enough to be useful. We also
-generated some of the code of the Haskell implementation from this
-formalization.
+shallowly into Agda: it represents types as Agda types, functions as Agda
+functions, and so on. We also leave the $\blank^\A$ operation implicit. We state
+each case of translations as Agda functions from all induction hypotheses to the
+result type of the translation, which lets us ``typecheck'' the translation. We
+have found that this style of formalization is conveniently light, but remains
+detailed enough to be useful. We also generated some of the code of the Haskell
+implementation from this formalization.
 
-The deep Agda formalization still uses a shallow embedding of the
-target type theory, but it uses a deep embedding of the source theory,
-in the style of \cite{ttintt}. In the formalization we merge the three
-translations into a single model construction. This allows us to prove
-strict preservation of definitional equalities in the substitution
-calculus of the source theory, in contrast to the shallow
-formalization, where we cannot reason about definitional equalities of
-Agda terms. Due to technical challenges, this formalization uses
-transport instead of $\J$ in the source theory, but this still covers
-a rather large class of HIIT definitions.
+The deep Agda formalization deeply embeds the theory of signatures as a CwF with
+additional structure, in the style of \cite{ttintt}. However, it embeds the
+external type theory shallowly as Agda, and we model dependency on external
+$\hat{\Gamma}$ contexts with Agda functions. We formalize $\blank^\A$,
+$\blank^\D$, $\blank^\M$ and $\blank^\S$ translations as a single model
+construction in Agda. This setup greatly simplifies formalization, since we do
+not have to reason explicitly about definitional equality in the external
+syntax, but we can still reason directly about preservation of definitional
+equalities in the theory of signatures. This semi-deep formalization can be in
+principle converted into a fully formal syntactic translation, because we prove
+all preservations of definitional equalities by $\refl$. Due to technical
+challenges, this formalization uses transport instead of $\J$ in the source
+theory, but this still covers a rather large class of HIIT definitions.
 
-%=====================================================================
+
+%--------------------------------------------------------------------------------
 
 \section{Conclusions}
 \label{sec:summary}
 
 Higher inductive-inductive types are useful in defining the well-typed syntax of
-type theory in an abstract way \cite{ttintt}. From a universal algebra point of
+type theory in an abstract way \cite{ttintt}. From a universal algebraic point of
 view, they provide initial algebras for multi-sorted algebraic theories where
 the sorts can depend on each other. From the perspective of homotopy type
 theory, they provide synthetic versions of homotopy-theoretic constructions such
-as higher dimensional spheres or cell complexes. So far, no general scheme of
+as higher-dimensional spheres or cell complexes. So far, no general scheme of
 HIITs have been proposed. To quote Lumsdaine and Shulman
 \cite{lumsdaineShulman}:
 \begin{quotation}
@@ -1678,35 +1676,58 @@ previous type formation rules and constructors by a well-known method of
 describing intricate dependencies: the syntax of type theory itself. We had to
 limit the type formers to only allow strictly positive definitions, but these
 restrictions are the only things that a type theorist has to learn to understand
-our codes. Our encoding is also \emph{direct} in the sense that the types of
-constructors and eliminators are exactly as required and not merely up to
-isomorphisms.
+our signatures. Our encoding is also direct in the sense that notions of
+induction and recursion are computed exactly as required and not merely up to
+equivalences or isomorphisms, and we also demonstrated that this computation is
+feasible to implement in computer programs.
 
-In this paper we only \emph{specified} HIITs and characterized their induction
-principles. Proving their \emph{existence} is left as further work. This would
-likely involve reducing HIITs to basic building blocks such as W-types and
-quotient types.
+We developed an approach where syntactic translations are used to provide
+semantics for HIIT signatures. Our approach seems to be a sweet spot for
+computing notions of induction and recursion in a formally verifiable and
+relatively simple way.
 
-The theory of codes was defined as part of the syntax of another type theory,
-the target theory. An alternative way would be to define the theory of codes
-internally to a type theoretic metatheory in the style of
-\cite{ttintt}. However, as described in \cite[Section 6]{ttintt}, there would be
-a coherence problem: for the internal syntax to be useful, we need to truncate
-it to be a set (as the $\mathsf{trunc}$ constructor did for $\Int$ in the
-introduction). As the eliminator needs to respect the equality given by
-$\mathsf{trunc}$, we would only be able to eliminate from the internal type
-theory into a set. This would preclude the definition of even the $\blank^\C$
-operation, which corresponds to the standard model. A possible solution to this
-problem would be to add all the higher coherence laws to the syntax (e.g.\ the
-pentagon law for the composition of substitutions) and then prove that the
-syntax is a set. For this however, we would probably need a two-level metatheory
-as in \cite{semisegal}.
+However, there is a coherence problem in the formal treatment of syntaxes and
+models of type theories internally to type theory. We sidestepped this by
+considering syntactic translations, but the problem remains, and it prevents
+extending the current approach to categorical semantics. Our impression is that
+the true solution will be the development of higher syntaxes and models of type
+theory in type theory. This may also require adding new features to the
+meta type theory. In particular, convenient formalization of higher categories
+seems elusive in conventional homotopy type theory, and we may need two-level
+type theories \cite{semisegal}, or even directed type-theories with native
+notions of higher categories \cite{nuyts2015towards, riehl2017type}.
 
-When working in a metatheory with uniqueness of identity proofs (which implies
-that all HIITs are in essence QIITs), the theory of codes admits a category
-model where the interpretation of a context is the category of algebras
-corresponding to the context. In the future, we would like to prove that these
-categories have initial algebras given by terms in the theory of codes.
+
+foobar
+
+%% In this paper we specified HIITs and provide part of their semantics, by
+%% computing notions of recursion and induction. Pro
+
+%% In this paper we only \emph{specified} HIITs and characterized their induction
+%% principles. Proving their \emph{existence} is left as further work. This would
+%% likely involve reducing HIITs to basic building blocks such as W-types and
+%% quotient types.
+
+%% The theory of codes was defined as part of the syntax of another type theory,
+%% the target theory. An alternative way would be to define the theory of codes
+%% internally to a type theoretic metatheory in the style of
+%% \cite{ttintt}. However, as described in \cite[Section 6]{ttintt}, there would be
+%% a coherence problem: for the internal syntax to be useful, we need to truncate
+%% it to be a set (as the $\mathsf{trunc}$ constructor did for $\Int$ in the
+%% introduction). As the eliminator needs to respect the equality given by
+%% $\mathsf{trunc}$, we would only be able to eliminate from the internal type
+%% theory into a set. This would preclude the definition of even the $\blank^\C$
+%% operation, which corresponds to the standard model. A possible solution to this
+%% problem would be to add all the higher coherence laws to the syntax (e.g.\ the
+%% pentagon law for the composition of substitutions) and then prove that the
+%% syntax is a set. For this however, we would probably need a two-level metatheory
+%% as in \cite{semisegal}.
+
+%% When working in a metatheory with uniqueness of identity proofs (which implies
+%% that all HIITs are in essence QIITs), the theory of codes admits a category
+%% model where the interpretation of a context is the category of algebras
+%% corresponding to the context. In the future, we would like to prove that these
+%% categories have initial algebras given by terms in the theory of codes.
 
 \bibliographystyle{plain}
 \bibliography{b}
