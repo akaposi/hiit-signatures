@@ -1,0 +1,6 @@
+assume
+  A: U;
+constructors
+  List: U;
+  nil: List;
+  cons: A → List → List;

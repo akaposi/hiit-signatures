@@ -1,0 +1,12 @@
+
+-- Length-indexed vectors
+
+assume
+  Nat  : U;
+  zero : Nat;
+  suc  : Nat → Nat;
+  A    : U;
+constructors
+  Vec  : Nat → U;
+  nil  : Vec zero;
+  cons : (n : Nat) → A → Vec n → Vec (suc n);

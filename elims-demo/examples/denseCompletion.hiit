@@ -1,0 +1,15 @@
+
+-- Inductive-inductive dense completion of a relation.
+-- Comes from: https://personal.cis.strath.ac.uk/fredrik.nordvall-forsberg/talks/Stockholm_2014/indind-2014-06-11.pdf
+
+assume
+  A : U;
+  R : A → A → U;
+constructors
+  Ac   : U;
+  Rc   : Ac → Ac → U;
+  inj  : A → Ac;
+  mid  : (x y : Ac) → Rc x y → Ac;
+  injR : (x y : A) → R x y → Rc (inj x) (inj y);
+  midl : (x y : Ac)(p : Rc x y) → Rc x (mid x y p);
+  midr : (x y : Ac)(p : Rc x y) → Rc (mid x y p) y;

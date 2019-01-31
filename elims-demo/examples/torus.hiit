@@ -1,0 +1,7 @@
+
+constructors
+  T: U;
+  b: T;
+  p: Id b b;
+  q: Id b b;
+  t: Id (J (x._. Id b x) p q) (J (x._. Id b x) q p);

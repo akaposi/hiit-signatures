@@ -1,0 +1,8 @@
+
+assume
+  A : U;
+constructors
+  Σ : U;
+  N : Σ;
+  S : Σ;
+  merid : (a : A) → Id N S;

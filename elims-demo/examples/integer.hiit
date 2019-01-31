@@ -1,0 +1,8 @@
+assume
+  Nat   : U;
+  plus  : Nat → Nat → Nat;
+constructors
+  Int   : U;
+  pair  : Nat → Nat → Int;
+  eq    : (a b c d : Nat) → Id (plus a d) (plus b c) → Id (pair a b) (pair c d);
+  trunc : (x y : Int)(p q : Id x y) → Id p q;

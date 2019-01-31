@@ -401,6 +401,13 @@ To our knowledge, this is the first proposal for a definition of
 HIITs. However, we do not provide complete (higher) categorical semantics
 for HIITs, nor do we show that initial algebras exist for specified HIITs.
 
+The present paper is an expanded version of our conference paper \cite{hiit}.
+In this version, we additionally compute notions of homomorphisms from
+signatures, and compare them to logical relations, in Section
+\ref{sec:morphisms}. We also explain a coherence problem in interpreting
+syntaxes of type theories, and how this influenced the current paper, in Section
+\ref{sec:coherence} and Section \ref{sec:categorical}.
+
 \subsection{Overview of the Paper}
 
 We start by describing the theory of HIIT signatures in Section
@@ -1335,6 +1342,15 @@ the universe and the inductive function space.
 We interpret the universe as relation space, and function types as relations
 expressing pointwise relatedness of functions. This interpretation would work
 the same way for unrestricted (non-strictly positive) function types as well.
+For an example, this yields the following definition of logical relations for
+natural number algebras:
+\begin{alignat*}{5}
+  & && (\boldsymbol{\cdot},Nat : \U,zero:\underline{Nat},suc:Nat\ra\underline{Nat})^\M
+    \,\hat{(\tt,\,N_0,\,z_0,\,s_0)\,(\tt,\,N_1,\,z_1,\,s_1)} \\
+    & \equiv\,\, && \hat{\top\times(N^M : N_0\ra N_1 \ra \Type_0)}\\
+    & && \hat{\hspace{1em}\times\,\,(z^M : N^M\,z_0\,z_1)}\\
+    & && \hat{\hspace{1em}\times\,\,(s^M : (x_0 : N_0)(x_1 : N_1)(x^M : N^M\,x_0\,x_1)\ra N^M\,(s_0\,x_0)\,(s_1\,x_1))}
+\end{alignat*}
 
 However, we would like to have underlying functions instead of relations in
 homomorphisms. We take hint from the fact that for classical (simply-typed and
@@ -1354,7 +1370,7 @@ graph:
 \end{alignat*}
 At this point we have merely restricted relations to functions, and left the
 rest of the interpretation unchanged. However, this is not strictly the desired
-notion of homomorphism. Consider the $\blank^\M$ interpretation for natural
+notion of homomorphism. Consider now again the $\blank^\M$ interpretation for natural
 numbers:
 \begin{alignat*}{5}
   & && (\boldsymbol{\cdot},Nat : \U,zero:\underline{Nat},suc:Nat\ra\underline{Nat})^\M
@@ -1600,7 +1616,7 @@ solutions for this strictness problem:
 \end{enumerate}
 
 In summary, solutions for the strictness problems require significant deviation
-from the approach of the current paper, of require significant further research.
+from the approach of the current paper, or require significant further research.
 
 
 %=====================================================================
@@ -1697,8 +1713,6 @@ seems elusive in conventional homotopy type theory, and we may need two-level
 type theories \cite{semisegal}, or even directed type-theories with native
 notions of higher categories \cite{nuyts2015towards, riehl2017type}.
 
-
-foobar
 
 %% In this paper we specified HIITs and provide part of their semantics, by
 %% computing notions of recursion and induction. Pro

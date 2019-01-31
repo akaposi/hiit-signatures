@@ -1,0 +1,5 @@
+
+constructors
+  S²   : U;
+  base : S²;
+  surf : Id (refl base) (refl base);

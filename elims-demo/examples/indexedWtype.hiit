@@ -1,0 +1,9 @@
+assume
+  I   : U;
+  S   : U;
+  P   : S → U;
+  Out : S → I;
+  In  : (s : S) → P s → I;
+constructors
+  W   : I → U;
+  sup : (s : S) → ((p : P s) → W (In s p)) → W (Out s);
