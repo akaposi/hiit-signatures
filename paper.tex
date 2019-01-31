@@ -193,6 +193,7 @@
 \newcommand{\idl}{\mathsf{idl}}
 \newcommand{\idr}{\mathsf{idr}}
 \newcommand{\inv}{\mathsf{inv}}
+\newcommand{\ID}{\mathsf{\ID}}
 
 
 %% END OF ABBREVS
@@ -1031,7 +1032,7 @@ formally distinguishing $\U[]$ and $[\id]$. Hence, by Hedberg's theorem
 that the non-truncated intrinsic syntax is not constructible from set quotients
 of extrinsic terms (since those always form sets). The non-truncated syntax just
 does not seem to be a sensible notion. This situation is similar to how
-categories in homotopy type theory need to have set-truncated objects
+categories in homotopy type theory need to have set-truncated morphisms
 \cite{ahrens2015univalent}.
 
 Unfortunately, set-truncation makes it impossible to directly interpret
@@ -1129,9 +1130,9 @@ Section \ref{sec:categorical}.
 
 In the following three sections we present syntactic translations yielding
 algebras, homomorphisms, displayed algebras and their sections. The presentation
-here is informal and focuses on readability, similarly to our presentation of
-signatures before.
-
+here, like in Section \ref{sec:tos}, is informal and focuses on readability.
+In particular, we omit interpretations for substitutions and preservation
+proofs for definitional equalities.
 
 \section{Algebras}
 \label{sec:algebras}
@@ -1169,7 +1170,7 @@ interpreted as an iterated $\Sigma$-type.
   & \refl^\A\,\hat{\gamma} && :\equiv \hat{\refl} \\
   & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\A\,\hat{\gamma} && :\equiv \hat{\J}_{\hat{(}a^\A\,\hat{\gamma}\hat{)}\,\hat{(}t^\A\,\hat{\gamma}\hat{)}\,\hat{(}\hat{\lambda} \hat{x}\,\hat{z}.p^\A\,\hat{(}\hat{\gamma}\commah\hat{x}\commah\hat{z}\hat{)}\hat{)}}\,\hat{(}pr^\A\,\hat{\gamma}\hat{)}\,_{\hat{(}u^\A\,\hat{\gamma}\hat{)}}\,\hat{(}eq^\A\,\hat{\gamma}\hat{)} \\
   & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\A\,\hat{\gamma} && :\equiv \hat{\refl} \\
-  & ((\hat{x}\in \hat{A})\ra b)^\A\,\hat{\gamma} && :\equiv (\hat{x}\in \hat{A}\hat{)}\rah  b^\A\,\hat{\gamma} \\
+  & ((\hat{x}\in \hat{A})\ra b)^\A\,\hat{\gamma} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  b^\A\,\hat{\gamma} \\
   & (t\,\hat{u})^\A\,\hat{\gamma} && :\equiv \hat{(}t^\A\,\hat{\gamma}\hat{)}\,\hat{u}
 \end{alignat*}
 \endgroup
@@ -1187,19 +1188,111 @@ We shall keep to the short notation from now on.
 
 %---------------------------------------------------------------------
 
+\section{Displayed Algebras}
+\label{sec:displayed}
+
+The $\blank^\D$ translation computes displayed algebras for a signature, which
+can be viewed as bundles of induction motives and methods. $\blank^\D$ is an
+unary logical predicate translation over the $\blank^\A$ translation. It is
+related to the logical predicate translation of Bernardy et
+al.\ \cite{bernardy12parametricity}, but our implementation differs by
+interpreting contexts as $\Sigma$-types instead of extended contexts.
+
+We fix a universe level $\hat{i}$ for the translation. For each context
+$\Delta$, $\Delta^\D$ is a predicate over the standard interpretation
+$\Delta^\A$. For a type $\Delta\vdash A$, $A^\D$ is a predicate over $A^\A$,
+which also depends on $\hat{\gamma}\in\Delta^\A$ and a witness of
+$\Delta^\D\,\hat{\gamma}$. All of these may refer to a target theory context
+$\hat{\Gamma}$.
+\[
+\infer{\hat{\Gamma}\vdashh\Delta^\D \in \Delta^\A\rah \Type_{\hat{i+1}}}{\hat{\Gamma}\vdash\Delta}
+\hspace{2em}
+\infer{
+  \hat{\Gamma}\vdashh A^\D \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\rah \Delta^\D\,\hat{\gamma}\rah  A^\A\,\hat{\gamma}\rah \Type_{\hat{i+1}}}
+      {\hat{\Gamma}\semicol\Delta\vdash A}
+\]
+For a term $t$, $t^\D$ witnesses that the predicate corresponding to its type
+holds for $t^\A$; this can be viewed as a \emph{fundamental theorem} for the
+predicate interpretation.
+
+\[
+\infer{\hat{\Gamma}\vdashh t^\D \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\hat{(}\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma}\hat{)}\rah  A^\D\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{(}t^\A\,\hat{\gamma}\hat{)}}{\hat{\Gamma}\semicol\Delta\vdash t : A}
+\]
+The implementation of $\blank^\D$ is given below. We leave
+$\hat{\gamma}$-s mostly implicit, marking only $\hat{\gamma^D}$ witnesses.
+\begingroup
+%% \allowdisplaybreaks
+\begin{alignat*}{5}
+  & \boldsymbol{\cdot}^\D\,\hat{\gamma} && :\equiv \hat{\top} \\
+  & (\Delta,\,x:A)^\D\,(\hat{\gamma}\commah\,\hat{t}) && :\equiv \hat{(}\hat{\gamma^D}\in\Delta^D\,\hat{\gamma}\hat{)}\timesh A^D\,\hat{\gamma^D}\,\hat{t} \\
+  & x^\D\,\hat{\gamma^D} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^D} \\
+  & \U^\D\,\hat{\gamma^D}\,\hat{A} && :\equiv \hat{A} \rah  \Type_{\hat{i}} \\
+  & (\underline{a})^\D\,\hat{\gamma^D}\,\hat{t} && :\equiv a^\D\,\hat{\gamma^D}\,\hat{t} \\
+  & ((x:a)\ra B)^\D\,\hat{\gamma^D}\,\hat{f} && :\equiv \hat{(}\hat{x}\in a^\A\,\hat{\gamma}\hat{)}\hat{(}\hat{x^D}\in a^\D\,\hat{\gamma^D}\,\hat{x}\hat{)} \rah  B^\D\,\hat{(}\hat{\gamma}\commah\hat{x}\hat{)}\,\hat{(}\hat{\gamma^D}\commah\hat{x^D}\hat{)}\,\hat{(}\hat{f}\,\hat{x}\hat{)} \\
+  & (t\,u)^\D\,\hat{\gamma^D} && :\equiv \hat{(}t^\D\,\hat{\gamma^D}\hat{)}\,\hat{(} u^\A\,\hat{\gamma}\hat{)}\,\hat{(}u^\D\,\hat{\gamma^D}\hat{)} \\
+  & ((\hat{x}\in \hat{A})\ra B)^\D\,\hat{\gamma^D}\,\hat{f} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  B^\D\,\hat{\gamma^D}\,\hat{(}\hat{f}\,\hat{x}\hat{)} \\
+  & (t\,\hat{u})^\D\,\hat{\gamma^D} && :\equiv t^\D\,\hat{\gamma^D}\,\hat{u} \\
+  & (t=_a u)^\D\,\hat{\gamma^D}\,\hat{e} && :\equiv \TR_{\hat{(}a^\D\,\hat{\gamma^D}\hat{)}}\,\hat{e}\,\hat{(}t^\D\,\hat{\gamma^D}\hat{)} \eqh u^\D\hat{\gamma^D} \\
+  & (\refl_t)^\D\,\hat{\gamma^D} && :\equiv \hat{\refl}_{\hat{(}t^\D\,\hat{\gamma^D}\hat{)}} \\
+  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\D\,\hat{\gamma^D} && :\equiv \hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}pr^\D\,\hat{\gamma^D}\hat{)}\,\hat{(}eq^\A\,\hat{\gamma}\hat{)}\hat{\big)}\,\hat{(}eq^\D\,\hat{\gamma^D}\hat{)} \\
+  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\D\,\hat{\gamma^D} && :\equiv \hat{\refl} \\
+  & ((\hat{x}\in \hat{A})\ra b)^\D\,\hat{\gamma^D}\,\hat{f} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  b^D\,\hat{\gamma^D}\,\hat{(}\hat{f}\,\hat{x}\hat{)} \\
+  & (t\,\hat{u})^\D\,\hat{\gamma^D} && :\equiv t^\D\,\hat{\gamma^D}\,\hat{u}
+\end{alignat*}
+\endgroup
+The predicate for a context is given by iterating $\blank^\D$ for its
+constituent types. For a variable, the corresponding witness is looked up from
+$\hat{\gamma^D}$.
+
+The translation of the universe, given an element of
+$\hat{A}\in\U^\A\,\hat{\gamma}$ (with
+$\U^\A\,\hat{\gamma}\equiv\Type_{\hat{0}}$) returns the predicate space over
+$\hat{A}$. For $\underline{a}$ types, we just return the translation of $a$.
+
+The predicate for a function type for inductive parameters expresses
+preservation of predicates. Witnesses of application are given by recursive
+application of $\blank^\D$. The definitions for the other (non-inductive)
+function spaces are similar, except there is no predicate for the domain types,
+and thus no witnesses are required.
+
+The translation for the equality type $t=_a u$, for each $\hat{e}\in(t=_a
+u)^\A\,\hat{\gamma}$, i.e.\ $\hat{e}\in t^\A\,\hat{\gamma}\eqh
+u^\A\,\hat{\gamma}$, witnesses that $t^\D$ and $u^\D$ are equal. As these have
+different types, we have to transport over the original equality
+$\hat{e}$. Hence, induction methods for path constructors will be \emph{paths
+  over paths} in the sense of homotopy type theory.
+
+$\refl$ is interpreted with just reflexivity in the target syntax. The
+interpretation of $\J$ is given by a double $\hat{\J}$ application, borrowing
+the definition from Lasson \cite{lasson}. Here, we use a shortened $\hat{\J}$
+notation; see the formalization (Section \ref{sec:formalization}) for details.
+
+Again, let us consider the circle example:
+\begin{alignat*}{5}
+  & && (\boldsymbol{\cdot},\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\D\,\,\hat{(}\hat{\tt,\,S^1,\,b,\,loop}\hat{)}\\
+  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{1D}}\in \hat{S^1}\rah\Type_{\hat{i}}\hat{)}\timesh\hat{(}\hat{b^D}\in \hat{S^{1D}\,b}\hat{)}\timesh\hat{(}\hat{loop^D\in \TR_{\,S^{1D}}\,loop\,b^D = b^D}\hat{)}
+\end{alignat*}
+The inputs of $\blank^\D$ here are the signature for the circle (the context in
+black) and an $\hat{S^{1}}$-algebra consisting of three non-$\top$ components.
+It returns a family over the type $\hat{S^1}$, an element of this family
+$\hat{b^D}$ at index $\hat{b}$, and and an equality between $\hat{b^D}$ and
+$\hat{b^D}$ which lies over $\hat{loop}$. This is the same as the usual
+induction motives and methods for the circle, e.g.\ as described in \cite{HoTTbook}.
+
+%% --------------------------------------------------------------------------------
+
 \section{From Logical Relations to Homomorphisms}
 \label{sec:morphisms}
 
 In this section, we specify the $\blank^\M$ translation, which computes
 homomorphisms of algebras. We do so by first considering a logical relation
-interpretation, and then refining it towards computing homomorphisms. For
-dependent type theories, logical relation models are well-known (see
-e.g.\ \cite{atkey}), so they are certainly applicable to our restricted syntax
-as well.
+interpretation, and then refining it towards homomorphisms. For dependent type
+theories, logical relation models are well-known (see e.g.\ \cite{atkey}), so
+they are certainly applicable to our restricted syntax as well.
 
 Below, we list induction motives for $\blank^\M$; these remain the same as we
-move from logical relations to homomorphisms. We fix a universe level $\hat{i}$ for
-the translations.
+move from logical relations to homomorphisms. The universe level $\hat{i}$
+was chosen previously for the $\blank^\D$ translation.
 \[
 \infer{\hat{\Gamma}\vdashh\Delta^\M \in \Delta^\A\rah\Delta^\A\rah \Type_{\hat{i}}}
       {\hat{\Gamma}\vdash\Delta}
@@ -1211,16 +1304,16 @@ the translations.
 
 \[
 \infer{
-  \hat{\Gamma}\vdashh A^\D \hat{ : (\gamma_0\,\gamma_1 : \blc{\Delta^\A})(\gamma^M : \blc{\Delta^\M}\,\gamma_0\,\gamma_1)\ra \blc{A^\M}\,\gamma_0\,\gamma_1\,\gamma^M\,(\blc{t^\A}\,\gamma_0)\,(\blc{t^\A}\,\gamma_1)
+  \hat{\Gamma}\vdashh t^\M\, \hat{ : (\gamma_0\,\gamma_1 : \blc{\Delta^\A})(\gamma^M : \blc{\Delta^\M}\,\gamma_0\,\gamma_1)\ra \blc{A^\M}\,\gamma_0\,\gamma_1\,\gamma^M\,(\blc{t^\A}\,\gamma_0)\,(\blc{t^\A}\,\gamma_1)
       }}
       {\hat{\Gamma}\semicol\Delta\vdash t : A}
 \]
 
 
-Contexts are mapped to (proof-relevant) relations and types to families of relations
-depending on interpreted contexts. For terms, we get something which is often called
-a \emph{fundamental theorem} of a logical relation: every term is related to itself
-in related semantic contexts.
+Contexts are mapped to (proof-relevant) relations and types to families of
+relations depending on interpreted contexts. For terms, we again get a
+fundamental theorem: every term has related standard interpretations in related
+semantic contexts.
 
 We present below the logical relation interpretation only for contexts, variables,
 the universe and the inductive function space.
@@ -1240,22 +1333,22 @@ the universe and the inductive function space.
 \end{alignat*}
 \endgroup
 
-We interpret the universe as relation space, and function types as types
-expressing pointwise relatedness of functions. This interpretation works the
-same way for unrestricted (non-strictly positive) function types as well.
+We interpret the universe as relation space, and function types as relations
+expressing pointwise relatedness of functions. This interpretation would work
+the same way for unrestricted (non-strictly positive) function types as well.
 
 However, we would like to have underlying functions instead of relations in
-homomorphisms. We take hint from the fact that for classical (simply-typed)
-algebraic theories, a logical relation is equivalent to a homomorphism if and
-only if the underlying relation is the graph of a function
+homomorphisms. We take hint from the fact that for classical (simply-typed and
+single-sorted) algebraic theories, a logical relation is equivalent to a
+homomorphism if and only if the underlying relation is the graph of a function
 \cite[pg. 5]{udayReynolds}. Thus we make the following change:
 \begin{alignat*}{5}
   & \U^\M\,\hat{\gamma_0\,\gamma_1\,\gamma^M\,A_0\,A_1} && :\equiv \hat{A_0\ra A_1}
 \end{alignat*}
 This requires us to change $(\underline{a})^\M$ as well, since we need to
-produce a type as result, but $a^M$ now yields a function. We can morally keep
-the old definition, by viewing the result of $a^M$ as a functional relation, and
-relating $t_0$ and $t_1$ by its graph:
+produce a type as result, but $a^M$ now yields a function. We can view the
+result of $a^\M$ as a functional relation, and relate $t_0$ and $t_1$ by its
+graph:
 \begin{alignat*}{5}
   & (\underline{a})^\M\,\hat{\gamma_0\,\gamma_1\,\gamma^M\,t_0\,\,t_1} && :\equiv \hat{
     \blc{a^\M}\,\gamma_0\,\gamma_1\,\gamma^M\,t_0 = t_1}
@@ -1289,122 +1382,25 @@ positive function space. We rely on the domain being small: $(\underline{a})^\M$
 yields an equation, but for general $\hat{\Gamma;\,}\Delta\vdash A$ types,
 $A^\M$ only yields an unknown relation.
 
-$\blank^\M$ is very similar to the translation to displayed algebra sections,
-which is discussed in Section \ref{sec:sections}. In essence, $\blank^\M$ is a
-non-dependently typed version of the section translation. We will discuss in
-more detail the interpretations of equalities and the other function types in
-Section \ref{sec:sections}, and we leave the rest of the homomorphism
-translation to Appendix \ref{sec:morphismrules}.
+$\blank^\M$ is similar to the translation to displayed algebra sections, which
+is discussed in the next Section. We will discuss in more detail the
+interpretations of equalities and the other (external) function types there. A
+full listing for the homomorphism translation can be found in Appendix
+\ref{sec:morphismrules}.
 
-
-%% --------------------------------------------------------------------------------
-
-\section{Displayed Algebras}
-\label{sec:displayed}
-
-The $\blank^\D$ translation computes displayed algebras for a signature, which
-can be viewed as bundles of induction motives and methods. $\blank^\D$ is
-essentially an unary logical predicate translation over the $\blank^\A$
-model. It is related to the logical predicate translation of Bernardy et
-al.\ \cite{bernardy12parametricity}, but our implementation differs by
-interpreting contexts as $\Sigma$-types instead of extended contexts.
-
-For each
-context $\Delta$, $\Delta^\D$ is a predicate over the standard interpretation
-$\Delta^\A$. For a type $\Delta\vdash A$, $A^\D$ is a predicate over $A^\A$,
-which also depends on $\hat{\gamma}\in\Delta^\A$ and a witness of
-$\Delta^\D\,\hat{\gamma}$. All of these may refer to a target theory context
-$\hat{\Gamma}$.
-\[
-\infer{\hat{\Gamma}\vdashh\Delta^\D \in \Delta^\A\rah \Type_{\hat{i+1}}}{\hat{\Gamma}\vdash\Delta}
-\hspace{2em}
-\infer{
-  \hat{\Gamma}\vdashh A^\D \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\rah \Delta^\D\,\hat{\gamma}\rah  A^\A\,\hat{\gamma}\rah \Type_{\hat{i+1}}}
-      {\hat{\Gamma}\semicol\Delta\vdash A}
-\]
-For a term $t$, $t^\D$ witnesses that the predicate corresponding to its type
-holds for $t^\A$; again this can be viewed as a fundamental theorem for the
-predicate interpretation.
-
-\[
-\infer{\hat{\Gamma}\vdashh t^\D \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\hat{(}\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma}\hat{)}\rah  A^\D\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{(}t^\A\,\hat{\gamma}\hat{)}}{\hat{\Gamma}\semicol\Delta\vdash t : A}
-\]
-The implementation of $\blank^\D$ is given below. We leave
-$\hat{\gamma}$-s mostly implicit, marking only $\hat{\gamma^D}$ witnesses.
-\begingroup
-%% \allowdisplaybreaks
-\begin{alignat*}{5}
-  & \boldsymbol{\cdot}^D\,\hat{\gamma} && :\equiv \hat{\top} \\
-  & (\Delta,\,x:A)^D\,(\hat{\gamma}\commah\,\hat{t}) && :\equiv \hat{(}\hat{\gamma^D}\in\Delta^D\,\hat{\gamma}\hat{)}\timesh A^D\,\hat{\gamma^D}\,\hat{t} \\
-  & x^D\,\hat{\gamma^D} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^D} \\
-  & \U^D\,\hat{\gamma^D}\,\hat{A} && :\equiv \hat{A} \rah  \Type_{\hat{i}} \\
-  & (\underline{a})^D\,\hat{\gamma^D}\,\hat{t} && :\equiv a^\D\,\hat{\gamma^D}\,\hat{t} \\
-  & ((x:a)\ra B)^D\,\hat{\gamma^D}\,\hat{f} && :\equiv \hat{(}\hat{x}\in a^\A\,\hat{\gamma}\hat{)}\hat{(}\hat{x^D}\in a^\D\,\hat{\gamma^D}\,\hat{x}\hat{)} \rah  B^\D\,\hat{(}\hat{\gamma}\commah\hat{x}\hat{)}\,\hat{(}\hat{\gamma^D}\commah\hat{x^D}\hat{)}\,\hat{(}\hat{f}\,\hat{x}\hat{)} \\
-  & (t\,u)^D\,\hat{\gamma^D} && :\equiv \hat{(}t^\D\,\hat{\gamma^D}\hat{)}\,\hat{(} u^\A\,\hat{\gamma}\hat{)}\,\hat{(}u^\D\,\hat{\gamma^D}\hat{)} \\
-  & ((\hat{x}\in \hat{A})\ra B)^D\,\hat{\gamma^D}\,\hat{f} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  B^\D\,\hat{\gamma^D}\,\hat{(}\hat{f}\,\hat{x}\hat{)} \\
-  & (t\,\hat{u})^D\,\hat{\gamma^D} && :\equiv t^\D\,\hat{\gamma^D}\,\hat{u} \\
-  & (t=_a u)^D\,\hat{\gamma^D}\,\hat{e} && :\equiv \TR_{\hat{(}a^\D\,\hat{\gamma^D}\hat{)}}\,\hat{e}\,\hat{(}t^\D\,\hat{\gamma^D}\hat{)} \eqh u^\D\hat{\gamma^D} \\
-  & (\refl_t)^D\,\hat{\gamma^D} && :\equiv \hat{\refl}_{\hat{(}t^\D\,\hat{\gamma^D}\hat{)}} \\
-  & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^D\,\hat{\gamma^D} && :\equiv \hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}pr^\D\,\hat{\gamma^D}\hat{)}\,\hat{(}eq^\A\,\hat{\gamma}\hat{)}\hat{\big)}\,\hat{(}eq^\D\,\hat{\gamma^D}\hat{)} \\
-  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^D\,\hat{\gamma^D} && :\equiv \hat{\refl} \\
-  & ((\hat{x}\in \hat{A})\ra b)^D\,\hat{\gamma^D}\,\hat{f} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  b^D\,\hat{\gamma^D}\,\hat{(}\hat{f}\,\hat{x}\hat{)} \\
-  & (t\,\hat{u})^D\,\hat{\gamma^D} && :\equiv t^\D\,\hat{\gamma^D}\,\hat{u}
-\end{alignat*}
-\endgroup
-The predicate for a context is given by iterating $\blank^\D$ for its
-constituent types. For a variable, the corresponding witness is looked up from
-$\hat{\gamma^D}$.
-
-The translation of the universe, given an element of
-$\hat{A}\in\U^\A\,\hat{\gamma}$ (with
-$\U^\A\,\hat{\gamma}\equiv\Type_{\hat{0}}$) returns the predicate space over
-$\hat{A}$. For $\underline{a}$ types, we just return the translation of $a$.
-
-The predicate for a function type for inductive parameters expresses
-preservation of predicates. Witnesses of application are given by recursive
-application of $\blank^\D$. The definitions for the other (non-inductive)
-function spaces are similar, except there is no predicate for the domain types,
-and thus no witnesses are required.
-
-The predicate for the equality type $t=_a u$, for each $\hat{e}\in(t=_a
-u)^\A\,\hat{\gamma}$, i.e.\ $\hat{e}\in t^\A\,\hat{\gamma}\eqh
-u^\A\,\hat{\gamma}$, says that $t^\D$ and $u^\D$ are equal. As these have
-different types, we have to transport over the original equality
-$\hat{e}$. Hence, induction methods for path constructors will be \emph{paths
-  over paths} in the sense of homotopy type theory.
-
-$\refl$ is interpreted with just reflexivity in the target syntax. The
-interpretation of $\J$ is given by a double $\hat{\J}$ application, borrowing
-the definition from Lasson \cite{lasson}. Here, we use a shortened $\hat{\J}$
-notation; see the formalization (Section \ref{sec:formalization}) for details.
-
-Again, let us consider the circle example:
-\begin{alignat*}{5}
-  & && (\boldsymbol{\cdot},\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\D\,\,\hat{(}\hat{\tt,\,S^1,\,b,\,loop}\hat{)}\\
-  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{1D}}\in \hat{S^1}\rah\Type_{\hat{i}}\hat{)}\timesh\hat{(}\hat{b^D}\in \hat{S^{1D}\,b}\hat{)}\timesh\hat{(}\hat{loop^D\in \TR_{\,S^{1D}}\,loop\,b^D = b^D}\hat{)}
-\end{alignat*}
-The inputs of $\blank^\D$ here are the signature for the circle (the context in
-black) and an $\hat{S^{1}}$-algebra consisting of three non-$\top$ components.
-It returns a family over the type $\hat{S^1}$, an element of this family
-$\hat{b^D}$ at index $\hat{b}$, and and an equality between $\hat{b^D}$ and
-$\hat{b^D}$ which lies over $\hat{loop}$. This is the same as the usual
-induction motives and methods for the circle, e.g.\ as described in \cite{HoTTbook}.
 
 %% --------------------------------------------------------------------------------
 
 \section{Displayed Algebra Sections}
 \label{sec:sections}
 
-TODO revision
-
 The operation $\blank^\S$ yields displayed algebra sections. Sections can be
 viewed as dependent homomorphisms: while homomorphisms are structure-preserving
 families of functions, sections are structure-preserving families of dependent
 functions.
 
-Contexts are interpreted as dependent relations between algebras and
-displayed algebras. The universe level $i$ was previously chosen for the
-$\blank^\M$ and $\blank^\D$ translations.
+Contexts are interpreted as dependent relations between algebras and displayed
+algebras. We again fix a universe level $\hat{i}$.
 \[
 \infer{\hat{\Gamma}\semicol\Delta^\S \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\rah \Delta^\D\,\hat{\gamma}\rah \Type_{\hat{i}}}{\hat{\Gamma}\vdash\Delta}
 \]
@@ -1414,14 +1410,13 @@ context.
 \[
 \infer{\hat{\Gamma}\vdashh A^\S \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\hat{(}\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma}\hat{)}\hat{(}\hat{\gamma^S}\in\Delta^\S\,\hat{\gamma}\,\hat{\gamma^D}\hat{)}\hat{(}\hat{x}\in A^\A\,\hat{\gamma}\hat{)}\rah  A^\D\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{x}\rah \Type_{\hat{i}}}{\hat{\Gamma}\semicol\Delta\vdash A}
 \]
-For a term $t$, $t^\S$ witnesses that the relation corresponding to
-its type holds for $t^\A$ and $t^\D$.
+For a term $t$, $t^\S$ again witnesses a fundamental theorem.
 \[
 \infer{\hat{\Gamma}\vdashh t^\S \in \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\hat{(}\hat{\gamma^D}\in\Delta^\D\,\hat{\gamma}\hat{)}\hat{(}\hat{\gamma^S}\in\Delta^\S\,\hat{\gamma}\,\hat{\gamma^D}\hat{)}\rah  A^\S\,\hat{\gamma}\,\hat{\gamma^D}\,\hat{\gamma^S}\,\hat{(}t^\A\,\hat{\gamma}\hat{)}\,\hat{(}t^\D\,\hat{\gamma}\,\hat{\gamma^D}\hat{)}}{\hat{\Gamma}\semicol\Delta \vdash t : A}
 \]
-We present the implementation below. Here, we make $\hat{\gamma^D}$-s implicit
-in addition to $\hat{\gamma}$-s, and mostly notate $\hat{\gamma^S}$ parameters
-and applications,
+We present the implementation below. Here, we make $\hat{\gamma}$-s and
+$\hat{\gamma^D}$-s implicit and mostly notate $\hat{\gamma^S}$ parameters and
+applications.
 
 \begingroup
 \allowdisplaybreaks
@@ -1448,52 +1443,47 @@ and applications,
 \end{alignat*}
 \endgroup
 
-The $\U^\S$ and $(\underline{a})^\S$ definitions are the key points of
-the $\blank^\S$ operation. The definitions for the other $\blank^\S$
-cases are largely determined by these.
+The interpretations follow the same pattern as in the case of $\blank^\M$ up
+until $((x:a)\ra B)^\S$, with $\U^\S$ defined as a dependent function instead of
+a non-dependent one. Also, $\U^\S\,\hat{\gamma^S}\,\hat{A}\,\hat{A^D}$ is
+precisely the type of sections of the $\hat{A^D}$ type family.
 
-The $\U^\S$ rule yields the type of the eliminator for a type
-formation rule. In the natural numbers example above, the non-indexed
-$Nat : \U$ sort is interpreted as $\hat{\hat{n^S} \in (\hat{x}\in
-\hat{n})\rah \hat{n^D}\,\hat{x}}$. For indexed sorts, the indices are
-first processed by the $\blank^\S$ cases for inductive and non-inductive
-parameters, until the ultimate $\U$ return type is reached. Hence, the
-eliminator for a sort is always a function.
+Let us consider now the translation in with the
+corresponding induction principles in mind, defined as $\mathsf{Induction}$ in
+Section \ref{sec:general}.
+
+The $\U^\S$ rule yields the type of the eliminator function for a type
+constructor. For natural numbers, the non-indexed $Nat : \U$ is interpreted
+as $\hat{\hat{Nat^S} \in (\hat{x}\in \hat{Nat})\rah \hat{Nat^D}\,\hat{x}}$. For
+indexed types, the indices are first processed by the $\blank^\S$ cases for
+inductive and external function parameters, until the ultimate $\U$ return type
+is reached. Hence, we always get an eliminator function for a type constructor.
 
 Analogously, the $\blank^\S$ result type for a point or path constructor is
-always a $\beta$-rule, i.e.\ a function type ending in an equality. To
-see why, consider the $(\underline{a})^\S$ definition. It expresses
-that applications of $a^\S$ eliminators must be equal to the
-corresponding $\hat{t^D}$ induction methods. Hence, for path and point
-constructor types, $\blank^\S$ works by first processing all inductive and
-non-inductive indices, then finally returning an equality type.
+always a $\beta$-rule, i.e.\ a function type returning an equality. That is
+because $(\underline{a})^\S$ expresses that applications of $a^\S$ eliminators
+must be equal to the corresponding $\hat{t^D}$ induction methods. Hence, for
+path and point constructor types, $\blank^\S$ works by first processing all
+inductive and external parameters, then finally returning an equality type.
 
-Let us also consider the $((x:a)\ra B)^\S$ case for inductive
-parameters. Here, we make crucial use of the fact that the domain type
-$a$ is small. This provides us $a^\S\,\hat{\gamma^3\,x}$, which we use
-to witness the $a^\D\,\hat{\gamma^2}\,\hat{x}$ hypothesis for
-$B^\S$. Without the size restriction on inductive parameters (which
-enforces strict positivity), the $\blank^\S$ operation would not be
-possible at all, because $a^\S$ for a large $a$ type would be merely
-an opaque relation instead of an eliminator function.
-
-Here, we only provide abbreviated definitions for the $t\,u$, $t=_a
-u$, $\refl$, $\J$ and $\J\beta$ cases. In the $\J$ case, we write
+Here, we only provide abbreviated definitions for the $t\,u$, $t=_a u$, $\refl$,
+$\J$ and $\J\beta$ cases. In the $\J$ case, we write
 $\hat{\mathsf{uncurry}}\,p^\D$ for
-$\hat{\lambda\,\gamma\,\gamma^D\,x\,x^D\,z\,z^D.}\,p^\D\,(\hat{\gamma,x,z})\,(\hat{\gamma^D,x^D,z^D})$
-and analogously elsewhere. The full definitions can be found in the
+$\hat{\lambda\,\gamma\,\gamma^D\,x\,x^D\,z\,z^D.}\,p^\D\,\hat{(}\hat{\gamma,x,z}\hat{)}\,\hat{(}\hat{\gamma^D,x^D,z^D}\hat{)}$
+and analogously elsewhere, to adjust for the fact that $p$ abstracts over
+additional $x$ and $z$ variables. The full definitions can be found in the
 Agda formalization. The definitions are highly constrained by the
 required types, and not particularly difficult to implement with the
-help of a proof assistant; they all involve doing successive path
+help of a proof assistant: they all involve doing successive path
 induction on all equalities available from induction hypotheses, with
 appropriately generalized induction motives.
 
-The full $(\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\S$ definition is quite
-large, and, for instance, yields a very large $\beta$-rule for the
-higher inductive torus definition (the reader can confirm this using
-the Haskell implementation). Nevertheless, an implementation focused
-on practicality may provide smaller specialized $\blank^\S$ definitions for
-commonly used equality operations such as composition or inverses.
+The full $(\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\S$ definition is quite large, and,
+for instance, yields a very large $\beta$-rule for the higher inductive torus
+definition (the reader can confirm this using the Haskell implementation). One
+could have an implementation with specialized cases for commonly used operations
+such as path compositions and inverses, in order to produce smaller translation
+output.
 
 The circle example is a bit more interesting here:
 \begin{alignat*}{5}
@@ -1518,40 +1508,87 @@ the same for indexed W-types.
 
 %=====================================================================
 
-\section{On Extension to Categorical Semantics}
+\section{Possible Extensions to Categorical Semantics}
 \label{sec:categorical}
 
-TODO
+So far, we were able to compute algebras, displayed algebras, morphisms and
+sections, and this allows us to state recursion and induction principles.
+Reiterating Section \ref{sec:general}, for a signature
+$\hat{\Gamma\vdash}\,\Delta$ and assuming $\hat{\Gamma\vdash \mathsf{InitialAlg}
+  : \blc{\Delta^\A}}$, we have the following types for induction and recursion:
+\begin{alignat*}{5}
+& \hat{\Gamma\vdash \mathsf{Induction} :
+    (\gamma^D : \blc{\Delta^\D}\,\mathsf{InitialAlg})\ra \blc{\Delta^\S}\,\mathsf{InitialAlg}\,\gamma^D}\\
+& \hat{\Gamma\vdash \mathsf{Recursion} :
+    (\gamma : \blc{\Delta^\A})\ra \blc{\Delta^\M}\,\mathsf{InitialAlg}\,\gamma}
+\end{alignat*}
 
-%% \section{Existence of HIITs}
-%% \label{sec:adding}
+However, this is not the full picture. We would also like to have a
+\emph{category} of algebras, with homomorphisms as morphisms, identity
+morphisms, composition together with category laws. This is not without
+difficulties.
 
-%% The target type theory supports HIITs if whenever we can derive
-%% $\hat{\Gamma}\vdash\Delta$ in the source theory, the following rules are
-%% admissible.
-%% \[
-%% \infer{\hat{\Gamma}\vdashh\hat{\con}_\Delta\in \Delta^\C}{\vspace{1em}}
-%% \hspace{5em}
-%% \infer{\hat{\Gamma}\vdashh\hat{\elim}_\Delta\,\hat{m}\in\Delta^\E\,\hat{\con}_\Delta\,\hat{m}}{\hat{\Gamma}\vdashh \hat{m}\in \Delta^\M\,\hat{\con}_\Delta}
-%% \]
-%% We can add HIITs to the target theory by extending it with the theory
-%% of codes (making the target and the source theory the same) and adding
-%% the above rules with the additional assumption of
-%% $\hat{\Gamma}\vdash\Delta$. However, this only adds HIITs with weak
-%% computation rules. To make the computation rules definitional, we
-%% would probably need a two-level target type theory with an equality
-%% having an equality reflection rule as in Voevodsky's homotopy type
-%% system \cite{hts} or Andromeda \cite{andromeda}.
+We are working in an UIP-free setting. Here, standard definitions of categories
+feature set-truncated morphisms \cite{HoTTbook}. But we have non-truncated
+notions of algebras and morphisms, so we cannot use the standard
+definitions. One solution is to simply use non-truncated categories; these have
+been previously called ``precategories'' or ``wild categories''
+\cite{semisegal}. Sojakova demonstrated \cite{sojakova} that working with wild
+categories internally to type theory is enough to prove equivalence of induction
+and homotopy initiality for a class of higher inductive types, which suggests
+that the same might be possible for HIITs. Still, it would be desirable to build
+semantics of HIITs in a richer ($\omega$, 1)-categorical setting.
+
+However, out current approach does not scale to the point where we have to worry
+about higher categories. We explain in the following. The logical next step
+towards a categorical semantics would be defining a $\blank^\ID$ translation,
+which computes identity homomorphisms:
+
+\[
+\infer{\hat{\Gamma}\vdashh\Delta^\ID\,\hat{:\,(\gamma : \blc{\Delta^\A})\ra \blc{\Delta^\M}\,\gamma\,\gamma}}
+      {\hat{\Gamma}\vdash\Delta}
+\hspace{1em}
+\infer{
+  \hat{\Gamma}\vdashh A^\ID\,\hat{:\,(\gamma : \blc{\Delta^\A})(t : \blc{A^\A}\,\gamma)\ra \blc{A^\M}\,\gamma\,\gamma\,(\blc{\Delta^\ID}\,\gamma)\,t\,t }}
+      {\hat{\Gamma}\semicol\Delta\vdash A}
+\]
+
+\[
+\infer{
+  \hat{\Gamma}\vdashh t^\ID\,\hat{:\, (\gamma : \blc{\Delta^\A})\ra
+       \blc{t^\M}\,\gamma\,\gamma\,(\blc{\Delta^\ID}\,\gamma) = \blc{A^\ID}\,\gamma\,(\blc{t^\A}\,\gamma) }}
+      {\hat{\Gamma}\semicol\Delta\vdash t : A}
+\]
+
+Here, the interpretation of terms witnesses functoriality: $t^\M$ maps
+identity morphisms in $\Delta$ to displayed identity morphisms in $A$.
+We translate $\U$ to identity functions:
+\[
+\U^\ID\,\hat{\gamma\,A} :\equiv \hat{\lambda\,(x : A).\, x}
+\]
+Note that $\U$ and $\U[\sigma]$ are definitionally equal in the theory of
+signatures, where $\sigma$ is a parallel substitution. The translation of the
+latter would be the following (omitting many details, including the handling of
+substitutions in the translation):
+\[
+(\U[\sigma])^\ID\,\hat{\gamma\,A} \equiv \hat{\TR_{(\lambda\,x. A\ra A)}\,(\sigma^\ID\,\gamma)\,(\lambda\,x.\, x)}
+\]
+Here, $\hat{\sigma^\ID\,\gamma}$ yields an equation for functoriality of
+$\hat{\sigma}$. Since the transport is constant, the result is propositionally
+equal to $\hat{\lambda\,x.\, x}$. However, we need to preserve $\U = \U[\sigma]$
+up to definitional equality.
+
+
+
 
 %=====================================================================
 
 \section{Formalization and Implementation}
 \label{sec:formalization}
 
-There are three additional development artifacts to the current work:
-a Haskell implementation, a shallow Agda formalization and a deep Agda
-formalization. All three are available from the homepage of the first
-author.
+There are three additional development artifacts to the current work: a Haskell
+implementation, a shallow Agda formalization and a deep Agda formalization. All
+three are available from the homepage of the first author.
 
 The Haskell implementation takes as input a file which contains a
 representation of a $\hat{\Gamma}\vdash\Delta$ specification of a
@@ -1654,7 +1691,7 @@ by terms in the theory of codes.
 \bibliography{b}
 
 \appendix
-\section{The homomorphism interpretation}
+\section{The homomorphism translation}
 \label{sec:morphismrules}
 
 We list below the $\blank^\M$ interpretations for the syntax. For brevity, we
