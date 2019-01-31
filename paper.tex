@@ -1342,6 +1342,15 @@ the universe and the inductive function space.
 We interpret the universe as relation space, and function types as relations
 expressing pointwise relatedness of functions. This interpretation would work
 the same way for unrestricted (non-strictly positive) function types as well.
+For an example, this yields the following definition of logical relations for
+natural number algebras:
+\begin{alignat*}{5}
+  & && (\boldsymbol{\cdot},Nat : \U,zero:\underline{Nat},suc:Nat\ra\underline{Nat})^\M
+    \,\hat{(\tt,\,N_0,\,z_0,\,s_0)\,(\tt,\,N_1,\,z_1,\,s_1)} \\
+    & \equiv\,\, && \hat{\top\times(N^M : N_0\ra N_1 \ra \Type_0)}\\
+    & && \hat{\hspace{1em}\times\,\,(z^M : N^M\,z_0\,z_1)}\\
+    & && \hat{\hspace{1em}\times\,\,(s^M : (x_0 : N_0)(x_1 : N_1)(x^M : N^M\,x_0\,x_1)\ra N^M\,(s_0\,x_0)\,(s_1\,x_1))}
+\end{alignat*}
 
 However, we would like to have underlying functions instead of relations in
 homomorphisms. We take hint from the fact that for classical (simply-typed and
@@ -1361,7 +1370,7 @@ graph:
 \end{alignat*}
 At this point we have merely restricted relations to functions, and left the
 rest of the interpretation unchanged. However, this is not strictly the desired
-notion of homomorphism. Consider the $\blank^\M$ interpretation for natural
+notion of homomorphism. Consider now again the $\blank^\M$ interpretation for natural
 numbers:
 \begin{alignat*}{5}
   & && (\boldsymbol{\cdot},Nat : \U,zero:\underline{Nat},suc:Nat\ra\underline{Nat})^\M
