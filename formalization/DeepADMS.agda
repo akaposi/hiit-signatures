@@ -240,7 +240,7 @@ El (aᴬ , aᴰ , aᴹ , aˢ) =
 El[] : ∀{Γ Δ}{σ : Sub Γ Δ}{a : Tm Δ U}
      → El a [ σ ]T ≡ El (tr (Tm Γ) (U[] {Γ}{Δ}{σ}) (_[_]t {Γ}{Δ}{U} a σ))
 El[] = refl
-
+{-
 -- Inductive functions
 --------------------------------------------------------------------------------
 
@@ -788,3 +788,55 @@ Transp[] :
   (_[_]t {Γ} {Δ} {El {Δ} a} u σ))} (Id[] {Γ} {Δ} {σ} {a} {t} {u})))
   (_[_]t {Γ} {Δ} {El {Δ} (Id {Δ} a t u)} eq σ)))
 Transp[] {Γ}{Δ}{σ}{a} P {t}{u} pt eq = refl
+-}
+
+ap→ : ∀{ℓ ℓ'}{A B : Set ℓ}{f : A → Set ℓ'}{g : B → Set ℓ'}(e : A ≡ B){a : A} →
+  tr (λ x → x → Set ℓ') e f ≡ g → f a ≡ g (coe e a)
+ap→ refl {a} = ap (λ h → h a)
+
+ap2' :
+  ∀ {i j k}{A : Set i}{B : Set j}{C : Set k}(f : A → B → C)
+    {a₀ : A}{a₁ : A}(a₂ : a₀ ≡ a₁)
+    {b₀ : B}{b₁ : B}(b₂ : b₀ ≡ b₁)
+  → f a₀ b₀ ≡ f a₁ b₁
+ap2' f refl refl = refl
+
+IdU : ∀{Γ}(a b : Tm Γ U) → Ty Γ
+IdU {Γᴬ , Γᴰ , Γᴹ , Γˢ} (aᴬ , aᴰ , aᴹ , aˢ) (bᴬ , bᴰ , bᴹ , bˢ) =
+  (λ γ → aᴬ γ ≡ bᴬ γ) ,
+--  (λ γ γᴰ eq → (α : aᴬ γ) → aᴰ γ γᴰ α ≡ bᴰ γ γᴰ (coe eq α)) ,
+  (λ γ γᴰ eq → tr (λ x → x → Set ℓ) eq (aᴰ γ γᴰ) ≡ bᴰ γ γᴰ) ,
+  (λ γ₀ γ₁ γᴹ eq₀ eq₁ → coe (ap2' (λ A B → Lift (A → B)){aᴬ γ₀}{bᴬ γ₀} eq₀ {aᴬ γ₁}{bᴬ γ₁} eq₁) (aᴹ γ₀ γ₁ γᴹ) ≡ (bᴹ γ₀ γ₁ γᴹ) ) ,
+--  λ γ γᴰ γˢ eq eqᴰ → (α : aᴬ γ) → bˢ γ γᴰ γˢ (coe eq α) ≡ coe (eqᴰ α) (aˢ γ γᴰ γˢ α)
+  λ γ γᴰ γˢ eq eqᴰ → (α : aᴬ γ) → bˢ γ γᴰ γˢ (coe eq α) ≡ coe (ap→ eq eqᴰ) (aˢ γ γᴰ γˢ α)
+
+IdU[] : ∀{Γ}{a b : Tm Γ U}{Θ}{σ : Sub Θ Γ} →
+  IdU a b [ σ ]T ≡
+  IdU (tr (Tm Θ) (U[] {Θ}{Γ}{σ}) (_[_]t {Θ}{Γ}{U} a σ))
+      (tr (Tm Θ) (U[] {Θ}{Γ}{σ}) (_[_]t {Θ}{Γ}{U} b σ))
+IdU[] = refl
+
+reflU : ∀{Γ}(a : Tm Γ U) → Tm Γ (IdU a a)
+reflU {Γᴬ , Γᴰ , Γᴹ , Γˢ} (aᴬ , aᴰ , aᴹ , aˢ) =
+  (λ γ → refl) ,
+  (λ γ γᴰ → refl) ,
+  (λ γ₀ γ₁ γᴹ → refl) ,
+  λ γ γᴰ γˢ α → refl
+
+reflU[] : ∀{Γ}{a : Tm Γ U}{Θ}{σ : Sub Θ Γ} →
+  tr (Tm Θ) (IdU[] {Γ}{a}{a}{Θ}{σ}) (_[_]t {Θ}{Γ}{IdU a a} (reflU a) σ) ≡ reflU (tr (Tm Θ) (U[] {Θ}{Γ}{σ}) (_[_]t {Θ}{Γ}{U} a σ))
+reflU[] = refl
+
+TranspU : ∀{Γ}{a b : Tm Γ U}(p : Tm (Γ ▶ U) U)(pa : Tm Γ (El p [ <_> {Γ}{U} a ]T))(eq : Tm Γ (IdU a b)) → Tm Γ (El p [ <_> {Γ}{U} b ]T)
+TranspU {Γᴬ , Γᴰ , Γᴹ , Γˢ}{aᴬ , aᴰ , aᴹ , aˢ}{bᴬ , bᴰ , bᴹ , bˢ}(pᴬ , pᴰ , pᴹ , pˢ)(paᴬ , paᴰ , paᴹ , paˢ)(eᴬ , eᴰ , eᴹ , eˢ) =
+  (λ γ → lift (tr (λ x → pᴬ (γ , x)) (eᴬ γ) (lower (paᴬ γ)))) ,
+  (λ γ γᴰ → lift (tr (λ z → pᴰ (γ , bᴬ γ) (γᴰ , z) (tr (λ x → pᴬ (γ , x)) (eᴬ γ) (lower (paᴬ γ))))
+                     (eᴰ γ γᴰ)
+                     (J (λ z e → pᴰ (γ , z) (γᴰ , tr (λ x → x → Set ℓ) e (aᴰ γ γᴰ)) (tr (λ x → pᴬ (γ , x)) e (lower (paᴬ γ)))) (lower (paᴰ γ γᴰ)) (eᴬ γ)))) ,
+  (λ γ₀ γ₁ γᴹ → lift ( ap (λ z → z (lower (paᴬ γ₀))){λ z → lower (pᴹ (γ₀ , bᴬ γ₀) (γ₁ , bᴬ γ₁) (γᴹ , bᴹ γ₀ γ₁ γᴹ)) (tr (λ x → pᴬ (γ₀ , x)) (eᴬ γ₀) z)}{λ z → tr (λ x → pᴬ (γ₁ , x)) (eᴬ γ₁) (lower (pᴹ (γ₀ , aᴬ γ₀) (γ₁ , aᴬ γ₁) (γᴹ , aᴹ γ₀ γ₁ γᴹ)) z)}
+                          (ext λ z → {!!})
+                     ◾ ap (tr (λ x → pᴬ (γ₁ , x)) (eᴬ γ₁)) (lower (paᴹ γ₀ γ₁ γᴹ)))) ,
+  -- lower (paᴹ γ₀ γ₁ γᴹ)
+  -- lower (eᴹ γ₀ γ₁ γᴹ)
+  {!!}
+
