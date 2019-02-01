@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K #-}
+-- {-# OPTIONS --without-K #-}
 
 open import Lib
 
@@ -47,24 +47,24 @@ infixl 8 _[_]t
 --------------------------------------------------------------------------------
 
 i : Level
-i = suc (suc ℓ)
+i = lsuc (lsuc ℓ)
 
 j : Level
-j = suc ℓ
+j = lsuc ℓ
 
 -- Base CwF (category with families), i.e. the explicit substitution calculus
 --------------------------------------------------------------------------------
 
 Con =
    ∃ λ (Γᴬ : Set₁) →
-   ∃ λ (Γᴰ : Γᴬ → Set (suc ℓ)) →
+   ∃ λ (Γᴰ : Γᴬ → Set (lsuc ℓ)) →
    ∃ λ (Γᴹ : Γᴬ → Γᴬ → Set ℓ)  →
        ((γ : Γᴬ) → Γᴰ γ → Set ℓ)
 
 Ty : Con → Set i
 Ty (Γᴬ , Γᴰ , Γᴹ , Γˢ) =
    ∃ λ (Aᴬ : Γᴬ → Set₁) →
-   ∃ λ (Aᴰ : (γ : Γᴬ) → Γᴰ γ → Aᴬ γ → Set (suc ℓ)) →
+   ∃ λ (Aᴰ : (γ : Γᴬ) → Γᴰ γ → Aᴬ γ → Set (lsuc ℓ)) →
    ∃ λ (Aᴹ : (γ₀ γ₁ : Γᴬ) → Γᴹ γ₀ γ₁ → Aᴬ γ₀ → Aᴬ γ₁ → Set ℓ) →
              (γ : Γᴬ)(γᴰ : Γᴰ γ)(γˢ : Γˢ γ γᴰ)(α : Aᴬ γ) → Aᴰ γ γᴰ α → Set ℓ
 
@@ -240,7 +240,7 @@ El (aᴬ , aᴰ , aᴹ , aˢ) =
 El[] : ∀{Γ Δ}{σ : Sub Γ Δ}{a : Tm Δ U}
      → El a [ σ ]T ≡ El (tr (Tm Γ) (U[] {Γ}{Δ}{σ}) (_[_]t {Γ}{Δ}{U} a σ))
 El[] = refl
-{-
+
 -- Inductive functions
 --------------------------------------------------------------------------------
 
@@ -788,27 +788,18 @@ Transp[] :
   (_[_]t {Γ} {Δ} {El {Δ} a} u σ))} (Id[] {Γ} {Δ} {σ} {a} {t} {u})))
   (_[_]t {Γ} {Δ} {El {Δ} (Id {Δ} a t u)} eq σ)))
 Transp[] {Γ}{Δ}{σ}{a} P {t}{u} pt eq = refl
--}
 
-ap→ : ∀{ℓ ℓ'}{A B : Set ℓ}{f : A → Set ℓ'}{g : B → Set ℓ'}(e : A ≡ B){a : A} →
-  tr (λ x → x → Set ℓ') e f ≡ g → f a ≡ g (coe e a)
-ap→ refl {a} = ap (λ h → h a)
-
-ap2' :
-  ∀ {i j k}{A : Set i}{B : Set j}{C : Set k}(f : A → B → C)
-    {a₀ : A}{a₁ : A}(a₂ : a₀ ≡ a₁)
-    {b₀ : B}{b₁ : B}(b₂ : b₀ ≡ b₁)
-  → f a₀ b₀ ≡ f a₁ b₁
-ap2' f refl refl = refl
+-- U identity
+--------------------------------------------------------------------------------
 
 IdU : ∀{Γ}(a b : Tm Γ U) → Ty Γ
 IdU {Γᴬ , Γᴰ , Γᴹ , Γˢ} (aᴬ , aᴰ , aᴹ , aˢ) (bᴬ , bᴰ , bᴹ , bˢ) =
   (λ γ → aᴬ γ ≡ bᴬ γ) ,
---  (λ γ γᴰ eq → (α : aᴬ γ) → aᴰ γ γᴰ α ≡ bᴰ γ γᴰ (coe eq α)) ,
-  (λ γ γᴰ eq → tr (λ x → x → Set ℓ) eq (aᴰ γ γᴰ) ≡ bᴰ γ γᴰ) ,
-  (λ γ₀ γ₁ γᴹ eq₀ eq₁ → coe (ap2' (λ A B → Lift (A → B)){aᴬ γ₀}{bᴬ γ₀} eq₀ {aᴬ γ₁}{bᴬ γ₁} eq₁) (aᴹ γ₀ γ₁ γᴹ) ≡ (bᴹ γ₀ γ₁ γᴹ) ) ,
---  λ γ γᴰ γˢ eq eqᴰ → (α : aᴬ γ) → bˢ γ γᴰ γˢ (coe eq α) ≡ coe (eqᴰ α) (aˢ γ γᴰ γˢ α)
-  λ γ γᴰ γˢ eq eqᴰ → (α : aᴬ γ) → bˢ γ γᴰ γˢ (coe eq α) ≡ coe (ap→ eq eqᴰ) (aˢ γ γᴰ γˢ α)
+  (λ γ γᴰ e → tr (λ A → A → Set ℓ) e (aᴰ _ γᴰ) ≡ bᴰ _ γᴰ) ,
+  (λ γ₀ γ₁ γᴹ e₀ e₁ → Lift ((λ x → bᴹ _ _ γᴹ .lower (coe e₀ x)) ≡ λ x → coe e₁ (aᴹ _ _ γᴹ .lower x)) ) ,
+  (λ γ γᴰ γˢ e eᴰ →
+     (λ x → bˢ _ _ γˢ (coe e x)) ≡
+     (λ x → tr (λ f → f (coe e x)) eᴰ (J (λ _ e → tr (λ A → A → Set ℓ) e (aᴰ γ γᴰ) (coe e x)) (aˢ _ _ γˢ x) e)))
 
 IdU[] : ∀{Γ}{a b : Tm Γ U}{Θ}{σ : Sub Θ Γ} →
   IdU a b [ σ ]T ≡
@@ -820,23 +811,45 @@ reflU : ∀{Γ}(a : Tm Γ U) → Tm Γ (IdU a a)
 reflU {Γᴬ , Γᴰ , Γᴹ , Γˢ} (aᴬ , aᴰ , aᴹ , aˢ) =
   (λ γ → refl) ,
   (λ γ γᴰ → refl) ,
-  (λ γ₀ γ₁ γᴹ → refl) ,
-  λ γ γᴰ γˢ α → refl
+  (λ γ₀ γ₁ γᴹ → lift refl) ,
+  (λ γ γᴰ γˢ → refl)
 
 reflU[] : ∀{Γ}{a : Tm Γ U}{Θ}{σ : Sub Θ Γ} →
   tr (Tm Θ) (IdU[] {Γ}{a}{a}{Θ}{σ}) (_[_]t {Θ}{Γ}{IdU a a} (reflU a) σ) ≡ reflU (tr (Tm Θ) (U[] {Θ}{Γ}{σ}) (_[_]t {Θ}{Γ}{U} a σ))
 reflU[] = refl
 
-TranspU : ∀{Γ}{a b : Tm Γ U}(p : Tm (Γ ▶ U) U)(pa : Tm Γ (El p [ <_> {Γ}{U} a ]T))(eq : Tm Γ (IdU a b)) → Tm Γ (El p [ <_> {Γ}{U} b ]T)
-TranspU {Γᴬ , Γᴰ , Γᴹ , Γˢ}{aᴬ , aᴰ , aᴹ , aˢ}{bᴬ , bᴰ , bᴹ , bˢ}(pᴬ , pᴰ , pᴹ , pˢ)(paᴬ , paᴰ , paᴹ , paˢ)(eᴬ , eᴰ , eᴹ , eˢ) =
-  (λ γ → lift (tr (λ x → pᴬ (γ , x)) (eᴬ γ) (lower (paᴬ γ)))) ,
-  (λ γ γᴰ → lift (tr (λ z → pᴰ (γ , bᴬ γ) (γᴰ , z) (tr (λ x → pᴬ (γ , x)) (eᴬ γ) (lower (paᴬ γ))))
-                     (eᴰ γ γᴰ)
-                     (J (λ z e → pᴰ (γ , z) (γᴰ , tr (λ x → x → Set ℓ) e (aᴰ γ γᴰ)) (tr (λ x → pᴬ (γ , x)) e (lower (paᴬ γ)))) (lower (paᴰ γ γᴰ)) (eᴬ γ)))) ,
-  (λ γ₀ γ₁ γᴹ → lift ( ap (λ z → z (lower (paᴬ γ₀))){λ z → lower (pᴹ (γ₀ , bᴬ γ₀) (γ₁ , bᴬ γ₁) (γᴹ , bᴹ γ₀ γ₁ γᴹ)) (tr (λ x → pᴬ (γ₀ , x)) (eᴬ γ₀) z)}{λ z → tr (λ x → pᴬ (γ₁ , x)) (eᴬ γ₁) (lower (pᴹ (γ₀ , aᴬ γ₀) (γ₁ , aᴬ γ₁) (γᴹ , aᴹ γ₀ γ₁ γᴹ)) z)}
-                          (ext λ z → {!!})
-                     ◾ ap (tr (λ x → pᴬ (γ₁ , x)) (eᴬ γ₁)) (lower (paᴹ γ₀ γ₁ γᴹ)))) ,
-  -- lower (paᴹ γ₀ γ₁ γᴹ)
-  -- lower (eᴹ γ₀ γ₁ γᴹ)
-  {!!}
 
+-- TOO SLOW TO TYPECHECK
+
+-- TranspU : ∀{Γ}{a b : Tm Γ U}(p : Tm (Γ ▶ U) U)(pa : Tm Γ (El p [ <_> {Γ}{U} a ]T))(eq : Tm Γ (IdU a b)) → Tm Γ (El p [ <_> {Γ}{U} b ]T)
+-- TranspU {Γᴬ , Γᴰ , Γᴹ , Γˢ}{aᴬ , aᴰ , aᴹ , aˢ}{bᴬ , bᴰ , bᴹ , bˢ}(pᴬ , pᴰ , pᴹ , pˢ)(paᴬ , paᴰ , paᴹ , paˢ)(eᴬ , eᴰ , eᴹ , eˢ) =
+--   (λ γ → tr (λ x → Lift (pᴬ (γ , x))) (eᴬ γ) (paᴬ γ)) ,
+--   {!!} ,
+--   -- (λ γ γᴰ →
+--   --            tr (λ x → Lift (pᴰ (γ , bᴬ γ) (γᴰ , x)
+--   --                           (lower (tr (λ x → Lift (pᴬ (γ , x))) (eᴬ γ) (paᴬ γ)))))
+--   --               (eᴰ γ γᴰ)
+--   --               (J (λ bᴬγ eᴬγ → Lift
+--   --                       (pᴰ (γ , bᴬγ) (γᴰ , tr (λ A → A → Set ℓ) (eᴬγ) (aᴰ γ γᴰ))
+--   --                        (lower (tr (λ x → Lift (pᴬ (γ , x))) (eᴬγ) (paᴬ γ)))))
+--   --                  (paᴰ _ γᴰ)
+--   --                  (eᴬ γ))) ,
+--   (λ γ₀ γ₁ γᴹ → {!J (λ bᴬγ₀ eᴬγ₀ →
+--      (bᴹγᴹ : Lift (bᴬγ₀ → bᴬ γ₁))
+--      →
+--      Lift
+--       (lower (pᴹ (γ₀ , bᴬγ₀) (γ₁ , bᴬ γ₁) (γᴹ , bᴹ γ₀ γ₁ γᴹ))
+--        (lower (tr (λ x → Lift (pᴬ (γ₀ , x))) (eᴬγ₀) (paᴬ γ₀)))
+--        ≡ lower (tr (λ x → Lift (pᴬ (γ₁ , x))) (eᴬ γ₁) (paᴬ γ₁))))!}) ,
+--   {!!}
+
+--   -- (λ γ γᴰ →
+--   --            tr (λ x → Lift (pᴰ (γ , bᴬ γ) (γᴰ , x)
+--   --                           (lower (tr (λ x → Lift (pᴬ (γ , x))) (eᴬ γ) (paᴬ γ)))))
+--   --               (eᴰ γ γᴰ)
+--   --               {!J (λ bᴬγ eᴬγ → Lift
+--   --                       (pᴰ (γ , bᴬγ) (γᴰ , tr (λ A → A → Set ℓ) (eᴬγ) (aᴰ γ γᴰ))
+--   --                        (lower (tr (λ x → Lift (pᴬ (γ , x))) (eᴬγ) (paᴬ γ)))))!}
+--   --  -- slow typecheck
+
+--   --      ) ,

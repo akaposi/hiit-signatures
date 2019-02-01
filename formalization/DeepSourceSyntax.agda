@@ -159,8 +159,11 @@ postulate
 
 _^El_ :
   {Γ Δ : Con}(σ : Sub Γ Δ)(a : Tm Δ U)
-  → Sub (Γ ▶ El (tr (Tm Γ) (U[] ) (a [ σ ]t))) (Δ ▶ El a)
+  → Sub (Γ ▶ El (tr (Tm Γ) U[] (a [ σ ]t))) (Δ ▶ El a)
 σ ^El a = σ ∘ wk ,s tr (Tm _) (ap (_[ wk ]T) (El[]  ⁻¹) ◾ ([][]T)) vz
+
+-- _^U_ :
+--  ∀ {Γ Δ}(σ : Sub Γ Δ)(a : Tm Δ
 
 infixl 5 _^El_
 
@@ -172,7 +175,7 @@ postulate
       (eq : Tm Γ (El (Id a t u)))
     → Tm Γ (P [ < u > ]T)
 
-  <>∘ :
+  <>∘El :
     {Γ Δ  : Con}
     (σ  : Sub Γ Δ)
     (a  : Tm Δ U)
@@ -185,11 +188,11 @@ postulate
       {t u : Tm Δ (El a)}
       (pt : Tm Δ (P [ < t > ]T))
       (eq : Tm Δ (El (Id a t u)))
-    → tr (Tm Γ) ([][]T ◾ ap (P [_]T) (<>∘ σ a u) ◾ [][]T ⁻¹)
+    → tr (Tm Γ) ([][]T ◾ ap (P [_]T) (<>∘El σ a u) ◾ [][]T ⁻¹)
       (Transp P pt eq [ σ ]t)
       ≡ Transp
           (P [ σ ^El a ]T)
-          (tr (Tm Γ) ([][]T ◾ ap (P [_]T) (<>∘ σ a t) ◾ [][]T ⁻¹) (pt [ σ ]t))
+          (tr (Tm Γ) ([][]T ◾ ap (P [_]T) (<>∘El σ a t) ◾ [][]T ⁻¹) (pt [ σ ]t))
           ((tr (Tm Γ) ((El[] {σ = σ} ◾ ap El (Id[] {σ = σ}))) (eq [ σ ]t)))
 
 -- Identity of sorts
@@ -201,3 +204,16 @@ postulate
   reflU   : ∀{Γ}(a : Tm Γ U) → Tm Γ (IdU a a)
   reflU[] : ∀{Γ}{a : Tm Γ U}{Θ}{σ : Sub Θ Γ} → tr (Tm Θ) IdU[] (reflU a [ σ ]t) ≡ reflU (tr (Tm Θ) U[] (a [ σ ]t))
   TranspU : ∀{Γ}{a b : Tm Γ U}(p : Tm (Γ ▶ U) U)(pa : Tm Γ (El p [ < a > ]T))(eq : Tm Γ (IdU a b)) → Tm Γ (El p [ < b > ]T)
+
+  -- <>∘U :
+  --   {Γ Δ  : Con}
+  --   (σ  : Sub Γ Δ)
+  --   (a  : Tm Δ U)
+  --   → < a > ∘ σ ≡ (σ ^ U) ∘ < a [ σ ]t >
+
+  -- TranspU[] :
+  --   ∀ {Γ Δ}{σ : Sub Γ Δ}{a b : Tm Δ U}(p : Tm (Δ ▶ U) U)(pa : Tm Δ (El p [ < a > ]T))(eq : Tm Δ (IdU a b))
+  --   → coe {!!} (TranspU p pa eq [ σ ]t)
+  --     ≡ TranspU (coe (ap (Tm (Γ ▶ U [ σ ]T)) U[] ◾ ap (λ x → Tm (Γ ▶ x) U) U[]) (p [ σ ^ U ]t))
+  --               (tr (Tm Γ) ([][]T {A = El p} ◾ ap (λ x → El p [ x ]T) (<>∘U σ a) ◾ {!!}) (pa [ σ ]t))
+  --               (tr (Tm Γ) IdU[] (eq [ σ ]t))

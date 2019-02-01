@@ -2,8 +2,14 @@
 
 module Lib where
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl) public
-open import Level public
+open import Agda.Builtin.Equality public
+open import Agda.Primitive public
+
+record Lift {a} {ℓ} (A : Set a) : Set (a ⊔ ℓ) where
+  constructor lift
+  field lower : A
+
+open Lift public
 
 ap : ∀ {α β}{A : Set α}{B : Set β}(f : A → B){x y} → x ≡ y → f x ≡ f y
 ap f refl = refl

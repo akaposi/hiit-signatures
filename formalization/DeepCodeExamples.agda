@@ -1,4 +1,3 @@
-{-# OPTIONS --without-K #-}
 
 {- Some examples for definitions in the deep source syntax #-}
 

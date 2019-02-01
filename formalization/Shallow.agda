@@ -1,4 +1,3 @@
-{-# OPTIONS --without-K #-}
 
 {-
 
@@ -20,6 +19,7 @@ Shallow formalization for the paper "Syntax for Higher Inductive-Inductive Types
 
 open import Relation.Binary.PropositionalEquality renaming (_≡_ to Id)
 open import Data.Product
+open import Function using (_∘_; id)
 
 _≡_ = Id
 infix 4 _≡_
@@ -124,7 +124,7 @@ reflᴰ {a} aᴰ {t} tᴰ = refl {x = tᴰ}
 Jᴰ :
   (a  : U)                  (aᴰ  : Uᴰ a)
   (t  : a)                  (tᴰ  : aᴰ t)
-  (p  : ∀ x (z : t ≡ x) → U)(pᴰ  : ∀ x (xₘ : aᴰ x) z zₘ → Uᴰ (p x z))
+  (p  : ∀ x (z : t ≡ x) → U)(pᴰ  : ∀ x (xᴰ : aᴰ x) z zᴰ → Uᴰ (p x z))
   (pr : p t refl)           (prᴰ : pᴰ _ tᴰ _ (reflᴰ aᴰ tᴰ) pr)
   (u  : a)                  (uᴰ  : aᴰ u)
   (eq : t ≡ u)              (eqᴰ : (≡ᴰ aᴰ tᴰ uᴰ) eq)
@@ -140,15 +140,49 @@ Jβᴰ :
   {t  : a}                   (tᴰ  : aᴰ t)
   {p  : ∀ x (z : t ≡ x) → U} (pᴰ  : ∀ x (xₘ :  aᴰ x) z zₘ → Uᴰ (p x z))
   {pr : p t refl}            (prᴰ : pᴰ _ tᴰ _ (reflᴰ aᴰ tᴰ) pr)
-  → ≡ᴰ (pᴰ t tᴰ refl refl) (Jᴰ _ _ _ _ _ pᴰ _ prᴰ _ tᴰ refl refl) prᴰ refl -- Note: this last refl is Jβᶜ
+  → ≡ᴰ (pᴰ t tᴰ refl refl) (Jᴰ _ _ _ _ _ pᴰ _ prᴰ _ tᴰ refl refl) prᴰ refl -- Note: this last refl is Jβᴬ
 Jβᴰ _ _ _ _ = refl
+
+-- U identity
+
+IdUᴰ :
+  {a : U}(aᴰ : Uᴰ a)
+  {b : U}(bᴰ : Uᴰ b)
+  → Setᴰ (a ≡ b)
+IdUᴰ {a} aᴰ {b} bᴰ e = tr Uᴰ e aᴰ ≡ bᴰ
+
+reflUᴰ :
+  {a : U}(aᴰ : Uᴰ a)
+  → IdUᴰ aᴰ aᴰ refl
+reflUᴰ {a} aᴰ = refl
+
+JUᴰ :
+  (a : U)               (aᴰ : Uᴰ a)
+  (P : ∀ b → a ≡ b → U) (Pᴰ : ∀ b (bᴰ : Uᴰ b) e (eᴰ : IdUᴰ aᴰ bᴰ e) → Uᴰ (P b e))
+  (pr : P a refl)       (prᴰ : Pᴰ a aᴰ refl (reflUᴰ aᴰ) pr)
+  (b : U)               (bᴰ : Uᴰ b)
+  (e : a ≡ b)           (eᴰ : IdUᴰ aᴰ bᴰ e)
+  → Elᴰ (Pᴰ _ bᴰ _ eᴰ) (J P pr e)
+JUᴰ a aᴰ P Pᴰ pr prᴰ b bᴰ e eᴰ =
+  J (λ bᴰ eᴰ → Pᴰ b bᴰ e eᴰ (J P pr e))
+    (J (λ b e → Pᴰ b (tr Uᴰ e aᴰ) e refl (J P pr e)) prᴰ e) eᴰ
+
+JUβ :
+  (a : U)               (aᴰ : Uᴰ a)
+  (P : ∀ b → a ≡ b → U) (Pᴰ : ∀ b (bᴰ : Uᴰ b) e (eᴰ : IdUᴰ aᴰ bᴰ e) → Uᴰ (P b e))
+  (pr : P a refl)       (prᴰ : Pᴰ a aᴰ refl (reflUᴰ aᴰ) pr)
+  → ≡ᴰ (Pᴰ a aᴰ refl refl)
+       (JUᴰ a aᴰ P Pᴰ pr prᴰ a aᴰ refl refl)
+       prᴰ
+       refl
+JUβ a aᴰ P Pᴰ pr prᴰ = refl
 
 -- Homomorphisms
 --------------------------------------------------------------------------------
 
 -- Universe
 
-Setᴹ : (A₀ A₁ : Set) → Set₁
+Setᴹ : ∀{i} (A₀ A₁ : Set i) → Set _
 Setᴹ A₀ A₁ = A₀ → A₁ → Set
 
 Uᴹ : (a₀ a₁ : Set) → Set
@@ -284,13 +318,73 @@ Jβᴹ {a₀} {a₁} {t₀} {t₁} {p₀} {p₁} {pr₀} {pr₁} aᴹ tᴹ pᴹ 
         tᴹ p₁ pᴹ)
      prᴹ
 
+coe : ∀ {i}{A B : Set i} → A ≡ B → A → B
+coe = tr id
+
+-- U identity
+
+IdUᴹ :
+  {a₀ a₁ : U}(aᴹ : Uᴹ a₀ a₁)
+  {b₀ b₁ : U}(bᴹ : Uᴹ b₀ b₁)
+  → Setᴹ (a₀ ≡ b₀) (a₁ ≡ b₁)
+IdUᴹ {a₀} {a₁} aᴹ {b₀} {b₁} bᴹ e₀ e₁ = (bᴹ ∘ coe e₀) ≡ (coe e₁ ∘ aᴹ)
+
+reflUᴹ :
+  {a₀ a₁ : U}(aᴹ : Uᴹ a₀ a₁)
+  → IdUᴹ aᴹ aᴹ refl refl
+reflUᴹ {a₀} {a₁} aᴹ = refl
+
+JUᴹ :
+  {a₀  : U}                   {a₁  : U}
+  {P₀  : ∀ b₀ → a₀ ≡ b₀ → U}  {P₁  : ∀ b₁ → a₁ ≡ b₁ → U}
+  {pr₀ : P₀ a₀ refl}          {pr₁ : P₁ a₁ refl}
+  {b₀  : U}                   {b₁  : U}
+  {eq₀ : a₀ ≡ b₀}             {eq₁ : a₁ ≡ b₁}
+
+  (aᴹ  : Uᴹ a₀ a₁)
+  (Pᴹ  : ∀ b₀ b₁ (bᴹ : Uᴹ b₀ b₁) e₀ e₁ (eᴹ : IdUᴹ aᴹ bᴹ e₀ e₁) → Uᴹ (P₀ b₀ e₀) (P₁ b₁ e₁))
+  (prᴹ : Elᴹ (Pᴹ _ _ aᴹ _ _ (reflUᴹ aᴹ)) pr₀ pr₁)
+  (bᴹ  : Uᴹ b₀ b₁)
+  (eqᴹ : IdUᴹ aᴹ bᴹ eq₀ eq₁)
+
+  → Elᴹ (Pᴹ _ _ bᴹ _ _ eqᴹ ) (J P₀ pr₀ eq₀) (J P₁ pr₁ eq₁)
+JUᴹ {a₀} {a₁} {P₀} {P₁} {pr₀} {pr₁} {b₀} {b₁} {eq₀} {eq₁} aᴹ Pᴹ prᴹ bᴹ eqᴹ =
+  J (λ b₀ eq₀ → (bᴹ  : b₀ → b₁)
+              → (eqᴹ : Id (bᴹ ∘ coe eq₀) (coe eq₁ ∘ aᴹ))
+              → Id (Pᴹ b₀ b₁ bᴹ eq₀ eq₁ eqᴹ (J P₀ pr₀ eq₀)) (J P₁ pr₁ eq₁))
+     (λ bᴹ eqᴹ →
+       J (λ b₁ eq₁ → (bᴹ  : a₀ → b₁)
+                    → (eqᴹ : Id bᴹ (coe eq₁ ∘ aᴹ))
+                    → Id (Pᴹ a₀ b₁ bᴹ refl eq₁ eqᴹ pr₀) (J P₁ pr₁ eq₁))
+          (λ bᴹ eqᴹ →
+            J (λ aᴹ eqᴹ → (Pᴹ  : (b₂ b₃ : Set) (bᴹ₁ : b₂ → b₃) (e₀ : Id a₀ b₂)
+                              (e₁ : Id a₁ b₃) →
+                              Id (λ x → bᴹ₁ (coe e₀ x)) (λ x → coe e₁ (aᴹ x)) →
+                              P₀ b₂ e₀ → P₁ b₃ e₁)
+                          (prᴹ : Id (Pᴹ a₀ a₁ aᴹ refl refl refl pr₀) pr₁)
+                         → Id (Pᴹ a₀ a₁ bᴹ refl refl eqᴹ pr₀) pr₁)
+               (λ Pᴹ prᴹ → prᴹ)
+               eqᴹ Pᴹ prᴹ)
+          eq₁ bᴹ eqᴹ)
+     eq₀ bᴹ eqᴹ
+
+JUβᴹ :
+  {a₀  : U}                   {a₁  : U}
+  {P₀  : ∀ b₀ → a₀ ≡ b₀ → U}  {P₁  : ∀ b₁ → a₁ ≡ b₁ → U}
+  {pr₀ : P₀ a₀ refl}          {pr₁ : P₁ a₁ refl}
+  (aᴹ  : Uᴹ a₀ a₁)
+  (Pᴹ  : ∀ b₀ b₁ (bᴹ : Uᴹ b₀ b₁) e₀ e₁ (eᴹ : IdUᴹ aᴹ bᴹ e₀ e₁) → Uᴹ (P₀ b₀ e₀) (P₁ b₁ e₁))
+  (prᴹ : Elᴹ (Pᴹ _ _ aᴹ _ _ (reflUᴹ aᴹ)) pr₀ pr₁)
+  → Elᴹ (≡ᴹ (Pᴹ _ _ aᴹ _ _ (reflUᴹ aᴹ)) (JUᴹ aᴹ Pᴹ prᴹ aᴹ (reflUᴹ _)) prᴹ) refl refl
+JUβᴹ {a₀} {a₁} {P₀} {P₁} {pr₀} {pr₁} aᴹ Pᴹ prᴹ = inv prᴹ
+
 -- Displayed algebra sections
 --------------------------------------------------------------------------------
 
 -- Universe
 
-Setˢ : {A : Set}(Aᴰ : Setᴰ A) → Set₁
-Setˢ {A} Aᴰ = (x : A) → Aᴰ x → Set
+Setˢ : ∀{i}{A : Set i}(Aᴰ : Setᴰ A) → Set _
+Setˢ {_}{A} Aᴰ = (x : A) → Aᴰ x → Set
 
 Uˢ : (A : Set) → Setᴰ A → Set
 Uˢ a aᴰ = (x : a) → aᴰ x
@@ -344,7 +438,7 @@ appₙᵢₛˢ :
   → Elˢ _ (bᴰ a) (bˢ a) (t a) (tᴰ a)
 appₙᵢₛˢ A {b} bᴰ bˢ {t} tᴰ tˢ a = ap (λ f → f a) {λ a → bˢ a (t a)}{tᴰ} tˢ
 
--- Small identity
+-- Identity
 ≡ˢ :
   (a : U)(aᴰ : Uᴰ a)    (aˢ : Uˢ a aᴰ)
   (t : a)(tᴰ : Elᴰ aᴰ t)(tˢ : Elˢ _ aᴰ aˢ t tᴰ)
@@ -493,3 +587,81 @@ Jβˢ {a} aᴰ aˢ {t} tᴰ tˢ {p} pᴰ pˢ {pr} prᴰ prˢ =
           (λ pᴰ pˢ → refl)
           tˢ pᴰ pˢ)
       prˢ
+
+
+-- U identity
+
+IdUˢ :
+  ∀ {a}{aᴰ : Uᴰ a}(aˢ : Uˢ a aᴰ)
+    {b}{bᴰ : Uᴰ b}(bˢ : Uˢ b bᴰ)
+  → Setˢ {_}{a ≡ b} (IdUᴰ aᴰ bᴰ)
+IdUˢ {a} {aᴰ} aˢ {b} {bᴰ} bˢ e eᴰ =
+  (bˢ ∘ coe e) ≡ (λ x → tr (λ f → f (coe e x)) eᴰ (J (λ b e → tr Uᴰ e aᴰ (coe e x)) (aˢ x) e))
+
+reflUˢ :
+  {a : U}{aᴰ : Uᴰ a}(aˢ : Uˢ a aᴰ)
+  → IdUˢ aˢ aˢ refl (reflUᴰ _)
+reflUˢ {a}{aᴰ} aˢ = refl
+
+JUˢ :
+  {a  : U}              {aᴰ  : Uᴰ a}
+  {P  : ∀ b → a ≡ b → U}{Pᴰ  : ∀ b (bᴰ : Uᴰ b) e (eᴰ : IdUᴰ aᴰ bᴰ e) → Uᴰ (P b e)}
+  {pr : P a refl}       {prᴰ : Pᴰ _ aᴰ _ (reflUᴰ aᴰ) pr}
+  {b  : U}              {bᴰ  : Uᴰ b}
+  {eq : a ≡ b}          {eqᴰ : IdUᴰ aᴰ bᴰ eq}
+
+  (aˢ  : Uˢ a aᴰ)
+  (Pˢ  : ∀ b bᴰ (bˢ : Uˢ b bᴰ) e eᴰ (eˢ : IdUˢ aˢ bˢ e eᴰ) → Uˢ (P b e) (Pᴰ _ bᴰ _ eᴰ))
+  (prˢ : Elˢ (P a refl) (Pᴰ _ aᴰ _ (reflUᴰ _)) (Pˢ _ _ aˢ _ _ (reflUˢ _)) pr prᴰ)
+  (bˢ  : Uˢ b bᴰ)
+  (eqˢ : IdUˢ aˢ bˢ eq eqᴰ)
+
+  → Elˢ _ _ (Pˢ b bᴰ bˢ eq eqᴰ eqˢ) (J P pr eq) (JUᴰ a aᴰ P Pᴰ pr prᴰ b bᴰ eq eqᴰ)
+JUˢ {a} {aᴰ} {P} {Pᴰ} {pr} {prᴰ} {b} {bᴰ} {eq} {eqᴰ} aˢ Pˢ prˢ bˢ eqˢ =
+  J (λ b eq →
+       (bᴰ  : Uᴰ b)
+       (bˢ  : Uˢ b bᴰ)
+       (eqᴰ : IdUᴰ aᴰ bᴰ eq)
+       (eqˢ : IdUˢ aˢ bˢ eq eqᴰ)
+       →
+       Elˢ (P b eq) (Pᴰ b bᴰ eq eqᴰ) (Pˢ b bᴰ bˢ eq eqᴰ eqˢ)
+           (J P pr eq) (JUᴰ a aᴰ P Pᴰ pr prᴰ b bᴰ eq eqᴰ))
+     (λ bᴰ bˢ eqᴰ eqˢ →
+       J (λ bᴰ eqᴰ →
+            (bˢ  : (x : a) → bᴰ x)
+            (eqˢ : Id (λ x → bˢ x) (λ x → J (λ u p → u x) (aˢ x) eqᴰ))
+            →
+            Id (Pˢ a bᴰ bˢ refl eqᴰ eqˢ pr)
+               (J (λ bᴰ₁ eᴰ → Pᴰ a bᴰ₁ refl eᴰ pr) prᴰ eqᴰ))
+          (λ bˢ eqˢ →
+            J (λ aˢ eqˢ →
+                  (Pˢ  : (b₁ : Set) (bᴰ₁ : b₁ → Set) (bˢ₁ : Uˢ b₁ bᴰ₁) (e : Id a b₁)
+                     (eᴰ : Id (tr Uᴰ e aᴰ) bᴰ₁) →
+                     IdUˢ aˢ bˢ₁ e eᴰ → Uˢ (P b₁ e) (Pᴰ b₁ bᴰ₁ e eᴰ))
+                  (prˢ : Id (Pˢ a aᴰ aˢ refl refl refl pr) prᴰ)
+                  →
+                  Id (Pˢ a (λ z → aᴰ z) bˢ refl refl eqˢ pr) prᴰ)
+                (λ Pˢ prˢ → prˢ)
+                eqˢ Pˢ prˢ)
+          eqᴰ bˢ eqˢ)
+     eq bᴰ bˢ eqᴰ eqˢ
+
+JUβˢ :
+  {a  : U}              {aᴰ  : Uᴰ a}
+  {P  : ∀ b → a ≡ b → U}{Pᴰ  : ∀ b (bᴰ : Uᴰ b) e (eᴰ : IdUᴰ aᴰ bᴰ e) → Uᴰ (P b e)}
+  {pr : P a refl}       {prᴰ : Pᴰ _ aᴰ _ (reflUᴰ aᴰ) pr}
+
+  (aˢ  : Uˢ a aᴰ)
+  (Pˢ  : ∀ b bᴰ (bˢ : Uˢ b bᴰ) e eᴰ (eˢ : IdUˢ aˢ bˢ e eᴰ) → Uˢ (P b e) (Pᴰ _ bᴰ _ eᴰ))
+  (prˢ : Elˢ (P a refl) (Pᴰ _ aᴰ _ (reflUᴰ _)) (Pˢ _ _ aˢ _ _ (reflUˢ _)) pr prᴰ)
+  → Elˢ (J P pr refl ≡ pr)
+        (≡ᴰ (Pᴰ _ aᴰ _ (reflUᴰ aᴰ)) (JUᴰ a aᴰ P Pᴰ pr prᴰ a aᴰ refl (reflUᴰ _))
+                                    prᴰ)
+        (≡ˢ _ _ (Pˢ _ _ aˢ _ _ (reflUˢ _)) _ _ (JUˢ aˢ Pˢ prˢ aˢ (reflUˢ _)) _ _ prˢ)
+        refl
+        refl
+JUβˢ {a} {aᴰ} {P} {Pᴰ} {pr} {prᴰ} aˢ Pˢ prˢ =
+  J (λ prᴰ prˢ →
+           Id (J (λ u p → Id u prᴰ) (J (λ u p → Id (Pˢ a aᴰ aˢ refl refl refl pr) u) refl prˢ) prˢ)
+              refl)
+     refl prˢ
