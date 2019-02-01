@@ -7,7 +7,6 @@
 *.blg
 *.fdb_latexmk
 *.fls
-*.pdf
 *.toc
 *.nav
 *.snm
