@@ -16,7 +16,7 @@
 \bibliographystyle{plainurl}
 \usepackage{hyperref}
 
-%% ABBREVS
+%% ABBREVIATIONS
 %% --------------------------------------------------------------------------------
 
 %% setting \sqcdot as HoTT-book-style transitivity
@@ -282,20 +282,6 @@ and induction method:
   & \Elim\Nat\,P\,pz\,ps\,(\suc\,n) && \equiv ps\,n\,(\Elim\Nat\,P\,pz\,ps\,n)
 \end{alignat*}
 
-%% These express that the eliminator applied to a constructor expression
-%% reduces to an application of the corresponding induction method. From
-%% an operational point of view, $\Elim\Nat$ replaces all the $\zero$ and
-%% $\suc$ constructors with the given induction methods.
-
-% A special case of the eliminator is the recursor (non-dependent
-% eliminator) which allows the definition of a non-dependent function
-% from the inductive type, for $\Nat$ it has the following type.
-% \[
-% \Rec\Nat : \forall(A:\mathsf{Type}).A \ra (A \ra A) \ra \Nat \ra A
-% \]
-% The eliminator can be derived from the recursor and a uniqueness
-% principle.
-
 Indexed families of types can be also considered, for example length-indexed
 vectors of $A$-elements $\mathsf{Vec}_A: \Nat \ra \mathsf{Type}$. Mutual
 inductive types are yet another generalization, however, they can be reduced to
@@ -419,9 +405,9 @@ recursion. In Section \ref{sec:coherence} we explain the choice of using
 syntactic translations in the rest of the paper. In Sections \ref{sec:algebras}
 to \ref{sec:sections}, we describe four syntactic translations from the theory
 of signatures to the syntax of the external type theory, respectively computing
-algebras, homomorphisms, displayed algebras and sections of displayed
+algebras, displayed algebras, homomorphisms, and sections of displayed
 algebras. In Section \ref{sec:categorical}, we consider extending the previous
-translations with additional components of the categorical semantics of HIITs
+translations with additional components of a categorical semantics
 (e.g.\ identity and composition for homomorphisms), and explain why the approach
 in this paper does not make this feasible. Section \ref{sec:formalization}
 describes the Agda formalization and the Haskell implementation. We conclude in
@@ -665,26 +651,26 @@ refer to any particular type former from the external theory. We describe the
 external theory in more detail in Section \ref{sec:external}. Also, the rules
 presented here are informal and optimized for readability; we describe the Agda
 formalizations in Section \ref{sec:formalization}. We explain the rules for the
-theory of signatures in order now.
+theory of signatures in order below.
 
 (1) The rules for context formation and variables are standard. We build
 signatures in a well-formed external context.  We assume fresh names everywhere
 to avoid name capture, and leave weakenings implicit.
 
 (2) There is a universe $\U$, with decoding written as an underline instead of
-usual $\El$, to bolster readability. With this part of the syntax, we can already
+usual $\El$, to improve readability. With this part of the syntax, we can already
 define contexts specifying the empty type, unit type and booleans, or in general,
-a collections of finite sets:
+finite sets of finite sets:
 \[
 \boldsymbol{\cdot},\,\,\,Empty:\U \hspace{3em} \boldsymbol{\cdot},\,\,\,Unit:\U,\,\,\,tt:\underline{Unit} \hspace{3em} \boldsymbol{\cdot},\,\,\,Bool:\U,\,\,\,true:\underline{Bool},\,\,\,false:\underline{Bool}
 \]
 
-(3) We have a function space with small domain and large codomain. This can be
-used to add inductive arguments to all kinds of constructors. As $\U$ is not
-closed under this function space, these function types cannot (recursively)
-appear in inductive arguments, which ensures strict positivity. When the
-codomain does not depend on the domain, $a\ra B$ can be written instead of
-$(x:a)\ra B$.
+(3) We have a function space with small domain and large codomain, which we call
+the inductive function space. This can be used to add inductive parameters to all
+kinds of constructors. As $\U$ is not closed under this function space, these
+function types cannot (recursively) appear in inductive arguments, which ensures
+strict positivity. When the codomain does not depend on the domain, $a\ra B$ can
+be written instead of $(x:a)\ra B$.
 
 Now we can specify the natural numbers as a context:
 \[
@@ -707,7 +693,7 @@ Sections \ref{sec:morphisms} and \ref{sec:sections} do not preserve this
 $\beta$-rule strictly. We explain this in more detail in Sections
 \ref{sec:coherence} and \ref{sec:categorical}. Adding equality to the theory of
 signatures allows higher constructors and inductive equality parameters as well. We
-can now define the higher-inductive circle as the following context:
+can now define the higher inductive circle as the following context:
 \[
 \boldsymbol{\cdot},\,\,\,S^1:\U,\,\,\,base:\underline{S^1},\,\,\,loop:\underline{base =_{S^1} base}
 \]
@@ -726,14 +712,14 @@ examples in the Agda formalization described in Section
 \ref{sec:formalization}.
 
 So far we were only able to define closed HIITs, which do not refer to external
-types. Now we add rules which include external types into signatures. A context
+types. We add rules which include external types into signatures. A context
 $\Delta$ for which $\hat{\Gamma}\vdash\Delta$ holds can be seen as a
-specification of an inductive type which depends on $\hat{\Gamma}$. For example,
-in the case of lists for arbitrary external element types, $\hat{\Gamma}$ will
-be $\hat{A}\in\Type_{\hat{0}}$.
+specification of an inductive type which depends on an external $\hat{\Gamma}$
+signature. For example, in the case of lists for arbitrary external element
+types, $\hat{\Gamma}$ will be $\hat{A}\in\Type_{\hat{0}}$.
 
-(5) We have a function space where the domain is a type in the external theory. We
-distinguish it from (3) by using red brick $\in$ instead of $:$ in the domain
+(5) We have a function space where the domain is a type in the external
+theory. We distinguish it from (3) by using red brick color in the domain
 specification. We specify lists and the integers as follows.
 \begin{alignat*}{4}
   & \hat{A}\in\Type_{\hat{0}} && \vdash\,\boldsymbol{\cdot},\,\, && List:\U,\,\,\,nil:\underline{List},\,\,\,cons:(\hat{x}\in \hat{A})\ra List\ra\underline{List} \\
@@ -1004,7 +990,7 @@ additional type structure. We present an excerpt below:
   & ... &&
 \end{alignat*}
 
-This notion of syntax is much more compact and often much more convenient to use
+This notion of syntax is much more compact and often more convenient to use
 than extrinsic syntaxes. It is in essence ``merely'' a formalization of CwFs,
 which are often used in categorical semantics of type theory. However, its
 rigorous metatheory is subject to ongoing research (including the current
@@ -1045,7 +1031,7 @@ Unfortunately, set-truncation makes it impossible to directly interpret
 syntactic types as elements of a UIP-free metatheoretic $\mathsf{Type}_i$
 universe. This is because we must provide interpretations for all set-truncation
 constructors, which amounts to shoving that the interpretations of $\Ty$,
-$\Con$, $\Sub$ are all sets. However, we cannot show $\mathsf{Type}_i$ to be a
+$\Tm$, and $\Sub$ are all sets. However, we cannot show $\mathsf{Type}_i$ to be a
 set without UIP.
 
 A possible solution would be to add \emph{all higher coherences} instead of
@@ -1119,7 +1105,7 @@ syntactic translations.
 Now, we can take the source syntax to be the theory of signatures from Section
 \ref{sec:tos}, and the target syntax to be the external syntax from Section
 \ref{sec:external}. Truncation in the source syntax is not an issue here,
-because the target syntax is likewise truncated, so we can translate into it.
+because the target syntax is likewise truncated.
 
 However, using syntactic translations is also a significant restriction. As
 always, we must map equal inputs to equal outputs, but now the notion of
@@ -1342,8 +1328,8 @@ the universe and the inductive function space.
 We interpret the universe as relation space, and function types as relations
 expressing pointwise relatedness of functions. This interpretation would work
 the same way for unrestricted (non-strictly positive) function types as well.
-For an example, this yields the following definition of logical relations for
-natural number algebras:
+For an example, this yields the following definition of logical relations
+between natural number algebras:
 \begin{alignat*}{5}
   & && (\boldsymbol{\cdot},Nat : \U,zero:\underline{Nat},suc:Nat\ra\underline{Nat})^\M
     \,\hat{(\tt,\,N_0,\,z_0,\,s_0)\,(\tt,\,N_1,\,z_1,\,s_1)} \\
@@ -1362,8 +1348,7 @@ homomorphism if and only if the underlying relation is the graph of a function
 \end{alignat*}
 This requires us to change $(\underline{a})^\M$ as well, since we need to
 produce a type as result, but $a^M$ now yields a function. We can view the
-result of $a^\M$ as a functional relation, and relate $t_0$ and $t_1$ by its
-graph:
+result of $a^\M$ as a functional relation, and use its graph to relate $t_0$ and $t_1$:
 \begin{alignat*}{5}
   & (\underline{a})^\M\,\hat{\gamma_0\,\gamma_1\,\gamma^M\,t_0\,\,t_1} && :\equiv \hat{
     \blc{a^\M}\,\gamma_0\,\gamma_1\,\gamma^M\,t_0 = t_1}
@@ -1502,9 +1487,9 @@ output.
 
 The circle example is a bit more interesting here:
 \begin{alignat*}{5}
-  & && (\boldsymbol{\cdot},\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\S\,\,\hat{(}\hat{\tt,\,S^1,\,b,\,loop}\hat{)}\,\hat{(}\hat{\tt,\,S^{1M},\,b^D,\,loop^D}\hat{)} \\
-  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{1E}}\in \hat{(}\hat{x}\in\hat{S^1}\hat{)}\hat{\,\ra\,}\hat{S^{1M}\,x}\hat{)}\timesh\hat{(}\hat{b^S}\in \hat{S^{1E}\,\,b = b^D}\hat{)}\\
-  & && \hspace{0.75em}\timesh\hat{(}\hat{loop^S\,\,\in\,\,} \TR\,_{\hat{(}\hat{\lambda x. \TR\,_{S^{1M}}\,loop\,x\,=\,b^D}\hat{)}}\,\hat{b^S}\,\hat{(}\TR\,_{\hat{(}\hat{\lambda} \hat{x}. \TR\,_{\hat{S^{1M}}}\,\hat{loop}\,\hat{(}\hat{S^{1E}\,b}\hat{)}\,\eqh\,\hat{x}\hat{)}}\,\hat{b^S}\,\hat{(}\apd\,\hat{S^{1E}\,loop}\hat{)}\hat{)}\,\\
+  & && (\boldsymbol{\cdot},\,S^1 : \U,\,b:\underline{S^1},\,loop: \underline{b=b})^\S\,\,\hat{(}\hat{\tt,\,S^1,\,b,\,loop}\hat{)}\,\hat{(}\hat{\tt,\,S^{1D},\,b^D,\,loop^D}\hat{)} \\
+  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{1S}}\in \hat{(}\hat{x}\in\hat{S^1}\hat{)}\hat{\,\ra\,}\hat{S^{1D}\,x}\hat{)}\timesh\hat{(}\hat{b^S}\in \hat{S^{1S}\,\,b = b^D}\hat{)}\\
+  & && \hspace{0.75em}\timesh\hat{(}\hat{loop^S\,\,\in\,\,} \TR\,_{\hat{(}\hat{\lambda x. \TR\,_{S^{1D}}\,loop\,x\,=\,b^D}\hat{)}}\,\hat{b^S}\,\hat{(}\TR\,_{\hat{(}\hat{\lambda} \hat{x}. \TR\,_{\hat{S^{1D}}}\,\hat{loop}\,\hat{(}\hat{S^{1S}\,b}\hat{)}\,\eqh\,\hat{x}\hat{)}}\,\hat{b^S}\,\hat{(}\apd\,\hat{S^{1S}\,loop}\hat{)}\hat{)}\,\\
   & && \hspace{5.5em} \hat{=\,loop^D}\hat{)}
 \end{alignat*}
 In homotopy type theory, the $\beta$-rule for $loop$ is usually just
@@ -1580,8 +1565,8 @@ We translate $\U$ to identity functions:
 \[
 \U^{\mathsf{ID}}\,\hat{\gamma\,A} :\equiv \hat{\lambda\,(x : A).\, x}
 \]
-Note that $\U$ and $\U[\sigma]$ are definitionally equal in the theory of
-signatures, where $\sigma$ is a parallel substitution. The translation of the
+Assume that $\sigma$ is a parallel substitution, and note that $\U$ and $\U[\sigma]$
+are definitionally equal in the theory of signatures. The translation of the
 latter would be the following (omitting many details, including the handling of
 substitutions in the translation):
 \[
@@ -1603,8 +1588,10 @@ solutions for this strictness problem:
 \item Reformulating the syntax of signatures so that definitional equalities
       become weak propositional equalities. We already use weak $\beta$ for $\J$,
       can we do so elsewhere? However, this would result in an unusual and very
-      inconvenient syntax of signatures, because we would need to weaken even
-      basic substitution rules.
+      inconvenient syntax of signatures, because we would need to weaken even basic
+      substitution rules. In contrast, weak $\beta$ for $\J$ seems harmless, because
+      we are not aware of any HIIT signature in the literature that involves
+      any $\J$ computation.
 \item Instead of interpreting signatures into an UIP-free type theory, we
       interpret them into classical combinatorial structures for higher groupoids
       and categories, e.g.\ into simplicial sets. The drawback is that now we do not
@@ -1710,38 +1697,9 @@ the true solution will be the development of higher syntaxes and models of type
 theory in type theory. This may also require adding new features to the
 meta type theory. In particular, convenient formalization of higher categories
 seems elusive in conventional homotopy type theory, and we may need two-level
-type theories \cite{semisegal}, or even directed type-theories with native
+type theories \cite{semisegal}, or directed type-theories with native
 notions of higher categories \cite{nuyts2015towards, riehl2017type}.
 
-
-%% In this paper we specified HIITs and provide part of their semantics, by
-%% computing notions of recursion and induction. Pro
-
-%% In this paper we only \emph{specified} HIITs and characterized their induction
-%% principles. Proving their \emph{existence} is left as further work. This would
-%% likely involve reducing HIITs to basic building blocks such as W-types and
-%% quotient types.
-
-%% The theory of codes was defined as part of the syntax of another type theory,
-%% the target theory. An alternative way would be to define the theory of codes
-%% internally to a type theoretic metatheory in the style of
-%% \cite{ttintt}. However, as described in \cite[Section 6]{ttintt}, there would be
-%% a coherence problem: for the internal syntax to be useful, we need to truncate
-%% it to be a set (as the $\mathsf{trunc}$ constructor did for $\Int$ in the
-%% introduction). As the eliminator needs to respect the equality given by
-%% $\mathsf{trunc}$, we would only be able to eliminate from the internal type
-%% theory into a set. This would preclude the definition of even the $\blank^\C$
-%% operation, which corresponds to the standard model. A possible solution to this
-%% problem would be to add all the higher coherence laws to the syntax (e.g.\ the
-%% pentagon law for the composition of substitutions) and then prove that the
-%% syntax is a set. For this however, we would probably need a two-level metatheory
-%% as in \cite{semisegal}.
-
-%% When working in a metatheory with uniqueness of identity proofs (which implies
-%% that all HIITs are in essence QIITs), the theory of codes admits a category
-%% model where the interpretation of a context is the category of algebras
-%% corresponding to the context. In the future, we would like to prove that these
-%% categories have initial algebras given by terms in the theory of codes.
 
 \bibliographystyle{plain}
 \bibliography{b}
@@ -1816,24 +1774,24 @@ The sphere-algebras are computed as follows.
 Given a sphere-algebra and fixing a universe level $i$, the motives
 and methods are computed as follows.
 \begin{alignat*}{5}
-  & && \Gamma^\M\,\,\hat{(}\hat{\tt,\,S^2,\,b,\,surf}\hat{)}\\
-  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{2M}}\in \hat{S^2}\rah\Type_{\hat{i}}\hat{)} \\
-  & && \hspace{0.75em} \timesh\hat{(}\hat{b^M}\in \hat{S^{2M}\,b}\hat{)} \\
-  & && \hspace{0.75em} \timesh\hat{(}\hat{surf^M\in \TR_{\hat{(}\TR_{S^{2M}}\,\blank\,b^M=b^M\hat{)}}\,surf\,\refl_{b^M} = \refl_{b^M}}\hat{)}
+  & && \Gamma^\D\,\,\hat{(}\hat{\tt,\,S^2,\,b,\,surf}\hat{)}\\
+  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{2D}}\in \hat{S^2}\rah\Type_{\hat{i}}\hat{)} \\
+  & && \hspace{0.75em} \timesh\hat{(}\hat{b^D}\in \hat{S^{2D}\,b}\hat{)} \\
+  & && \hspace{0.75em} \timesh\hat{(}\hat{surf^D\in \TR_{\hat{(}\TR_{S^{2D}}\,\blank\,b^D=b^D\hat{)}}\,surf\,\refl_{b^D} = \refl_{b^D}}\hat{)}
 \end{alignat*}
 Given a sphere-algebra and a displayed algebra over it, we get the type of sections:
 \begin{alignat*}{5}
-  & && \Gamma^\E\,\,\hat{(}\hat{\tt,\,S^2,\,b,\,surf}\hat{)}\,\hat{(}\hat{\tt,\,S^{2M},\,b^M,\,surf^M}\hat{)} \\
-  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{2E}}\in \hat{(}\hat{x}\in\hat{S^2}\hat{)}\hat{\,\ra\,}\hat{S^{2M}\,x}\hat{)} \\
-  & && \hspace{0.75em} \timesh\hat{(}\hat{b^E}\in \hat{S^{2E}\,\,b = b^M}\hat{)}\\
-  & && \hspace{0.75em} \timesh\hat{\bigg(}\hat{surf^E\,\,\in\,\,} \TR\,\hat{\Big(}\hat{\J\,\refl\,b^E}\hat{\Big)}\,\hat{\Big(}\TR\,\hat{\big(}\hat{\J\,\refl\,b^E}\hat{\big)}\,\hat{\big(}\hat{\apd}\,\hat{(}\hat{\lambda} \hat{x}.\TR\,\hat{b^E}\,\hat{(}\TR\,\hat{b^E}\,\hat{(}\hat{\apd}\,\hat{S^{2E}}\,\hat{x}\hat{)}\hat{)}\hat{)}\,\hat{surf}\hat{\big)}\hat{\Big)} \\
-  & && \hspace{5.5em} \hat{=} \,\hat{surf^M}\hat{\bigg)}
+  & && \Gamma^\S\,\,\hat{(}\hat{\tt,\,S^2,\,b,\,surf}\hat{)}\,\hat{(}\hat{\tt,\,S^{2D},\,b^D,\,surf^D}\hat{)} \\
+  & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{2S}}\in \hat{(}\hat{x}\in\hat{S^2}\hat{)}\hat{\,\ra\,}\hat{S^{2D}\,x}\hat{)} \\
+  & && \hspace{0.75em} \timesh\hat{(}\hat{b^S}\in \hat{S^{2S}\,\,b = b^D}\hat{)}\\
+  & && \hspace{0.75em} \timesh\hat{\bigg(}\hat{surf^S\,\,\in\,\,} \TR\,\hat{\Big(}\hat{\J\,\refl\,b^S}\hat{\Big)}\,\hat{\Big(}\TR\,\hat{\big(}\hat{\J\,\refl\,b^S}\hat{\big)}\,\hat{\big(}\hat{\apd}\,\hat{(}\hat{\lambda} \hat{x}\hat{.}\TR\,\hat{b^S}\,\hat{(}\TR\,\hat{b^S}\,\hat{(}\hat{\apd}\,\hat{S^{2S}}\,\hat{x}\hat{)}\hat{)}\hat{)}\,\hat{surf}\hat{\big)}\hat{\Big)} \\
+  & && \hspace{5.5em} \hat{=} \,\hat{surf^D}\hat{\bigg)}
 \end{alignat*}
-Note that if $\hat{b^E}$ is a definitional equality (that is, we have
-$\hat{S^{2E}\,\,b} \equiv \hat{b^M}$), the occurrences of $\hat{b^E}$
-in the type of $\hat{surf^E}$ can be replaced by $\hat{\refl}$. In
-this case the type of $\hat{surf^E}$ becomes the expected
-$\hat{\apd}\,\hat{(}\hat{\apd}\,\hat{S^{2E}}\hat{)}\,\hat{surf}\,\hat{=}\,\hat{surf^M}$.
+Note that if $\hat{b^S}$ is a definitional equality (that is, we have
+$\hat{S^{2S}\,\,b} \hat{\equiv} \hat{b^D}$), the occurrences of $\hat{b^S}$
+in the type of $\hat{surf^S}$ can be replaced by $\hat{\refl}$. In
+this case the type of $\hat{surf^S}$ becomes the more usual
+$\hat{\apd}\,\hat{(}\hat{\apd}\,\hat{S^{2S}}\hat{)}\,\hat{surf}\,\hat{=}\,\hat{surf^D}$.
 
 
 \section{Displayed algebra sections for indexed W-types}
