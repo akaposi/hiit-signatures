@@ -243,16 +243,16 @@ type theories in two ways. On the one hand they allow the simultaneous
 definition of multiple sorts that can be indexed over each other. On the other
 hand they support equality constructors, thus generalizing higher inductive
 types of homotopy type theory. Examples that make use of both features are the
-Cauchy reals and the well-typed syntax of type theory where conversion rules are
-given as equality constructors. In this paper we propose a general definition of
-HIITs using a small type theory, named the theory of signatures. A context in
-this theory encodes a HIIT by listing the constructors. We also compute notions
-of induction and recursion for HIITs, by using variants of syntactic logical
-relation translations. Building full categorical semantics and constructing
-initial algebras is left for future work. The theory of HIIT signatures was
-formalised in Agda together with the syntactic translations. We also provide a
-Haskell implementation, which takes signatures as input and outputs translation
-results as valid Agda code.
+Cauchy real numbers and the well-typed syntax of type theory where conversion
+rules are given as equality constructors. In this paper we propose a general
+definition of HIITs using a small type theory, named the theory of signatures. A
+context in this theory encodes a HIIT by listing the constructors. We also
+compute notions of induction and recursion for HIITs, by using variants of
+syntactic logical relation translations. Building full categorical semantics and
+constructing initial algebras is left for future work. The theory of HIIT
+signatures was formalised in Agda together with the syntactic translations. We
+also provide a Haskell implementation, which takes signatures as input and
+outputs translation results as valid Agda code.
 \end{abstract}
 
 \maketitle
@@ -382,7 +382,7 @@ constructors in any order.
 
 The core idea is to represent HIIT specifications as contexts in a
 domain-specific type theory which we call the \emph{theory of signatures}. Type
-formers in the theory of codes are restricted in order to enforce strict
+formers in the theory of signatures are restricted in order to enforce strict
 positivity. For example, natural numbers are defined as the three-element
 context
 \[
@@ -706,7 +706,7 @@ constructors, and arbitrary mixing of type and point constructors.
 Sections \ref{sec:morphisms} and \ref{sec:sections} do not preserve this
 $\beta$-rule strictly. We explain this in more detail in Sections
 \ref{sec:coherence} and \ref{sec:categorical}. Adding equality to the theory of
-codes allows higher constructors and inductive equality parameters as well. We
+signatures allows higher constructors and inductive equality parameters as well. We
 can now define the higher-inductive circle as the following context:
 \[
 \boldsymbol{\cdot},\,\,\,S^1:\U,\,\,\,base:\underline{S^1},\,\,\,loop:\underline{base =_{S^1} base}
@@ -779,14 +779,14 @@ reals in \cite[Definition 11.3.2]{HoTTbook}. It can be also found as
 an example file in our Haskell implementation.
 
 The invalid examples $\mathsf{Ival}$ and $\mathsf{Neg}$ from Section
-\ref{sec:intro} cannot be encoded by the theory of codes. For $\mathsf{Ival}$,
+\ref{sec:intro} cannot be encoded by the theory of signatures. For $\mathsf{Ival}$,
 we can go as far as
 \[
 \boldsymbol{\cdot},\,\,\,{Ival}:\U,\,\,\,a:\underline{{Ival}},\,\,\,b:\underline{{Ival}},\,\,\,\sigma:\underline{?  =_{{Ival}} ?}.
 \]
 The first argument of the function
 $\hat{\hat{f}\in(\hat{X}:\Type)\rah\hat{X}\rah\hat{X}}$ is an external type, but we
-only have ${Ival}:\U$ in the theory of codes. $\mathsf{Neg}$ cannot be typed
+only have ${Ival}:\U$ in the theory of signatures. $\mathsf{Neg}$ cannot be typed
 because the first parameter of the constructor $\mathsf{con}$ is a function from
 a small type to an external type, and no such functions can be formed.
 
@@ -1844,7 +1844,7 @@ Indexed W-types can describe a large class of inductive definitions
 \in \Type_{\hat{0}}\commah\hat{S} \in \Type_{\hat{0}}\commah\hat{P} \in \hat{S} \rah
 \Type_{\hat{0}}\commah\hat{out} \in \hat{S} \rah \hat{I}\commah\hat{in} \in
 \hat{(}\hat{s} \in \hat{S}\hat{)}\rah \hat{P}\,\hat{s}\rah \hat{I}$. Then, the
-code for the corresponding indexed W-type is the following:
+signature for the corresponding indexed W-type is the following:
 \[
 W :\equiv (\boldsymbol{\cdot},\,\,\,w:(\hat{i} \in \hat{I})\ra\U,\,\,\,sup: (\hat{s} \in \hat{S})\ra((\hat{p} \in \hat{P\,s})\ra w\,(\hat{in\,s\,p}))\ra \underline{w\,(\hat{out\,s})})
 \]
