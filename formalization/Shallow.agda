@@ -598,6 +598,9 @@ IdUˢ :
 IdUˢ {a} {aᴰ} aˢ {b} {bᴰ} bˢ e eᴰ =
   (bˢ ∘ coe e) ≡ (λ x → tr (λ f → f (coe e x)) eᴰ (J (λ b e → tr Uᴰ e aᴰ (coe e x)) (aˢ x) e))
 
+  -- (λ x → bˢ (coe e x)) = (λ x → tr eᴰ (J (aˢ x) e))
+  -- (bᴹ ∘ coe e₀) ≡ (coe e₁ ∘ aᴹ)
+
 reflUˢ :
   {a : U}{aᴰ : Uᴰ a}(aˢ : Uˢ a aᴰ)
   → IdUˢ aˢ aˢ refl (reflUᴰ _)

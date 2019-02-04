@@ -1308,8 +1308,8 @@ application of $\blank^\D$. The definitions for the other (non-inductive)
 function spaces are similar, except there is no predicate for the domain types,
 and thus no witnesses are required.
 
-The translation for the equality type $t=_a u$, for each $\hat{e}\in(t=_a
-u)^\A\,\hat{\gamma}$, i.e.\ $\hat{e}\in t^\A\,\hat{\gamma}\eqh
+The translation for paths between $a : \U$ elements $t=_a u$, for each
+$\hat{e}\in(t=_a u)^\A\,\hat{\gamma}$, i.e.\ $\hat{e}\in t^\A\,\hat{\gamma}\eqh
 u^\A\,\hat{\gamma}$, witnesses that $t^\D$ and $u^\D$ are equal. As these have
 different types, we have to transport over the original equality
 $\hat{e}$. Hence, induction methods for path constructors will be \emph{paths
@@ -1319,6 +1319,9 @@ $\refl$ is interpreted with just reflexivity in the target syntax. The
 interpretation of $\J$ is given by a double $\hat{\J}$ application, borrowing
 the definition from Lasson \cite{lasson}. Here, we use a shortened $\hat{\J}$
 notation; see the formalization (Section \ref{sec:formalization}) for details.
+
+For $a =_\U b$ paths, the interpretation is essentially the same as with the
+other path type.
 
 Again, let us consider the circle example:
 \begin{alignat*}{5}
@@ -1527,17 +1530,16 @@ must be equal to the corresponding $\hat{t^D}$ induction methods. Hence, for
 path and point constructor types, $\blank^\S$ works by first processing all
 inductive and external parameters, then finally returning an equality type.
 
-Here, we only provide abbreviated definitions for the $t\,u$, $t=_a u$, $\refl$,
-$\J$ and $\J\beta$ cases. In the $\J$ case, we write
-$\hat{\mathsf{uncurry}}\,p^\D$ for
-$\hat{\lambda\,\gamma\,\gamma^D\,x\,x^D\,z\,z^D.}\,p^\D\,\hat{(}\hat{\gamma,x,z}\hat{)}\,\hat{(}\hat{\gamma^D,x^D,z^D}\hat{)}$
+In the case of $t =_a u$ equalities, we only provide abbreviated definitions for
+the $t\,u$, $t=_a u$, $\refl$, $\J$ and $\J\beta$ cases. In the $\J$ case, we
+write $\hat{\mathsf{uncurry}}\,p^\D$ for
+$\hat{\lambda\,\gamma\,\gamma^D\,x\,x^D\,z\,z^D.}$ $\,p^\D\,\hat{(}\hat{\gamma,x,z}\hat{)}\,\hat{(}\hat{\gamma^D,x^D,z^D}\hat{)}$
 and analogously elsewhere, to adjust for the fact that $p$ abstracts over
-additional $x$ and $z$ variables. The full definitions can be found in the
-Agda formalization. The definitions are highly constrained by the
-required types, and not particularly difficult to implement with the
-help of a proof assistant: they all involve doing successive path
-induction on all equalities available from induction hypotheses, with
-appropriately generalized induction motives.
+additional $x$ and $z$ variables. The full definitions can be found in the Agda
+formalization. The definitions are highly constrained by the required types, and
+not particularly difficult to implement with the help of a proof assistant: they
+all involve doing successive path induction on all equalities available from
+induction hypotheses, with appropriately generalized induction motives.
 
 The full $(\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\S$ definition is quite large, and,
 for instance, yields a very large $\beta$-rule for the higher inductive torus
@@ -1553,6 +1555,7 @@ The circle example is a bit more interesting here:
   & && \hspace{0.75em}\timesh\hat{(}\hat{loop^S\,\,\in\,\,} \TR\,_{\hat{(}\hat{\lambda x. \TR\,_{S^{1D}}\,loop\,x\,=\,b^D}\hat{)}}\,\hat{b^S}\,\hat{(}\TR\,_{\hat{(}\hat{\lambda} \hat{x}. \TR\,_{\hat{S^{1D}}}\,\hat{loop}\,\hat{(}\hat{S^{1S}\,b}\hat{)}\,\eqh\,\hat{x}\hat{)}}\,\hat{b^S}\,\hat{(}\apd\,\hat{S^{1S}\,loop}\hat{)}\hat{)}\,\\
   & && \hspace{5.5em} \hat{=\,loop^D}\hat{)}
 \end{alignat*}
+
 In homotopy type theory, the $\beta$-rule for $loop$ is usually just
 $\apd\,\hat{S^{1E}\,loop}\,\hat{\,=\,loop^D}$, but here all
 $\beta$-rules are propositional, so we need to transport with
@@ -1562,6 +1565,26 @@ of $\hat{loop^S}$, we start with $(\underline{b
 evaluates to $(b=b)^\S\,\hat{\gamma^3}\,\hat{loop}\eqh\hat{loop^D}$,
 and then we unfold the left hand side to get the doubly-transported
 expression in the result.
+
+For $a =_\U b$ equalities, let us consider here only the $(a =_\U b)^\S$ case
+for the type former. The interpretation here is inspried by the univalence
+axiom, although the translation does not require it. If we assume univalence,
+then $\hat{a =_{\Type_i} b}$ equalities in the external theory are equivalent to
+equivalences, which contain a function $\hat{f : a \ra b}$ and a proof
+$\hat{\mathsf{isEqv}\,f}$. Since $\hat{\mathsf{isEqv}}$ is propositional (proof
+irrelevant), we only need to say something about the underlying $\hat{f}$
+function in the translation.
+
+Let us consider $\blank^\S$ for higher inductive integers with the type
+equality:
+\begin{alignat*}{5}
+  & && (\boldsymbol{\cdot},\,\,Int : U,\,\,zero : \underline{Int},\,p : Int =_\U Int)^\S\,
+     \hat{(\tt,\,Int,\,z,\,p)\,(\tt,\,Int^D,\,z^D,\,p^D)} \\
+  & \equiv \,\, && \hat{
+     \top \times (Int^S : (x : Int)\ra Int^D\,x) \times (z^S : Int^S\,z = z^D)}\\
+  & && \hat{\hspace{1em}\times\,
+       (p^S : (\lambda\,x.\,p^s\,(\coe\,p\,x)) = (\lambda\,x.\,\TR\,p^D\,(\J\,(p^s\,x)\,p)))}
+\end{alignat*}
 
 In Appendix \ref{sec:app}, we show how the type of displayed algebra sections is
 computed for the two-dimensional sphere. In Appendix \ref{sec:wtypes}, we show
