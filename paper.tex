@@ -15,6 +15,7 @@
 \usepackage{stmaryrd}
 \bibliographystyle{plainurl}
 \usepackage{hyperref}
+\usepackage{url}
 
 %% ABBREVIATIONS
 %% --------------------------------------------------------------------------------
@@ -631,7 +632,7 @@ of path induction.
 \end{figure}
 
 \begin{figure}
-  
+
 (6) External parameters
 
 \[
@@ -656,7 +657,7 @@ of path induction.
   \infer{\hat{\Gamma}\semicol\Delta \vdash t\, \hat{u} : \underline{b[\hat{x}\mapsto \hat{u}]}}
         {\hat{\Gamma}\semicol\Delta \vdash t : \underline{(\hat{x}\in \hat{A})\ra b} && \hat{\Gamma}\vdash \hat{u} \in \hat{A}}
 \end{gathered}
-\]  
+\]
 \caption{The theory of HIIT signatures, parts (6)--(7). Parts (1)--(5)
   are given in Figure \ref{sigrules1}.}
 \label{sigrules2}
@@ -751,9 +752,16 @@ Here, successor and predecessor functions can be recovered from the $p : Int
 signature could be unfolded to a larger one, by replacing $p : Int =_\U Int$
 with an explicit $suc : Int \ra \underline{Int}$ constructor and additional
 constructors expressing that $suc$ is an equivalence. The definition of $Int$
-with a successor equivalence was previously suggested by Altenkirch, Pinyo
-[TODO] and Cavallo [TODO]. Our signature can be viewed as a shorthand for the
-unfolded version.
+with a successor equivalence was previously suggested by Altenkirch and Pinyo
+\cite{pinyo2018integers} and Cavallo and M\"ortberg \cite{cavallointegers}. Our
+signature can be viewed as a shorthand for the unfolded version.
+
+For another example, we may have a HIIT definition for a type theory where
+Russell-style universes are compactly specified with an equality:
+\begin{alignat*}{5}
+  & ...,\,\, russell : (\Gamma : Con)\ra Tm\,\Gamma\,U =_\U Ty\,\Gamma,\,\, ...
+\end{alignat*}
+
 
 So far we were only able to define closed HIITs, which do not refer to external
 types. We add rules which include external types into signatures. A context
@@ -1862,6 +1870,5 @@ We pick a universe level $j$ for elimination. The interpretations of $W$ are the
   & && \hspace{0.23em}\timesh && \hat{\big(}\hat{(}\hat{s\in S}\hat{)}\hat{(}\hat{f}\in \hat{(}\hat{p\in P\,s}\hat{)}\rah \hat{w}\,\hat{(}\hat{in\,s\,p}\hat{)}\hat{)}\\
   & && && \rah \hat{w^S}\,\hat{(}\hat{out\,s}\hat{)}\,\hat{(}\hat{sup\,\,s\,f}\hat{)} \eqh \hat{sup^D\,s\,f}\,\hat{(}\hat{\lambda} \hat{p.}\, \hat{w^S}\,\hat{(}\hat{in\,s\,p}\hat{)}\,\hat{(}\hat{f\,p}\hat{)}\hat{)}\hat{\big)}
 \end{alignat*}
-
 
 \end{document}
