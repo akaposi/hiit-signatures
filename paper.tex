@@ -852,18 +852,20 @@ $\hat{t}\in \hat{A}$, $\hat{P}\in (\hat{x}\in \hat{A})\rah
 \hat{P}\,\hat{t}\,\hat{\refl}$ and $\hat{eq} \in
 \hat{t}\eqh_\hat{A}\hat{u}$. Sometimes we omit parameters in subscripts.
 
-We will use the following functions defined using $\hat{\J}$ in the standard
-way. We write $\TR_{\hat{P}}\,\hat{e}\,\hat{t}\in \hat{P}\,\hat{v}$ for
-transport of $\hat{t} \in \hat{P}\,\hat{u}$ along $\hat{e} \in \hat{u}\eqh
-\hat{v}$. We write
+We will use the following functions defined using $\hat{\J}$ in the
+standard way. We write $\TR_{\hat{P}}\,\hat{e}\,\hat{t}\in
+\hat{P}\,\hat{v}$ for transport of $\hat{t} \in \hat{P}\,\hat{u}$
+along $\hat{e} \in \hat{u}\eqh \hat{v}$ and $\hat{\coe\,e\,t : B}$ for
+coercion of $\hat{t:A}$ along $\hat{e : A =_\Type B}$. We write
 $\ap\,\hat{f}\,\hat{e}\in\hat{f}\,\hat{u}\eqh\hat{f}\,\hat{v}$ where
 $\hat{f}:\hat{A}\rah\hat{B}$ and $\hat{e}\in\hat{u}\eqh\hat{v}$, also
-$\hat{\apd\,\hat{f}\,\hat{e} \in \TR_{\hat{P}}\,\hat{e}\,(\hat{f}\,\hat{u}) \eqh
-  \hat{f}\,\hat{v}}$ where $\hat{\hat{f}\in(\hat{x}\in \hat{A})\rah \hat{B}}$
-and $\hat{e} \in \hat{u}\eqh \hat{v}$. Borrowing notation from the homotopy type
-theory book \cite{HoTTbook}, we write $\hat{p \sqcdot q}$ for transitivity and
-$\hat{p^{-1}}$ for symmetry. We also make use of the groupoid law $\hat{\inv\,p
-  : p^{-1}\sqcdot p = \refl}$.
+$\hat{\apd\,\hat{f}\,\hat{e} \in
+  \TR_{\hat{P}}\,\hat{e}\,(\hat{f}\,\hat{u}) \eqh \hat{f}\,\hat{v}}$
+where $\hat{\hat{f}\in(\hat{x}\in \hat{A})\rah \hat{B}}$ and $\hat{e}
+\in \hat{u}\eqh \hat{v}$. Borrowing notation from the homotopy type
+theory book \cite{HoTTbook}, we write $\hat{p \sqcdot q}$ for
+transitivity and $\hat{p^{-1}}$ for symmetry. We also make use of the
+groupoid law $\hat{\inv\,p : p^{-1}\sqcdot p = \refl}$.
 
 
 %=====================================================================
@@ -1385,8 +1387,8 @@ This requires us to change $(\underline{a})^\M$ as well, since we need to
 produce a type as result, but $a^M$ now yields a function. We can view the
 result of $a^\M$ as a functional relation, and use its graph to relate $t_0$ and $t_1$:
 \begin{alignat*}{5}
-  & (\underline{a})^\M\,\hat{\gamma_0\,\gamma_1\,\gamma^M\,t_0\,\,t_1} && :\equiv \hat{
-    \blc{a^\M}\,\gamma_0\,\gamma_1\,\gamma^M\,t_0 = t_1}
+  & (\underline{a})^\M\,\hat{\gamma_0\,\gamma_1\,\gamma^M\,t_0\,\,t_1} && :\equiv \hat{(
+    \blc{a^\M}\,\gamma_0\,\gamma_1\,\gamma^M\,t_0 = t_1)}
 \end{alignat*}
 At this point we have merely restricted relations to functions, and left the
 rest of the interpretation unchanged. However, this is not strictly the desired
@@ -1483,7 +1485,7 @@ until $((x:a)\ra B)^\S$, with $\U^\S$ defined as a dependent function instead of
 a non-dependent one. Also, $\U^\S\,\hat{\gamma^S}\,\hat{A}\,\hat{A^D}$ is
 precisely the type of sections of the $\hat{A^D}$ type family.
 
-Let us consider now the translation in with the
+Let us consider now the translation in the
 corresponding induction principles in mind, defined as $\mathsf{Induction}$ in
 Section \ref{sec:general}.
 
@@ -1743,7 +1745,24 @@ notions of higher categories \cite{nuyts2015towards, riehl2017type}.
 \section{The homomorphism translation}
 \label{sec:morphismrules}
 
-We list below the $\blank^\M$ interpretations for the syntax. For brevity, we
+The specification of the $\blank^\M$ interpretation is as following.
+\[
+\infer{\hat{\Gamma}\vdashh\Delta^\M \in \Delta^\A\rah\Delta^\A\rah \Type_{\hat{i}}}
+      {\hat{\Gamma}\vdash\Delta}
+\hspace{1em}
+\infer{
+  \hat{\Gamma}\vdashh A^\D \in \hat{(}\hat{\gamma_0\,\gamma_1}\in\Delta^\A\hat{)}\rah \Delta^\M\,\hat{\gamma_0\,\gamma_1}\rah  A^\A\,\hat{\gamma_0}\rah A^\A\,\hat{\gamma_1}\rah \Type_{\hat{i}}}
+      {\hat{\Gamma}\semicol\Delta\vdash A}
+\]
+
+\[
+\infer{
+  \hat{\Gamma}\vdashh t^\M\, \hat{ : (\gamma_0\,\gamma_1 : \blc{\Delta^\A})(\gamma^M : \blc{\Delta^\M}\,\gamma_0\,\gamma_1)\ra \blc{A^\M}\,\gamma_0\,\gamma_1\,\gamma^M\,(\blc{t^\A}\,\gamma_0)\,(\blc{t^\A}\,\gamma_1)
+      }}
+      {\hat{\Gamma}\semicol\Delta\vdash t : A}
+\]
+
+We list below the implementation of $\blank^\M$ on the full syntax. For brevity, we
 mostly leave $\hat{\gamma_0}$ and $\hat{\gamma_1}$ implicit, notating only
 $\hat{\gamma^M}$ where necessary.  We also omit some subscript parameters from
 $\hat{\J}$ applications. The interpretation follows the same pattern as in the
@@ -1767,8 +1786,6 @@ allows us to use composition and $\hat{\inv}$ (which was noted in Section
   & && \hat{\hspace{-8em}(x_0 : \blc{a^\A}\,\gamma_0)\ra \blc{B^\M}\,(\gamma_0,\,x_0)\,(\gamma_1,\,\blc{a^\M}\,\gamma^M\,x_0)\,(\gamma^M,\,\refl)\,
     (f_0\,x_0)\,(f_1\,(\blc{a^\M}\,\gamma^M\,x_0))}\\
   & (t\,u)^\M\,\hat{\gamma^M} && :\equiv  \hat{\J\,(\blc{t^\M}\,\gamma^M\,(\blc{u^\A}\,\gamma_0))\,(\blc{u^\M}\,\gamma^\M) }\\
-  & ((\hat{x:A})\ra B)^\M\,\hat{\gamma^M\,f_0\,f_1} && :\equiv \hat{(x : A)\ra \blc{B^\M}\,\gamma^M\,(f_0\,x)\,(f_1\,x)} \\
-  & (t\,\hat{u})^\M\,\hat{\gamma^M} && :\equiv t^\M\,\hat{\gamma^M\,u} \\
   & (t=_a u)^\M\,\hat{\gamma^M} && :\equiv
     \hat{\lambda\,e.\,(\blc{t^\M}\,\gamma^M\,^{-1})\sqcdot\ap\,(\blc{a^\M}\,\gamma^M)\,e\sqcdot\,\blc{u^\M}\,\gamma^M}\\
   & (\refl_t)^\M\,\hat{\gamma^M} && :\equiv \hat{\inv\,(\blc{t^\M}\,\gamma^M)}\\
@@ -1785,6 +1802,15 @@ allows us to use composition and $\hat{\inv}$ (which was noted in Section
       (\mathsf{uncurry}\,\blc{p^\M}\,\gamma^M)\big)
       (\blc{pr^\M}\,\gamma^M)
     }\\
+  & (a=_\U b)^\M\,\hat{\gamma^M} && :\equiv
+    \hat{\lambda\,e_0\,e_1.\,(\lambda x.\blc{b^\M}\,\gamma^M\,(\coe\,e_0\,x)) = (\lambda x.\coe\,e_1\,(\blc{a^\M}\,\gamma^M\,x))}\\
+  & (\refl_a)^\M\,\hat{\gamma^M} && :\equiv \hat{\refl} \\
+  & (\J_{a\,(x.z.p)}\,pr\,_b\,eq)^\M\,\hat{\gamma^M} && :\equiv\\
+  & && \hspace{-10em}\hat{\J\,\bigg(\lambda b^M\,eq^M.\J\,\Big(\lambda b^M\,eq^M. \J\,(\lambda P^M\,pr^M.pr^M)\,eq^M\,(\mathsf{uncurry}\,\blc{p^\M}\,\gamma^M)\,(\blc{pr^\M}\,\gamma^M)\Big)}  \\
+  & && \hspace{-9em}\hat{\,(\blc{eq^\A}\,\gamma_1)\,b^M\,eq^M\bigg)\,(\blc{eq^\M}\,\gamma_0)\,(\blc{b^\M}\,\gamma^M)\,(\blc{eq^\M}\,\gamma^M) } \\
+  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\M\,\hat{\gamma^M} && :\equiv \hat{\inv\,(\blc{pr^\M}\,\gamma^M)} \\
+  & ((\hat{x:A})\ra B)^\M\,\hat{\gamma^M\,f_0\,f_1} && :\equiv \hat{(x : A)\ra \blc{B^\M}\,\gamma^M\,(f_0\,x)\,(f_1\,x)} \\
+  & (t\,\hat{u})^\M\,\hat{\gamma^M} && :\equiv t^\M\,\hat{\gamma^M\,u} \\
   & ((\hat{x}\in \hat{A})\ra b)^\M\,\hat{\gamma^M} && :\equiv
        \hat{\lambda f\,x.\,\,\blc{b^\M}\,\gamma^M\,(f\,x)} \\
   & (t\,\hat{u})^\M\,\hat{\gamma^M} && :\equiv
