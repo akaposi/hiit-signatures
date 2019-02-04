@@ -15,6 +15,7 @@
 \usepackage{stmaryrd}
 \bibliographystyle{plainurl}
 \usepackage{hyperref}
+\usepackage{url}
 
 %% ABBREVIATIONS
 %% --------------------------------------------------------------------------------
@@ -388,10 +389,10 @@ HIITs. However, we do not provide complete (higher) categorical semantics
 for HIITs, nor do we show that initial algebras exist for specified HIITs.
 
 The present paper is an expanded version of our conference paper \cite{hiit}.
-In this version, we additionally compute notions of homomorphisms from
-signatures, and compare them to logical relations, in Section
-\ref{sec:morphisms}. We also explain a coherence problem in interpreting
-syntaxes of type theories, and how this influenced the current paper, in Section
+In this version, we extend signatures with paths between type constructors, and
+in Section \ref{sec:morphisms} we also compute notions of homomorphisms from
+signatures. We also explain a coherence problem in interpreting syntaxes of type
+theories, and how it influenced the current paper, in Section
 \ref{sec:coherence} and Section \ref{sec:categorical}.
 
 \subsection{Overview of the Paper}
@@ -449,10 +450,10 @@ as a sequential colimit. The schemes mentioned so far do not support
 inductive-inductive types.
 
 Cartmell's generalized algebraic theories (GATs) \cite{gat} pioneered a
-type-theoretic notion of algebraic signature. GATs can be viewed as finitary
-quotient inductive-inductive signatures (QIITs), although GATs support equalities
-between inductive types (sorts) as well, which have not been so far explored in
-other works about QIITs and HIITs.
+type-theoretic notion of algebraic signature. GATs can be viewed as a variant of
+finitary quotient inductive-inductive signatures (QIITs), although GATs also
+support equations between sorts (type constructors), which so far have not been
+considered in QIIT and HIT literature.
 
 The article of Altenkirch et al. \cite{gabe} gives specification and semantics
 of QIITs in a set-truncated setting. Signatures are given as lists of functors
@@ -631,7 +632,7 @@ of path induction.
 \end{figure}
 
 \begin{figure}
-  
+
 (6) External parameters
 
 \[
@@ -656,7 +657,7 @@ of path induction.
   \infer{\hat{\Gamma}\semicol\Delta \vdash t\, \hat{u} : \underline{b[\hat{x}\mapsto \hat{u}]}}
         {\hat{\Gamma}\semicol\Delta \vdash t : \underline{(\hat{x}\in \hat{A})\ra b} && \hat{\Gamma}\vdash \hat{u} \in \hat{A}}
 \end{gathered}
-\]  
+\]
 \caption{The theory of HIIT signatures, parts (6)--(7). Parts (1)--(5)
   are given in Figure \ref{sigrules1}.}
 \label{sigrules2}
@@ -738,6 +739,30 @@ theory as given e.g.\ in \cite{ttintt} as an inductive type.  Also, see the
 examples in the Agda formalization described in Section
 \ref{sec:formalization}.
 
+(5) There is a different equality type former, which can be used to express
+paths between type constructors. To our knowledge, this has not been considered
+so far in HIT literature, although Cartmell considered equations between sorts
+in generalized algebraic theories \cite{gat}. For an example, paths between type
+constructors allow a compact definition of integers:
+\begin{alignat*}{5}
+  & \boldsymbol{\cdot},\,\,Int : U,\,\,zero : \underline{Int},\,p : Int =_\U Int
+\end{alignat*}
+Here, successor and predecessor functions can be recovered from the $p : Int
+=_\U Int$ equality, by transporting an $Int$ along $p$ or $p^{-1}$. This
+signature could be unfolded to a larger one, by replacing $p : Int =_\U Int$
+with an explicit $suc : Int \ra \underline{Int}$ constructor and additional
+constructors expressing that $suc$ is an equivalence. The definition of $Int$
+with a successor equivalence was previously suggested by Altenkirch and Pinyo
+\cite{pinyo2018integers} and Cavallo and M\"ortberg \cite{cavallointegers}. Our
+signature can be viewed as a shorthand for the unfolded version.
+
+For another example, we may have a HIIT definition for a type theory where
+Russell-style universes are compactly specified with an equality:
+\begin{alignat*}{5}
+  & ...,\,\, russell : (\Gamma : Con)\ra Tm\,\Gamma\,U =_\U Ty\,\Gamma,\,\, ...
+\end{alignat*}
+
+
 So far we were only able to define closed HIITs, which do not refer to external
 types. We add rules which include external types into signatures. A context
 $\Delta$ for which $\hat{\Gamma}\vdash\Delta$ holds can be seen as a
@@ -745,9 +770,10 @@ specification of an inductive type which depends on an external $\hat{\Gamma}$
 signature. For example, in the case of lists for arbitrary external element
 types, $\hat{\Gamma}$ will be $\hat{A}\in\Type_{\hat{0}}$.
 
-(5) We have a function space where the domain is a type in the external
+(6) We have a function space where the domain is a type in the external
 theory. We distinguish it from (3) by using red brick color in the domain
-specification. We specify lists and the integers as follows.
+specification. We specify lists and integers as follows, with integers now
+given as quotients of pairs of natural numbers:
 \begin{alignat*}{4}
   & \hat{A}\in\Type_{\hat{0}} && \vdash\,\boldsymbol{\cdot},\,\, && List:\U,\,\,\,nil:\underline{List},\,\,\,cons:(\hat{x}\in \hat{A})\ra List\ra\underline{List} \\
   & \hat{\Gamma} && \vdash\,\boldsymbol{\cdot},\,\,&& Int:\U,\,\,\,pair:(\hat{x}\,\hat{y}\in\hat{Nat})\ra\underline{Int},\,\,\, \\
@@ -770,7 +796,7 @@ in the external theory there is no way to recursively refer to the inductive typ
 \cite{abbot05containers}, where shapes and positions can contain arbitrary types
 but they cannot recursively refer to the $W$-type being defined.
 
-(6) $\U$ is also closed under a function space where the domain is an external
+(7) $\U$ is also closed under a function space where the domain is an external
 type and the codomain is a small source theory type. We overload the application
 notation for external parameters, as it is usually clear from context which
 application is meant. The rules allow types with infinitary constructors, for
@@ -1472,7 +1498,7 @@ applications.
   & (\refl_t)^\S\,\hat{\gamma^S} && :\equiv \hat{\J}\,\hat{\refl}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)} \\
   & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\S\,\hat{\gamma^S} && :\equiv \\
   & && \hspace{-10em}\hat{\J}\,\hat{\bigg(}\hat{\J}\,\hat{\Big(}\hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\,\hat{pr^D}\,\hat{pr^S}\hat{.}\,\hat{pr^S}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)}\,\\
-  & && \hspace{-9em}\hat{(}\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^S}\hat{)}\,\hat{(}pr^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}pr^\S\,\hat{\gamma^S}\hat{)}\hat{\big)}\,(eq^\A\,\hat{\gamma})\hat{\Big)}\,(u^\S\,\hat{\gamma^S})\hat{\bigg)}\,\hat{(}eq^\S\,\hat{\gamma^S}\hat{)} \\
+  & && \hspace{-9em}\hat{(}\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^S}\hat{)}\,\hat{(}pr^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}pr^\S\,\hat{\gamma^S}\hat{)}\hat{\big)}\,\hat{(}eq^\A\,\hat{\gamma}\hat{)}\hat{\Big)}\,\hat{(}u^\S\,\hat{\gamma^S}\hat{)}\hat{\bigg)}\,\hat{(}eq^\S\,\hat{\gamma^S}\hat{)} \\
   & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\S\,\hat{\gamma^S} && :\equiv \\
   & && \hspace{-10em}\hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\hat{.}\,\hat{\refl}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^S}\hat{)}\hat{\big)}\,\hat{(}pr^\S\,\hat{\gamma^S}\hat{)}\\
   & ((\hat{x}\in \hat{A})\ra b)^\S\,\hat{\gamma^S\,f\,t} && :\equiv b^\S\,\hat{\gamma^S}\,\hat{(}\hat{f}\,\hat{t}\hat{)} \\
@@ -1878,6 +1904,5 @@ We pick a universe level $j$ for elimination. The interpretations of $W$ are the
   & && \hspace{0.23em}\timesh && \hat{\big(}\hat{(}\hat{s\in S}\hat{)}\hat{(}\hat{f}\in \hat{(}\hat{p\in P\,s}\hat{)}\rah \hat{w}\,\hat{(}\hat{in\,s\,p}\hat{)}\hat{)}\\
   & && && \rah \hat{w^S}\,\hat{(}\hat{out\,s}\hat{)}\,\hat{(}\hat{sup\,\,s\,f}\hat{)} \eqh \hat{sup^D\,s\,f}\,\hat{(}\hat{\lambda} \hat{p.}\, \hat{w^S}\,\hat{(}\hat{in\,s\,p}\hat{)}\,\hat{(}\hat{f\,p}\hat{)}\hat{)}\hat{\big)}
 \end{alignat*}
-
 
 \end{document}
