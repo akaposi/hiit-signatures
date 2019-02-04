@@ -506,10 +506,13 @@ In prior literature, schemes for inductive types usually include structural
 restrictions for this. In our case, a \emph{universe} can be used to make
 size restrictions which also entail strict positivity.
 
-\item\emph{Iterated equalities and path induction in signatures.}
-We can support this relatively easily by closing the universe under equality
-type formation, and also using a standard (although size-restricted) definition
-of path induction.
+\item\emph{Iterated equalities and type constructor equalities with path
+indcution.} We can support iterated equalities of point and path constructors
+by closing the universe under equality type formation of point and path
+constructors, together with a standard (although size-restricted) definition
+of path induction. We can also introduce a different type former for
+equalities between type constructors.
+
 \end{itemize}
 
 %=====================================================================
@@ -741,7 +744,7 @@ examples in the Agda formalization described in Section
 
 (5) There is a different equality type former, which can be used to express
 paths between type constructors. To our knowledge, this has not been considered
-so far in HIT literature, although Cartmell considered equations between sorts
+in previous HIT literature, although Cartmell considered equations between sorts
 in generalized algebraic theories \cite{gat}. For an example, paths between type
 constructors allow a compact definition of integers:
 \begin{alignat*}{5}
@@ -761,7 +764,6 @@ Russell-style universes are compactly specified with an equality:
 \begin{alignat*}{5}
   & ...,\,\, russell : (\Gamma : Con)\ra Tm\,\Gamma\,U =_\U Ty\,\Gamma,\,\, ...
 \end{alignat*}
-
 
 So far we were only able to define closed HIITs, which do not refer to external
 types. We add rules which include external types into signatures. A context
@@ -788,9 +790,9 @@ truncation for a type $\hat{A}$ is specified as follows.
 \[
 \hat{A}\in\Type_{\hat{0}}\vdash\, \boldsymbol{\cdot},\,\,\,tr:\U,\,\,\,emb : (\hat{x}\in \hat{A})\ra \underline{tr},\,\,\,eq:(x\,y:tr)\ra \underline{x=_{tr} y}
 \]
-The smallness of $\hat{A}$ is required in (5). It is possible to generalize
+The smallness of $\hat{A}$ is required in (6). It is possible to generalize
 signatures to arbitrary universe levels, but it is not essential to the current
-development. Note that the (5) function space preserves strict positivity, since
+development. Note that the (6) function space preserves strict positivity, since
 in the external theory there is no way to recursively refer to the inductive type
 \emph{being defined}. The situation is analogous to the case of $W$-types
 \cite{abbot05containers}, where shapes and positions can contain arbitrary types
@@ -805,8 +807,8 @@ $\hat{B}$ (which could be an infinite type):
 \[
 \hat{A}\in\Type_{\hat{0}}\commah\hat{B}\in\Type_{\hat{0}}\vdash\,\boldsymbol{\cdot},\,\,\,T:\U,\,\,\,leaf:(\hat{x}\in \hat{A})\ra\underline{T},\,\,\,node:((\hat{x}\in \hat{B})\ra T)\ra\underline{T}
 \]
-Here, $leaf$ has a function type (5) and $node$ has a function type (3) with a
-function type (6) in the domain. More generally, we can define $W$-types
+Here, $leaf$ has a function type (6) and $node$ has a function type (3) with a
+function type (7) in the domain. More generally, we can define $W$-types
 \cite{abbot05containers} as follows. $\hat{S}$ describes the ``shapes'' of the
 constructors and $\hat{P}$ the ``positions'' where recursive arguments can
 appear.
@@ -1495,8 +1497,6 @@ applications.
   & ((x:a)\ra B)^\S\,\hat{\gamma^S}\,\hat{f}\,\hat{f^D} && :\equiv \hat{(}\hat{x}\in a^\A\,\hat{\gamma}\hat{)}\rah  B^\S\,\hat{(}\hat{\gamma,x}\hat{)}\,\hat{(}\hat{\gamma^D,}\,a^\S\,\hat{\gamma^S}\,\hat{x}\hat{)}\,\hat{(}\hat{\gamma^S,}\,\hat{\refl}\hat{)} \\
   & && \hspace{8.4em} \hat{(}\hat{f}\,\hat{x}\hat{)}\,\hat{\big(}\hat{f^D}\,\hat{x}\,\hat{(}a^\S\,\hat{\gamma^S}\,\hat{x}\hat{)}\hat{\big)} \\
   & (t\,u)^\S\,\hat{\gamma^S} && :\equiv \hat{\J}\,\hat{(}t^\S\,\hat{\gamma^S}\,\hat{(} u^\A\,\hat{\gamma}\hat{)}\hat{)}\,\hat{(}u^\S\,\hat{\gamma^S}\hat{)} \\
-  & ((\hat{x}\in \hat{A})\ra B)^\S\,\hat{\gamma^S}\,\hat{f}\,\hat{f^D} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah B^\S\,\hat{\gamma^S}\,\hat{(}\hat{f}\,\hat{x}\hat{)}\,\hat{(}\hat{f^D}\,\hat{x}\hat{)} \\
-  & (t\,\hat{u})^\S\,\hat{\gamma^S} && :\equiv t^\S\,\hat{\gamma^S}\,\hat{u} \\
   & (t=_a u)^\S\,\hat{\gamma^S}\,\hat{e} && :\equiv \TR\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)}\hat{\big(}\TR\,\hat{(}u^\S\,\hat{\gamma^S}\hat{)}\,\hat{(}\apd\,\hat{(}a^\S\,\hat{\gamma^S}\hat{)}\,\hat{e}\hat{)}\hat{\big)} \\
   & (\refl_t)^\S\,\hat{\gamma^S} && :\equiv \hat{\J}\,\hat{\refl}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)} \\
   & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\S\,\hat{\gamma^S} && :\equiv \\
@@ -1504,6 +1504,17 @@ applications.
   & && \hspace{-9em}\hat{(}\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^S}\hat{)}\,\hat{(}pr^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}pr^\S\,\hat{\gamma^S}\hat{)}\hat{\big)}\,\hat{(}eq^\A\,\hat{\gamma}\hat{)}\hat{\Big)}\,\hat{(}u^\S\,\hat{\gamma^S}\hat{)}\hat{\bigg)}\,\hat{(}eq^\S\,\hat{\gamma^S}\hat{)} \\
   & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\S\,\hat{\gamma^S} && :\equiv \\
   & && \hspace{-10em}\hat{\J}\,\hat{\big(}\hat{\J}\,\hat{(}\hat{\lambda}\,\hat{p^D}\,\hat{p^S}\hat{.}\,\hat{\refl}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\D\,\hat{\gamma^2}\hat{)}\,\hat{(}\hat{\mathsf{uncurry}}\,p^\S\,\hat{\gamma^S}\hat{)}\hat{\big)}\,\hat{(}pr^\S\,\hat{\gamma^S}\hat{)}\\
+  & (a=_\U b)^\S\,\hat{\gamma^S} && :\equiv
+    \hat{\lambda\,e\,e^D.\,(\lambda\,x.\, \blc{b^\S}\,\gamma^S\, (\coe\,e\,x))
+     =
+    (\lambda\,x.\, \TR\,e^D\,(\J\,(\blc{a^\S}\,\gamma^S\,x)\,e))}\\
+  & (\refl_a)^\S\,\hat{\gamma^S} && :\equiv \hat{\refl} \\
+  & (\J_{a\,(x.z.p)}\,pr\,_b\,eq)^\S\,\hat{\gamma^S} && :\equiv\\
+  & && \hspace{-10em}\hat{\J\,\bigg(\lambda\,b^D\,\,b^S\,eq^D.\,\J\,\Big(\lambda\,b^S\,eq^S.\,\J\,(\lambda P^S\,pr^S.\,pr^S)\,eq^S\,(\mathsf{uncurry}\,\blc{p^\S}\,\gamma^S)\,(\blc{pr^\S}\,\gamma^S)\Big)}  \\
+  & && \hspace{-9em}\hat{\,(\blc{eq^\D}\,\gamma^D)\,b^S\bigg)\,(\blc{eq^\A}\,\gamma)\,(\blc{b^\D}\,\gamma^D)\,(\blc{b^\S}\,\gamma^S)\,(\blc{eq^\D}\,\gamma^D)\,(\blc{eq^\S}\,\gamma^S) } \\
+  & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\S\,\hat{\gamma^S} && :\equiv \hat{\J\,\refl\,(\blc{pr^\S}\,\gamma^S)} \\
+  & ((\hat{x}\in \hat{A})\ra B)^\S\,\hat{\gamma^S}\,\hat{f}\,\hat{f^D} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah B^\S\,\hat{\gamma^S}\,\hat{(}\hat{f}\,\hat{x}\hat{)}\,\hat{(}\hat{f^D}\,\hat{x}\hat{)} \\
+  & (t\,\hat{u})^\S\,\hat{\gamma^S} && :\equiv t^\S\,\hat{\gamma^S}\,\hat{u} \\
   & ((\hat{x}\in \hat{A})\ra b)^\S\,\hat{\gamma^S\,f\,t} && :\equiv b^\S\,\hat{\gamma^S}\,\hat{(}\hat{f}\,\hat{t}\hat{)} \\
   & (t\,\hat{u})^\S\,\hat{\gamma^S} && :\equiv \ap\,\hat{(}\hat{\lambda} \hat{f.}\hat{f}\,\hat{u}\hat{)}\,\hat{(}t^\S\,\hat{\gamma^S}\hat{)}
 \end{alignat*}
@@ -1568,29 +1579,33 @@ evaluates to $(b=b)^\S\,\hat{\gamma^3}\,\hat{loop}\eqh\hat{loop^D}$,
 and then we unfold the left hand side to get the doubly-transported
 expression in the result.
 
-For $a =_\U b$ equalities, let us consider here only the $(a =_\U b)^\S$ case
-for the type former. The interpretation here is inspried by the univalence
-axiom, although the translation does not require it. If we assume univalence,
-then $\hat{a =_{\Type_i} b}$ equalities in the external theory are equivalent to
-equivalences, which contain a function $\hat{f : a \ra b}$ and a proof
-$\hat{\mathsf{isEqv}\,f}$. Since $\hat{\mathsf{isEqv}}$ is propositional (proof
-irrelevant), we only need to say something about the underlying $\hat{f}$
-function in the translation.
-
-Let us consider $\blank^\S$ for higher inductive integers with the type
-equality:
+For $a =_\U b$ equalities, let us examine here only the $(a =_\U b)^\S$ case.
+The interpretation here is inspired by the univalence axiom, although the
+translation does not require it. If we assume univalence in the external theory,
+then $\hat{a =_{\Type_i} b}$ equalities in are equivalent to equivalences, which
+contain $\hat{f : a \ra b}$ functions together with $\hat{\mathsf{isEqv}\,f}$
+proofs. Hence, we can view the $\hat{e : \blc{a^\A}\,\gamma =
+  \blc{a^\A}\,\gamma}$ and $\hat{e^D : \TR_{(\lambda\,A.\,A \ra
+    \mathsf{Type_0})}\,e\,(\blc{a^\D}\,\gamma^D) = \blc{b^\D}\,\gamma^D}$ proofs
+as function bundled together with witnesses of equivalence. Since
+$\hat{\mathsf{isEqv}}$ is proof irrelevant, we only need to relate the
+underlying functions. For $\hat{e}$, the underlying function is given just by
+$\hat{\coe\,e}$. For $\hat{e^D}$, the underlying function is a bit more
+complicated, since $\hat{e^D}$ is a path over a path. We can observe this in the
+example for higher inductive integers:
 \begin{alignat*}{5}
   & && (\boldsymbol{\cdot},\,\,Int : U,\,\,zero : \underline{Int},\,p : Int =_\U Int)^\S\,
      \hat{(\tt,\,Int,\,z,\,p)\,(\tt,\,Int^D,\,z^D,\,p^D)} \\
   & \equiv \,\, && \hat{
      \top \times (Int^S : (x : Int)\ra Int^D\,x) \times (z^S : Int^S\,z = z^D)}\\
   & && \hat{\hspace{1em}\times\,
-       (p^S : (\lambda\,x.\,p^s\,(\coe\,p\,x)) = (\lambda\,x.\,\TR\,p^D\,(\J\,(p^s\,x)\,p)))}
+       (p^S : (\lambda\,x.\,p^S\,(\coe\,p\,x)) = (\lambda\,x.\,\TR\,p^D\,(\J\,(p^S\,x)\,p)))}
 \end{alignat*}
 
-In Appendix \ref{sec:app}, we show how the type of displayed algebra sections is
-computed for the two-dimensional sphere. In Appendix \ref{sec:wtypes}, we show
-the same for indexed W-types.
+
+In Appendix \ref{sec:app}, we additionally show how the type of displayed
+algebra sections is computed for the two-dimensional sphere. In Appendix
+\ref{sec:wtypes}, we show the same for indexed W-types.
 
 %=====================================================================
 
@@ -1852,11 +1867,11 @@ allows us to use composition and $\hat{\inv}$ (which was noted in Section
       (\blc{pr^\M}\,\gamma^M)
     }\\
   & (a=_\U b)^\M\,\hat{\gamma^M} && :\equiv
-    \hat{\lambda\,e_0\,e_1.\,(\lambda x.\blc{b^\M}\,\gamma^M\,(\coe\,e_0\,x)) = (\lambda x.\coe\,e_1\,(\blc{a^\M}\,\gamma^M\,x))}\\
+    \hat{\lambda\,e_0\,e_1.\,(\lambda\,x.\,\blc{b^\M}\,\gamma^M\,(\coe\,e_0\,x)) = (\lambda\,x.\,\coe\,e_1\,(\blc{a^\M}\,\gamma^M\,x))}\\
   & (\refl_a)^\M\,\hat{\gamma^M} && :\equiv \hat{\refl} \\
   & (\J_{a\,(x.z.p)}\,pr\,_b\,eq)^\M\,\hat{\gamma^M} && :\equiv\\
-  & && \hspace{-10em}\hat{\J\,\bigg(\lambda b^M\,eq^M.\J\,\Big(\lambda b^M\,eq^M. \J\,(\lambda P^M\,pr^M.pr^M)\,eq^M\,(\mathsf{uncurry}\,\blc{p^\M}\,\gamma^M)\,(\blc{pr^\M}\,\gamma^M)\Big)}  \\
-  & && \hspace{-9em}\hat{\,(\blc{eq^\A}\,\gamma_1)\,b^M\,eq^M\bigg)\,(\blc{eq^\M}\,\gamma_0)\,(\blc{b^\M}\,\gamma^M)\,(\blc{eq^\M}\,\gamma^M) } \\
+  & && \hspace{-10em}\hat{\J\,\bigg(\J\,\Big(\lambda\,b^M\,eq^M.\,\J\,(\lambda\,P^M\,pr^M.\,pr^M)\,eq^M\,(\mathsf{uncurry}\,\blc{p^\M}\,\gamma^M)\,(\blc{pr^\M}\,\gamma^M)\Big)}  \\
+  & && \hspace{-9em}\hat{\,(\blc{eq^\A}\,\gamma_1)\bigg)\,(\blc{eq^\A}\,\gamma_0)\,(\blc{b^\M}\,\gamma^M)\,(\blc{eq^\M}\,\gamma^M) } \\
   & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\M\,\hat{\gamma^M} && :\equiv \hat{\inv\,(\blc{pr^\M}\,\gamma^M)} \\
   & ((\hat{x:A})\ra B)^\M\,\hat{\gamma^M\,f_0\,f_1} && :\equiv \hat{(x : A)\ra \blc{B^\M}\,\gamma^M\,(f_0\,x)\,(f_1\,x)} \\
   & (t\,\hat{u})^\M\,\hat{\gamma^M} && :\equiv t^\M\,\hat{\gamma^M\,u} \\
@@ -1866,7 +1881,6 @@ allows us to use composition and $\hat{\inv}$ (which was noted in Section
        \hat{\ap\,(\lambda f.\,f\,u)\,(\blc{t^\M}\,\gamma^M)}
 \end{alignat*}
 \endgroup
-
 
 
 \section{Displayed algebra sections for the two-dimensional sphere}

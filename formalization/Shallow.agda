@@ -352,11 +352,10 @@ JUᴹ {a₀} {a₁} {P₀} {P₁} {pr₀} {pr₁} {b₀} {b₁} {eq₀} {eq₁} 
   J (λ b₀ eq₀ → (bᴹ  : b₀ → b₁)
               → (eqᴹ : Id (bᴹ ∘ coe eq₀) (coe eq₁ ∘ aᴹ))
               → Id (Pᴹ b₀ b₁ bᴹ eq₀ eq₁ eqᴹ (J P₀ pr₀ eq₀)) (J P₁ pr₁ eq₁))
-     (λ bᴹ eqᴹ →
-       J (λ b₁ eq₁ → (bᴹ  : a₀ → b₁)
-                    → (eqᴹ : Id bᴹ (coe eq₁ ∘ aᴹ))
-                    → Id (Pᴹ a₀ b₁ bᴹ refl eq₁ eqᴹ pr₀) (J P₁ pr₁ eq₁))
-          (λ bᴹ eqᴹ →
+     (J (λ b₁ eq₁ → (bᴹ  : a₀ → b₁)
+                  → (eqᴹ : Id bᴹ (coe eq₁ ∘ aᴹ))
+                  → Id (Pᴹ a₀ b₁ bᴹ refl eq₁ eqᴹ pr₀) (J P₁ pr₁ eq₁))
+        (λ bᴹ eqᴹ →
             J (λ aᴹ eqᴹ → (Pᴹ  : (b₂ b₃ : Set) (bᴹ₁ : b₂ → b₃) (e₀ : Id a₀ b₂)
                               (e₁ : Id a₁ b₃) →
                               Id (λ x → bᴹ₁ (coe e₀ x)) (λ x → coe e₁ (aᴹ x)) →
@@ -365,7 +364,7 @@ JUᴹ {a₀} {a₁} {P₀} {P₁} {pr₀} {pr₁} {b₀} {b₁} {eq₀} {eq₁} 
                          → Id (Pᴹ a₀ a₁ bᴹ refl refl eqᴹ pr₀) pr₁)
                (λ Pᴹ prᴹ → prᴹ)
                eqᴹ Pᴹ prᴹ)
-          eq₁ bᴹ eqᴹ)
+          eq₁)
      eq₀ bᴹ eqᴹ
 
 JUβᴹ :
@@ -629,7 +628,7 @@ JUˢ {a} {aᴰ} {P} {Pᴰ} {pr} {prᴰ} {b} {bᴰ} {eq} {eqᴰ} aˢ Pˢ prˢ bˢ
        →
        Elˢ (P b eq) (Pᴰ b bᴰ eq eqᴰ) (Pˢ b bᴰ bˢ eq eqᴰ eqˢ)
            (J P pr eq) (JUᴰ a aᴰ P Pᴰ pr prᴰ b bᴰ eq eqᴰ))
-     (λ bᴰ bˢ eqᴰ eqˢ →
+     (λ bᴰ bˢ eqᴰ →
        J (λ bᴰ eqᴰ →
             (bˢ  : (x : a) → bᴰ x)
             (eqˢ : Id (λ x → bˢ x) (λ x → J (λ u p → u x) (aˢ x) eqᴰ))
@@ -639,15 +638,16 @@ JUˢ {a} {aᴰ} {P} {Pᴰ} {pr} {prᴰ} {b} {bᴰ} {eq} {eqᴰ} aˢ Pˢ prˢ bˢ
           (λ bˢ eqˢ →
             J (λ aˢ eqˢ →
                   (Pˢ  : (b₁ : Set) (bᴰ₁ : b₁ → Set) (bˢ₁ : Uˢ b₁ bᴰ₁) (e : Id a b₁)
-                     (eᴰ : Id (tr Uᴰ e aᴰ) bᴰ₁) →
-                     IdUˢ aˢ bˢ₁ e eᴰ → Uˢ (P b₁ e) (Pᴰ b₁ bᴰ₁ e eᴰ))
+                         (eᴰ : Id (tr Uᴰ e aᴰ) bᴰ₁) →
+                         IdUˢ aˢ bˢ₁ e eᴰ → Uˢ (P b₁ e) (Pᴰ b₁ bᴰ₁ e eᴰ))
                   (prˢ : Id (Pˢ a aᴰ aˢ refl refl refl pr) prᴰ)
                   →
                   Id (Pˢ a (λ z → aᴰ z) bˢ refl refl eqˢ pr) prᴰ)
                 (λ Pˢ prˢ → prˢ)
                 eqˢ Pˢ prˢ)
-          eqᴰ bˢ eqˢ)
+          eqᴰ bˢ)
      eq bᴰ bˢ eqᴰ eqˢ
+
 
 JUβˢ :
   {a  : U}              {aᴰ  : Uᴰ a}
