@@ -567,7 +567,7 @@ of path induction.
 \]
 
 \vspace{0.5em}
-(4) Equality
+(4) Paths between point and path constructors
 
 \[
 \begin{gathered}
@@ -581,12 +581,9 @@ of path induction.
 
 \[
 \infer{\targetass\Delta \vdash \J_{a\,t\,\,(x.z.p)}\,pr\,_u\,eq : \underline{p[x\mapsto u, z\mapsto eq]}}
-      {\begin{array}{l}
-          \targetass\Delta \vdash t : \underline{a} \\
-          \targetass\Delta,x:\underline{a},z:\underline{t=_a x}\vdash p : \U \\
-          \targetass\Delta \vdash pr : \underline{p[x\mapsto t, z\mapsto \refl]} \\
-          \targetass\Delta \vdash u : \underline{a} \\
-          \targetass\Delta \vdash eq : \underline{t=_a u}
+      {\begin{array}{l l l}
+          & \targetass\Delta,x:\underline{a},z:\underline{t=_a x}\vdash p : \U & \targetass\Delta \vdash u : \underline{a} \\
+          \targetass\Delta \vdash t : \underline{a} \hspace{1.5em} & \targetass\Delta \vdash pr : \underline{p[x\mapsto t, z\mapsto \refl]} \hspace{1.5em} & \targetass\Delta \vdash eq : \underline{t=_a u}
       \end{array}}
       \]
 
@@ -599,43 +596,74 @@ of path induction.
 \]
 
 \vspace{0.5em}
-(5) External parameters
+(5) Paths between type constructors
+
+\[
+\begin{gathered}
+  \infer{\targetass\Delta \vdash a=_\U b}{\targetass\Delta \vdash a : \U && \targetass\Delta \vdash b : \U}
+\end{gathered}
+\hspace{2em}
+\begin{gathered}
+  \infer{\targetass\Delta \vdash \refl : a=_\U a}{\targetass\Delta \vdash a : \U}
+\end{gathered}
+\]
+
+\[
+\infer{\targetass\Delta \vdash \J_{a\,\,(x.z.p)}\,pr\,_b\,eq : \underline{p[x\mapsto b, z\mapsto eq]}}
+      {\begin{array}{l l l}
+          & \targetass\Delta,x:\U,z:a=_\U x\vdash p : \U & \targetass\Delta \vdash b : \U \\
+          \targetass\Delta \vdash a : \U \hspace{1.5em} & \targetass\Delta \vdash pr : \underline{p[x\mapsto a, z\mapsto \refl]} \hspace{1.5em} & \targetass\Delta \vdash eq : a=_\U b
+      \end{array}}
+      \]
+
+\[
+\infer{\targetass\Delta \vdash \J\beta_{a\,\,(x.z.p)}\,pr:\underline{(\J_{a\,\,(x.z.p)}\,pr\,_a\,\refl) =_{p[x\mapsto a, z\mapsto \refl]} pr}}
+      {\targetass\Delta \vdash a : \U
+        && \targetass\Delta,x:\U,z:t =_\U x\vdash p : \U
+        && \targetass\Delta \vdash pr : \underline{p[x\mapsto a, z\mapsto \refl]}
+      }
+\]
+\caption{The theory of HIIT signatures, parts (1)--(5). Weakenings are
+  implicit, we assume fresh names everywhere and consider
+  $\alpha$-convertible terms equal. The $\hat{\Gamma};$ assumptions
+  are not used or changed in parts (1)--(5), only in parts (6)--(7),
+  see Figure \ref{sigrules2}.}
+\label{sigrules1}
+\end{figure}
+
+\begin{figure}
+  
+(6) External parameters
 
 \[
 \begin{gathered}
   \infer{\hat{\Gamma}\semicol\Delta \vdash (\hat{x}\in \hat{A})\ra B}{\hat{\Gamma}\vdashh\hat{A}\in\Type_{\hat{0}} && \hat{\Gamma}\semicol\vdash\Delta && \hat{(\hat{\Gamma}\commah\hat{x}\in \hat{A})}\semicol \Delta \vdash B}
 \end{gathered}
-\]
-
-\[
+\hspace{2em}
 \begin{gathered}
   \infer{\hat{\Gamma}\semicol\Delta \vdash t\, \hat{u} : B[\hat{x}\mapsto \hat{u}]}{\hat{\Gamma}\semicol\Delta \vdash t : (\hat{x}\in \hat{A})\ra B && \hat{\Gamma}\vdashh \hat{u} \in \hat{A}}
 \end{gathered}
 \]
 
 \vspace{0.5em}
-(6) Infinitary parameters
+(7) Infinitary parameters
 
 \[
 \begin{gathered}
   \infer{\hat{\Gamma}\semicol\Delta \vdash (\hat{x}\in \hat{A})\ra b : \U}{\hat{\Gamma}\vdashh\hat{A}\in\Type_{\hat{0}} && \hat{\Gamma}\semicol\vdash\Delta && (\hat{\Gamma}\commah\hat{x}\in \hat{A})\semicol \Delta \vdash b : \U}
 \end{gathered}
-\]
-
-\[
+\hspace{2em}
 \begin{gathered}
   \infer{\hat{\Gamma}\semicol\Delta \vdash t\, \hat{u} : \underline{b[\hat{x}\mapsto \hat{u}]}}
         {\hat{\Gamma}\semicol\Delta \vdash t : \underline{(\hat{x}\in \hat{A})\ra b} && \hat{\Gamma}\vdash \hat{u} \in \hat{A}}
 \end{gathered}
-\]
-\caption{The theory of HIIT signatures. Weakenings are implicit, we assume fresh
-  names everywhere and consider $\alpha$-convertible terms equal. The
-  $\hat{\Gamma};$ assumptions are not used or changed in parts
-  (1)--(4).}
-\label{sigrules}
+\]  
+\caption{The theory of HIIT signatures, parts (6)--(7). Parts (1)--(5)
+  are given in Figure \ref{sigrules1}.}
+\label{sigrules2}
 \end{figure}
 
-We list typing rules for the theory of signatures in Figure \ref{sigrules}. We consider the
+We list typing rules for the theory of signatures in Figures \ref{sigrules1} and \ref{sigrules2}. We consider the
 following judgments:
 \begin{alignat*}{4}
   & \hat{\Gamma}\vdash\Delta && \text{$\Delta$ is a context in the external context $\hat{\Gamma}$}\\
@@ -1617,7 +1645,7 @@ three are available from \url{https://github.com/akaposi/hiit-signatures}.
 
 The Haskell implementation takes as input a file which contains a of a
 $\hat{\Gamma}\vdash\Delta$ signature. Then, it checks the input with respect to
-the rules in Figure \ref{sigrules}, and outputs an Agda-checkable file which
+the rules in Figures \ref{sigrules1} and \ref{sigrules2}, and outputs an Agda-checkable file which
 contains algebras, homomorphisms, displayed algebras and sections for the
 input signature.
 
