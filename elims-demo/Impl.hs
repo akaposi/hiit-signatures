@@ -73,40 +73,40 @@ data Val
   | VId (Maybe Val) Val Val
   | VJ Val ~Val Val
 
-data Code
-  = CVar Name
-  | CPiI Code (Bind Code)
-  | CAppI Code (Bind Code) Code Code -- app A (x.B) t u
-  | CPiNI Tm (Bind Code)
-  | CAppNI Code Tm
-  | CPiSNI Tm (Bind Code)
-  | CAppSNI Tm (Bind Code) Code Tm
-  | CId Code Code Code                        -- Id A t u
-  | CJ Code Code (Bind2 Code) Code Code Code  -- J A t P pr u eq
-  | CRefl Code Code
-  | CU
-  | CEl Code
+data Sig
+  = SVar Name
+  | SPiI Sig (Bind Sig)
+  | SAppI Sig (Bind Sig) Sig Sig -- app A (x.B) t u
+  | SPiNI Tm (Bind Sig)
+  | SAppNI Sig Tm
+  | SPiSNI Tm (Bind Sig)
+  | SAppSNI Tm (Bind Sig) Sig Tm
+  | SId Sig Sig Sig                        -- Id A t u
+  | SJ Sig Sig (Bind2 Sig) Sig Sig Sig  -- J A t P pr u eq
+  | SRefl Sig Sig
+  | SU
+  | SEl Sig
 
-data CVal
-  = CVVar Name
-  | CVPiI CVal (Bind (CVal → CVal))
-  | CVAppI CVal (Bind (CVal → CVal)) CVal ~CVal
-  | CVPiNI Val (Bind (Val → CVal))
-  | CVAppNI CVal ~Val
-  | CVPiSNI Val (Bind (Val → CVal))
-  | CVAppSNI Val (Bind (Val → CVal)) CVal ~Val
-  | CVId CVal CVal CVal                                       -- Id A t u
-  | CVJ CVal CVal (Bind2 (CVal → CVal → CVal)) CVal CVal CVal  -- J A t P pr u eq
-  | CVRefl CVal CVal
-  | CVU
-  | CVEl CVal
+data SVal
+  = SVVar Name
+  | SVPiI SVal (Bind (SVal → SVal))
+  | SVAppI SVal (Bind (SVal → SVal)) SVal ~SVal
+  | SVPiNI Val (Bind (Val → SVal))
+  | SVAppNI SVal ~Val
+  | SVPiSNI Val (Bind (Val → SVal))
+  | SVAppSNI Val (Bind (Val → SVal)) SVal ~Val
+  | SVId SVal SVal SVal                                       -- Id A t u
+  | SVJ SVal SVal (Bind2 (SVal → SVal → SVal)) SVal SVal SVal  -- J A t P pr u eq
+  | SVRefl SVal SVal
+  | SVU
+  | SVEl SVal
 
 --------------------------------------------------------------------------------
 
 instance IsString Tm    where fromString = Var
 instance IsString Val   where fromString = VVar
-instance IsString Code  where fromString = CVar
-instance IsString CVal  where fromString = CVVar
+instance IsString Sig  where fromString = SVar
+instance IsString SVal  where fromString = SVVar
 
 pattern Lam' x t = Lam (x, t)
 pattern Pi' x a b = Pi a (x, b)
@@ -117,7 +117,7 @@ infixr 4 ==>
 (==>) = Pi' "_"
 
 type Elab = Either String
-type Vals = Sub (Maybe (Either Val CVal))
+type Vals = Sub (Maybe (Either Val SVal))
 
 lookup' :: Name → [(Name, c)] → c
 lookup' x = maybe (error ("where's that: " ++ x)) id . lookup x
@@ -223,12 +223,6 @@ pattern Tr p eq pr ←
   ((\case J (Lam' x (Lam' y p)) pr eq | not (freeIn y p) → Just (Lam' x p, eq, pr)
           _ -> Nothing) → Just (p, eq, pr))
 
--- pattern Ap ∷ Tm → Tm → Tm
--- pattern Ap f eq ←
---   ((\case Tr (Lam' y (Id _ (App f _) (App f' (Var y')))) eq (Refl _)
---              | y == y', show f == show f' → Just (f, eq)
---           _ → Nothing) → Just (f, eq))
-
 pattern Apd ∷ Tm → Tm → Tm
 pattern Apd f eq ←
   ((\case J (Lam' y (Lam' p (Id _ (Tr b (Var p') (App f t)) (App f' (Var y')))))
@@ -237,16 +231,6 @@ pattern Apd f eq ←
                           all (not . freeIn p) [b, t, f]
                           → Just (f, eq)
           _ → Nothing) → Just (f, eq))
-
--- pattern Compose ∷ Tm → Tm → Tm
--- pattern Compose p q ←
---   ((\case Tr (Lam' x (Id _ t (Var x'))) q p | not (freeIn x t), x == x' → Just (p, q)
---           _ → Nothing) → Just (p, q))
-
--- pattern Sym ∷ Tm → Tm
--- pattern Sym p ←
---   ((\case Tr (Lam' x (Id _ (Var x') t)) p (Refl _) | not (freeIn x t), x == x' → Just p
---           _ → Nothing) → Just p)
 
 tmToAgda ∷ Int → Tm → ShowS
 tmToAgda prec = go (prec /= 0) where
@@ -274,12 +258,6 @@ tmToAgda prec = go (prec /= 0) where
     Lam (x, t)  → showParen p (("λ "++) . (x++) . goLam t)
     Pi a (x, b) → showParen p (goPi False (Pi a (x, b)))
     Refl _ → ("refl"++)
-    -- Compose p' q → case (go True p' [], go True q []) of
-      -- ("refl", qs) → showParen p (qs++)
-      -- (ps, "refl") → showParen p (ps++)
-      -- (ps, qs)     → showParen p ((ps++) . (" ◾ "++) . (qs++))
-    -- Sym p' → go p ("sym" ∙ p')
-    -- Ap f eq → go p ("ap" ∙ f ∙ eq)
     Apd f eq → go p ("apd" ∙ f ∙ eq)
     Tr p' eq pr → go p ("tr" ∙ p' ∙ eq ∙ pr)
     J p' pr eq →
@@ -296,7 +274,7 @@ instance Show Tm where showsPrec = tmToAgda
 -- Elaborate to Tm
 --------------------------------------------------------------------------------
 
-type Types = Sub (Either Val CVal)
+type Types = Sub (Either Val SVal)
 
 check ∷ Types → Vals → Tmᴾ → Val → Elab Tm
 check ts vs (updPos → (pos, t)) a = case (t, a) of
@@ -363,235 +341,235 @@ infer ts vs (updPos → (pos, t)) = case t of
     let ~t' = eval vs t
     pure (Refl (Just t), VId (Just a) t' t')
 
--- Evaluate Code
+-- Evaluating signatures
 --------------------------------------------------------------------------------
 
-evalBindᶜ ∷ Vals → Bind Code → Bind (CVal → CVal)
-evalBindᶜ vs (x, t) = (x, \u → evalᶜ ((x, Just (Right u)):vs) t)
+evalBindS ∷ Vals → Bind Sig → Bind (SVal → SVal)
+evalBindS vs (x, t) = (x, \u → evalS ((x, Just (Right u)):vs) t)
 
-evalBindᵛᶜ ∷ Vals → Bind Code → Bind (Val → CVal)
-evalBindᵛᶜ vs (x, t) = (x, \u → evalᶜ ((x, Just (Left u)):vs) t)
+evalBindᵛS ∷ Vals → Bind Sig → Bind (Val → SVal)
+evalBindᵛS vs (x, t) = (x, \u → evalS ((x, Just (Left u)):vs) t)
 
-evalCJ ∷ Vals → Code → Code → Bind2 Code → Code → Code → Code → CVal
-evalCJ vs a t (ux, eqx, p) pr u eq = case evalᶜ vs eq of
-  CVRefl _ _ → evalᶜ vs pr
-  eq         → CVJ (evalᶜ vs a) (evalᶜ vs t)
-                 (ux, eqx, \u eq → evalᶜ ((eqx, Just (Right eq)):(ux, Just (Right u)):vs) p)
-                 (evalᶜ vs pr) (evalᶜ vs u) eq
+evalSJ ∷ Vals → Sig → Sig → Bind2 Sig → Sig → Sig → Sig → SVal
+evalSJ vs a t (ux, eqx, p) pr u eq = case evalS vs eq of
+  SVRefl _ _ → evalS vs pr
+  eq         → SVJ (evalS vs a) (evalS vs t)
+                 (ux, eqx, \u eq → evalS ((eqx, Just (Right eq)):(ux, Just (Right u)):vs) p)
+                 (evalS vs pr) (evalS vs u) eq
 
-evalᶜ ∷ Vals → Code → CVal
-evalᶜ vs = \case
-  CVar x           → maybe (CVVar x) (either (error "impossible") id) $ lookup' x vs
-  CPiI a b         → CVPiI (evalᶜ vs a) (evalBindᶜ vs b)
-  CAppI a b t u    → CVAppI (evalᶜ vs a) (evalBindᶜ vs b) (evalᶜ vs t) (evalᶜ vs u)
-  CPiNI a b        → CVPiNI (eval vs a) (evalBindᵛᶜ vs b)
-  CAppNI t u       → CVAppNI (evalᶜ vs t) (eval vs u)
-  CPiSNI a b       → CVPiSNI (eval vs a) (evalBindᵛᶜ vs b)
-  CAppSNI a b t u  → CVAppSNI (eval vs a) (evalBindᵛᶜ vs b) (evalᶜ vs t) (eval vs u)
-  CId a t u        → CVId (evalᶜ vs a) (evalᶜ vs t) (evalᶜ vs u)
-  CJ a t p pr u eq → evalCJ vs a t p pr u eq
-  CRefl a t        → CVRefl (evalᶜ vs a) (evalᶜ vs t)
-  CU               → CVU
-  CEl t            → CVEl (evalᶜ vs t)
+evalS ∷ Vals → Sig → SVal
+evalS vs = \case
+  SVar x           → maybe (SVVar x) (either (error "impossible") id) $ lookup' x vs
+  SPiI a b         → SVPiI (evalS vs a) (evalBindS vs b)
+  SAppI a b t u    → SVAppI (evalS vs a) (evalBindS vs b) (evalS vs t) (evalS vs u)
+  SPiNI a b        → SVPiNI (eval vs a) (evalBindᵛS vs b)
+  SAppNI t u       → SVAppNI (evalS vs t) (eval vs u)
+  SPiSNI a b       → SVPiSNI (eval vs a) (evalBindᵛS vs b)
+  SAppSNI a b t u  → SVAppSNI (eval vs a) (evalBindᵛS vs b) (evalS vs t) (eval vs u)
+  SId a t u        → SVId (evalS vs a) (evalS vs t) (evalS vs u)
+  SJ a t p pr u eq → evalSJ vs a t p pr u eq
+  SRefl a t        → SVRefl (evalS vs a) (evalS vs t)
+  SU               → SVU
+  SEl t            → SVEl (evalS vs t)
 
-convBindᶜ ∷ Vals → Bind (CVal → CVal) → Bind (CVal → CVal) → Bool
-convBindᶜ vs (fresh vs → x, t) (_, t') = convᶜ ((x, Nothing):vs) (t (CVVar x)) (t' (CVVar x))
+convBindS ∷ Vals → Bind (SVal → SVal) → Bind (SVal → SVal) → Bool
+convBindS vs (fresh vs → x, t) (_, t') = convS ((x, Nothing):vs) (t (SVVar x)) (t' (SVVar x))
 
-convBindᵛᶜ ∷ Vals → Bind (Val → CVal) → Bind (Val → CVal) → Bool
-convBindᵛᶜ vs (fresh vs → x, t) (_, t') = convᶜ ((x, Nothing):vs) (t (VVar x)) (t' (VVar x))
+convBindᵛS ∷ Vals → Bind (Val → SVal) → Bind (Val → SVal) → Bool
+convBindᵛS vs (fresh vs → x, t) (_, t') = convS ((x, Nothing):vs) (t (VVar x)) (t' (VVar x))
 
-convCVJ ∷ Vals → Bind2 (CVal -> CVal -> CVal) → CVal → CVal
-               → Bind2 (CVal -> CVal -> CVal) → CVal → CVal
+convSVJ ∷ Vals → Bind2 (SVal -> SVal -> SVal) → SVal → SVal
+               → Bind2 (SVal -> SVal -> SVal) → SVal → SVal
                → Bool
-convCVJ vs (fresh vs → x, fresh ((x, Nothing):vs) → y, p) pr eq (_, _, p') pr' eq' =
-  convᶜ ((y, Nothing):(x, Nothing):vs) (p (CVVar x) (CVVar y)) (p' (CVVar x) (CVVar y))
-  && convᶜ vs pr pr' && convᶜ vs eq eq'
+convSVJ vs (fresh vs → x, fresh ((x, Nothing):vs) → y, p) pr eq (_, _, p') pr' eq' =
+  convS ((y, Nothing):(x, Nothing):vs) (p (SVVar x) (SVVar y)) (p' (SVVar x) (SVVar y))
+  && convS vs pr pr' && convS vs eq eq'
 
-convᶜ ∷ Vals → CVal → CVal → Bool
-convᶜ vs t t' = case (t, t') of
-  (CVVar x           , CVVar x')             → x == x'
-  (CVPiI a b         , CVPiI a' b')          → convᶜ vs a a' && convBindᶜ vs b b'
-  (CVAppI _ _ t u    , CVAppI _ _ t' u')     → convᶜ vs t t' && convᶜ vs u u'
-  (CVPiNI a b        , CVPiNI a' b')         → conv  vs a a' && convBindᵛᶜ vs b b'
-  (CVAppNI t u       , CVAppNI t' u')        → convᶜ vs t t' && conv vs u u'
-  (CVPiSNI a b       , CVPiSNI a' b')        → conv  vs a a' && convBindᵛᶜ vs b b'
-  (CVAppSNI _ _ t u  , CVAppSNI _ _ t' u')   → convᶜ vs t t' && conv vs u u'
-  (CVId _ t u        , CVId _ t' u')         → convᶜ vs t t' && convᶜ vs u u'
-  (CVJ _ _ p pr _ eq , CVJ _ _ p' pr' _ eq') → convCVJ vs p pr eq p' pr' eq'
-  (CVRefl _ t        , CVRefl _ t')          → convᶜ vs t t'
-  (CVU               , CVU)                  → True
-  (CVEl t            , CVEl t')              → convᶜ vs t t'
+convS ∷ Vals → SVal → SVal → Bool
+convS vs t t' = case (t, t') of
+  (SVVar x           , SVVar x')             → x == x'
+  (SVPiI a b         , SVPiI a' b')          → convS vs a a' && convBindS vs b b'
+  (SVAppI _ _ t u    , SVAppI _ _ t' u')     → convS vs t t' && convS vs u u'
+  (SVPiNI a b        , SVPiNI a' b')         → conv  vs a a' && convBindᵛS vs b b'
+  (SVAppNI t u       , SVAppNI t' u')        → convS vs t t' && conv vs u u'
+  (SVPiSNI a b       , SVPiSNI a' b')        → conv  vs a a' && convBindᵛS vs b b'
+  (SVAppSNI _ _ t u  , SVAppSNI _ _ t' u')   → convS vs t t' && conv vs u u'
+  (SVId _ t u        , SVId _ t' u')         → convS vs t t' && convS vs u u'
+  (SVJ _ _ p pr _ eq , SVJ _ _ p' pr' _ eq') → convSVJ vs p pr eq p' pr' eq'
+  (SVRefl _ t        , SVRefl _ t')          → convS vs t t'
+  (SVU               , SVU)                  → True
+  (SVEl t            , SVEl t')              → convS vs t t'
   _                                          → False
 
-quoteBindᶜ ∷ Vals → Bind (CVal → CVal) → Bind Code
-quoteBindᶜ vs (fresh vs → x, t) = (x, quoteᶜ ((x, Nothing):vs) (t (CVVar x)))
+quoteBindS ∷ Vals → Bind (SVal → SVal) → Bind Sig
+quoteBindS vs (fresh vs → x, t) = (x, quoteS ((x, Nothing):vs) (t (SVVar x)))
 
-quoteBindᵛᶜ ∷ Vals → Bind (Val → CVal) → Bind Code
-quoteBindᵛᶜ vs (fresh vs → x, t) = (x, quoteᶜ ((x, Nothing):vs) (t (VVar x)))
+quoteBindᵛS ∷ Vals → Bind (Val → SVal) → Bind Sig
+quoteBindᵛS vs (fresh vs → x, t) = (x, quoteS ((x, Nothing):vs) (t (VVar x)))
 
-quoteCJV ∷ Vals → CVal → CVal
-        → Bind2 (CVal → CVal → CVal) → CVal → CVal → CVal → Code
-quoteCJV vs a t (fresh vs → x, fresh ((x, Nothing):vs) → y, p) pr u eq =
-  CJ (quoteᶜ vs a) (quoteᶜ vs t)
-     (x, y, quoteᶜ ((y, Nothing):(x,Nothing):vs) (p (CVVar x) (CVVar y)))
-  (quoteᶜ vs pr) (quoteᶜ vs u) (quoteᶜ vs eq)
+quoteSJV ∷ Vals → SVal → SVal
+        → Bind2 (SVal → SVal → SVal) → SVal → SVal → SVal → Sig
+quoteSJV vs a t (fresh vs → x, fresh ((x, Nothing):vs) → y, p) pr u eq =
+  SJ (quoteS vs a) (quoteS vs t)
+     (x, y, quoteS ((y, Nothing):(x,Nothing):vs) (p (SVVar x) (SVVar y)))
+  (quoteS vs pr) (quoteS vs u) (quoteS vs eq)
 
-quoteᶜ ∷ Vals → CVal → Code
-quoteᶜ vs = \case
-  CVVar x           → CVar x
-  CVPiI a b         → CPiI (quoteᶜ vs a) (quoteBindᶜ vs b)
-  CVAppI a b t u    → CAppI (quoteᶜ vs a) (quoteBindᶜ vs b) (quoteᶜ vs t) (quoteᶜ vs u)
-  CVPiNI a b        → CPiNI (quote vs a) (quoteBindᵛᶜ vs b)
-  CVAppNI t u       → CAppNI (quoteᶜ vs t) (quote vs u)
-  CVPiSNI a b       → CPiSNI (quote vs a) (quoteBindᵛᶜ vs b)
-  CVAppSNI a b t u  → CAppSNI (quote vs a) (quoteBindᵛᶜ vs b) (quoteᶜ vs t) (quote vs u)
-  CVId a t u        → CId (quoteᶜ vs a) (quoteᶜ vs t) (quoteᶜ vs u)
-  CVJ a t p pr u eq → quoteCJV vs a t p pr u eq
-  CVRefl a t        → CRefl (quoteᶜ vs a) (quoteᶜ vs t)
-  CVU               → CU
-  CVEl t            → CEl (quoteᶜ vs t)
+quoteS ∷ Vals → SVal → Sig
+quoteS vs = \case
+  SVVar x           → SVar x
+  SVPiI a b         → SPiI (quoteS vs a) (quoteBindS vs b)
+  SVAppI a b t u    → SAppI (quoteS vs a) (quoteBindS vs b) (quoteS vs t) (quoteS vs u)
+  SVPiNI a b        → SPiNI (quote vs a) (quoteBindᵛS vs b)
+  SVAppNI t u       → SAppNI (quoteS vs t) (quote vs u)
+  SVPiSNI a b       → SPiSNI (quote vs a) (quoteBindᵛS vs b)
+  SVAppSNI a b t u  → SAppSNI (quote vs a) (quoteBindᵛS vs b) (quoteS vs t) (quote vs u)
+  SVId a t u        → SId (quoteS vs a) (quoteS vs t) (quoteS vs u)
+  SVJ a t p pr u eq → quoteSJV vs a t p pr u eq
+  SVRefl a t        → SRefl (quoteS vs a) (quoteS vs t)
+  SVU               → SU
+  SVEl t            → SEl (quoteS vs t)
 
-renderCode ∷ Code → Tm
-renderCode = go where
+renderSig ∷ Sig → Tm
+renderSig = go where
   go = \case
-    CVar x           → Var x
-    CPiI a b         → Pi (go a) (go <$> b)
-    CAppI a b t u    → App (go t) (go u)
-    CPiNI a b        → Pi a (go <$> b)
-    CAppNI t u       → App (go t) u
-    CPiSNI a b       → Pi a (go <$> b)
-    CAppSNI a b t u  → App (go t) u
-    CId a t u        → Id (Just (go a)) (go t) (go u)
-    CJ a t (x, y, p) pr u eq → J (Lam' x $ Lam' y $ go p) (go pr) (go eq)
-    CRefl a t        → Refl (Just (go t))
-    CU               → U
-    CEl t            → App "El" (go t)
+    SVar x           → Var x
+    SPiI a b         → Pi (go a) (go <$> b)
+    SAppI a b t u    → App (go t) (go u)
+    SPiNI a b        → Pi a (go <$> b)
+    SAppNI t u       → App (go t) u
+    SPiSNI a b       → Pi a (go <$> b)
+    SAppSNI a b t u  → App (go t) u
+    SId a t u        → Id (Just (go a)) (go t) (go u)
+    SJ a t (x, y, p) pr u eq → J (Lam' x $ Lam' y $ go p) (go pr) (go eq)
+    SRefl a t        → Refl (Just (go t))
+    SU               → U
+    SEl t            → App "El" (go t)
 
-instance Show Code where show = show . renderCode
+instance Show Sig where show = show . renderSig
 
-nfᶜ ∷ Vals → Code → Code
-nfᶜ vs = quoteᶜ vs . evalᶜ vs
+nfS ∷ Vals → Sig → Sig
+nfS vs = quoteS vs . evalS vs
 
--- Constructors / std translation
+-- Algebras
 --------------------------------------------------------------------------------
 
-c1 ∷ Bind Code → Tm
-c1 (x, t) = Lam' x (c t)
+a1 ∷ Bind Sig → Tm
+a1 (x, t) = Lam' x (alg t)
 
-c2 ∷ Bind2 Code → Tm
-c2 (x, y, t) = Lam' x $ Lam' y (c t)
+a2 ∷ Bind2 Sig → Tm
+a2 (x, y, t) = Lam' x $ Lam' y (alg t)
 
-c ∷ Code → Tm
-c = \case
-  CVar x           → Var x
-  CPiI a (x, b)    → Pi (c a) (x, c b)
-  CAppI _ _ t u    → App (c t) (c u)
-  CPiNI a (x, b)   → Pi a (x, c b)
-  CAppNI t u       → App (c t) u
-  CPiSNI a (x, b)  → Pi a (x, c b)
-  CAppSNI _ _ t u  → App (c t) u
-  CId a t u        → Id (Just (c a)) (c t) (c u)
-  CRefl a t        → Refl (Just (c t))
-  CU               → U
-  CEl t            → c t
-  CJ a t p pr u eq → J (c2 p) (c pr) (c eq)
+alg ∷ Sig → Tm
+alg = \case
+  SVar x           → Var x
+  SPiI a (x, b)    → Pi (alg a) (x, alg b)
+  SAppI _ _ t u    → App (alg t) (alg u)
+  SPiNI a (x, b)   → Pi a (x, alg b)
+  SAppNI t u       → App (alg t) u
+  SPiSNI a (x, b)  → Pi a (x, alg b)
+  SAppSNI _ _ t u  → App (alg t) u
+  SId a t u        → Id (Just (alg a)) (alg t) (alg u)
+  SRefl a t        → Refl (Just (alg t))
+  SU               → U
+  SEl t            → alg t
+  SJ a t p pr u eq → J (a2 p) (alg pr) (alg eq)
 
--- Elaborate to Code
+-- Elaborate to Sig
 --------------------------------------------------------------------------------
 
-checkᶜ ∷ Types → Vals → Tmᴾ → CVal → Elab Code
-checkᶜ ts vs (updPos → (pos, t)) a = do
-  (t, a') ← inferᶜ ts vs (pos, t)
-  unless (convᶜ vs a a') $
+checkS ∷ Types → Vals → Tmᴾ → SVal → Elab Sig
+checkS ts vs (updPos → (pos, t)) a = do
+  (t, a') ← inferS ts vs (pos, t)
+  unless (convS vs a a') $
     reportError ("type mismatch\n\nexpected type:\n\n  "
-                   ++ show (quoteᶜ vs a)
-                   ++ "\n\ninferred type:\n\n  " ++ show (quoteᶜ vs a')
+                   ++ show (quoteS vs a)
+                   ++ "\n\ninferred type:\n\n  " ++ show (quoteS vs a')
                    ++ "\n\nwhen checking:\n\n  "
                    ++ show t)
   pure t
 
-checkTypeᶜ ∷ Types → Vals → Tmᴾ → Elab Code
-checkTypeᶜ ts vs (updPos → (pos, t)) = case t of
+checkTypeS ∷ Types → Vals → Tmᴾ → Elab Sig
+checkTypeS ts vs (updPos → (pos, t)) = case t of
   Piᴾ x a b → do
     case check ts vs a VU of
       Left _ → do
-        a ← checkᶜ ts vs a CVU
-        let ~a' = evalᶜ vs a
-        x ← elabBinder vs (Just (c a)) x
-        b ← checkTypeᶜ ((x, Right (CVEl a')):ts) ((x, Nothing):vs) b
-        pure (CPiI a (x, b))
+        a ← checkS ts vs a SVU
+        let ~a' = evalS vs a
+        x ← elabBinder vs (Just (alg a)) x
+        b ← checkTypeS ((x, Right (SVEl a')):ts) ((x, Nothing):vs) b
+        pure (SPiI a (x, b))
       Right a → do
         let ~a' = eval vs a
         x ← elabBinder vs (Just a) x
-        b ← checkTypeᶜ ((x, Left a'):ts) ((x, Nothing):vs) b
-        pure (CPiNI a (x, b))
-  Uᴾ → pure CU
-  t  → CEl <$> checkᶜ ts vs (pos, t) CVU
+        b ← checkTypeS ((x, Left a'):ts) ((x, Nothing):vs) b
+        pure (SPiNI a (x, b))
+  Uᴾ → pure SU
+  t  → SEl <$> checkS ts vs (pos, t) SVU
 
-inferᶜ ∷ Types → Vals → Tmᴾ → Elab (Code, CVal)
-inferᶜ ts vs (updPos → (pos, t)) = case t of
+inferS ∷ Types → Vals → Tmᴾ → Elab (Sig, SVal)
+inferS ts vs (updPos → (pos, t)) = case t of
   Varᴾ x → do
     when (x == "_") $ reportError "can't use _ as identifier"
     case lookup x ts of
-      Just (Right a) → pure (CVar x, a)
+      Just (Right a) → pure (SVar x, a)
       Just (Left a)  →
         reportError ("expected inductive type for variable "
                       ++ x ++ ", inferred type:\n\n  " ++ show (quote vs a))
       _ → reportError ("variable not in scope: " ++ x)
   Appᴾ t u → do
-    (t, tty) ← inferᶜ ts vs t
+    (t, tty) ← inferS ts vs t
     case tty of
-      CVPiI a b → do
-        u ← checkᶜ ts vs u (CVEl a)
-        let ~u' = evalᶜ vs u
-        pure (CAppI (quoteᶜ vs a) (quoteBindᶜ vs b) t u, snd b u')
-      CVPiNI a b → do
+      SVPiI a b → do
+        u ← checkS ts vs u (SVEl a)
+        let ~u' = evalS vs u
+        pure (SAppI (quoteS vs a) (quoteBindS vs b) t u, snd b u')
+      SVPiNI a b → do
         u ← check ts vs u a
-        pure (CAppNI t u, snd b (eval vs u))
-      CVEl (CVPiSNI a b) → do
+        pure (SAppNI t u, snd b (eval vs u))
+      SVEl (SVPiSNI a b) → do
         u ← check ts vs u a
-        pure (CAppSNI (quote vs a) (quoteBindᵛᶜ vs b) t u, CVEl (snd b (eval vs u)))
+        pure (SAppSNI (quote vs a) (quoteBindᵛS vs b) t u, SVEl (snd b (eval vs u)))
       _ → reportError
           ("expected a function type for:\n\n  " ++
-           show t ++ "\n\ninferrred type:\n\n  " ++ show (quoteᶜ vs tty))
+           show t ++ "\n\ninferrred type:\n\n  " ++ show (quoteS vs tty))
   tp@Lamᴾ{} → reportError ("Can't infer type for lambda expression: " ++ show tp)
   Piᴾ x a b → do
     a ← check ts vs a VU
     x ← elabBinder vs (Just a) x
-    b ← checkᶜ ((x, Left (eval vs a)):ts) ((x, Nothing):vs) b CVU
-    pure (CPiSNI a (x, b), CVU)
+    b ← checkS ((x, Left (eval vs a)):ts) ((x, Nothing):vs) b SVU
+    pure (SPiSNI a (x, b), SVU)
   Idᴾ t u → do
-    (t, a) ← inferᶜ ts vs t
+    (t, a) ← inferS ts vs t
     case a of
-      CVEl a → do
-        u ← checkᶜ ts vs u (CVEl a)
-        pure (CId (quoteᶜ vs a) t u, CVU)
+      SVEl a → do
+        u ← checkS ts vs u (SVEl a)
+        pure (SId (quoteS vs a) t u, SVU)
       _ → reportError
           ("expected a small type for\n\n"++ show t
-            ++ "\n\ngot\n\n" ++ show (quoteᶜ vs a))
+            ++ "\n\ngot\n\n" ++ show (quoteS vs a))
   Jᴾ (_, Lamᴾ ux (_, Lamᴾ eqx p)) pr eq → do
     checkShadowing vs ux
     checkShadowing ((ux, Nothing):vs) eqx
-    (eq, eqty) ← inferᶜ ts vs eq
+    (eq, eqty) ← inferS ts vs eq
     case eqty of
-      CVEl (CVId a t u) → do
-        p ← checkᶜ ((eqx, Right (CVEl (CVId a t (CVVar ux)))):(ux, Right (CVEl a)):ts)
-                   ((eqx, Nothing):(ux, Nothing):vs) p CVU
-        pr ← checkᶜ ts vs pr
-               (CVEl (evalᶜ ((eqx, Just (Right (CVRefl a t))):(ux, Just (Right t)):vs) p))
-        pure (CJ (quoteᶜ vs a) (quoteᶜ vs t) (ux, eqx, p) pr (quoteᶜ vs u) eq,
-              (CVEl (evalᶜ ((eqx, Just (Right (evalᶜ vs eq))):(ux, Just (Right u)):vs) p)))
+      SVEl (SVId a t u) → do
+        p ← checkS ((eqx, Right (SVEl (SVId a t (SVVar ux)))):(ux, Right (SVEl a)):ts)
+                   ((eqx, Nothing):(ux, Nothing):vs) p SVU
+        pr ← checkS ts vs pr
+               (SVEl (evalS ((eqx, Just (Right (SVRefl a t))):(ux, Just (Right t)):vs) p))
+        pure (SJ (quoteS vs a) (quoteS vs t) (ux, eqx, p) pr (quoteS vs u) eq,
+              (SVEl (evalS ((eqx, Just (Right (evalS vs eq))):(ux, Just (Right u)):vs) p)))
       _ → reportError ("expected equality type for\n\n" ++ show eq
-                       ++ "\n\ngot\n\n" ++ show (quoteᶜ vs eqty))
+                       ++ "\n\ngot\n\n" ++ show (quoteS vs eqty))
   Reflᴾ t → do
-    (t, a) ← inferᶜ ts vs t
+    (t, a) ← inferS ts vs t
     case a of
-      CVEl a → do
-        let ~t' = evalᶜ vs t
-        pure (CRefl (quoteᶜ vs a) t, CVEl (CVId a t' t'))
+      SVEl a → do
+        let ~t' = evalS vs t
+        pure (SRefl (quoteS vs a) t, SVEl (SVId a t' t'))
       _ → reportError
             ("expected a small type for\n\n"++ show t
-             ++ "\n\ngot\n\n" ++ show (quoteᶜ vs a))
+             ++ "\n\ngot\n\n" ++ show (quoteS vs a))
   Jᴾ{} → error "impossible"
   Uᴾ → reportError "Expected a term, got U"
 
@@ -622,14 +600,17 @@ ap f t u p = tr (LAM_(u) Id' (f ∙ t) (f ∙ u)) p Refl'
 apd ∷ Tm → Tm → Tm → Tm → Tm
 apd b f t p = J (LAM_(u) LAM_(p) Id' (tr b p (f ∙ t)) (f ∙ u)) Refl' p
 
+-- Displayed algebras
+--------------------------------------------------------------------------------
+
 class M a b | a → b, b → a where m ∷ a → b
 
-instance M Name Name where m = (++ "ᴹ")
+instance M Name Name where m = (++ "ᴰ")
 
-m1 ∷ Bind Code → Tm
+m1 ∷ Bind Sig → Tm
 m1 (x, t) = Lam' x $ Lam' (m x) (m t)
 
-m2 ∷ Bind2 Code → Tm
+m2 ∷ Bind2 Sig → Tm
 m2 (x, y, t) = Lam' x $ Lam' (m x) $ Lam' y $ Lam' (m y) (m t)
 
 mj ∷ Tm → Tm → Tm → Tm → Tm → Tm →
@@ -640,45 +621,48 @@ mj a aᴹ t tᴹ p pᴹ pr prᴹ u uᴹ eq eqᴹ =
        prᴹ eq)
     eqᴹ
 
-instance M Code Tm where
+instance M Sig Tm where
   m = \case
-    CVar x           → Var (m x)
-    CPiI a (x, b)    → LAM_(f) Pi' x (c a) $ Pi' (m x) (m a ∙ Var x) $ m b ∙ (f ∙ Var x)
-    CAppI _ _ t u    → m t ∙ c u ∙ m u
-    CPiNI a (x, b)   → LAM_(f) Pi' x a $ m b ∙ (f ∙ Var x)
-    CAppNI t u       → m t ∙ u
-    CPiSNI a (x, b)  → LAM_(f) Pi' x a $ m b ∙ (f ∙ Var x)
-    CAppSNI _ _ t u  → m t ∙ u
-    CId a t u        → LAM_(eq) Id' (tr (m a) eq (m t)) (m u)
-    CRefl _ t        → Refl'
-    CU               → LAM_(a) (a ==> U)
-    CEl t            → m t
-    CJ a t p pr u eq → mj (c a) (m a) (c t) (m t) (c2 p) (m2 p)
-                          (c pr) (m pr) (c u) (m u) (c eq) (m eq)
+    SVar x           → Var (m x)
+    SPiI a (x, b)    → LAM_(f) Pi' x (alg a) $ Pi' (m x) (m a ∙ Var x) $ m b ∙ (f ∙ Var x)
+    SAppI _ _ t u    → m t ∙ alg u ∙ m u
+    SPiNI a (x, b)   → LAM_(f) Pi' x a $ m b ∙ (f ∙ Var x)
+    SAppNI t u       → m t ∙ u
+    SPiSNI a (x, b)  → LAM_(f) Pi' x a $ m b ∙ (f ∙ Var x)
+    SAppSNI _ _ t u  → m t ∙ u
+    SId a t u        → LAM_(eq) Id' (tr (m a) eq (m t)) (m u)
+    SRefl _ t        → Refl'
+    SU               → LAM_(a) (a ==> U)
+    SEl t            → m t
+    SJ a t p pr u eq → mj (alg a) (m a) (alg t) (m t) (a2 p) (m2 p)
+                          (alg pr) (m pr) (alg u) (m u) (alg eq) (m eq)
 
 class E a b | a → b, b → a where e ∷ a → b
 
-e1 ∷ Bind Code → Tm
+e1 ∷ Bind Sig → Tm
 e1 (x, t) = Lam' x $ Lam' (m x) $ Lam' (e x) (e t)
 
-e2 ∷ Bind2 Code → Tm
+e2 ∷ Bind2 Sig → Tm
+
 e2 (x, y, t) = Lam' x $ Lam' (m x) $ Lam' (e x) $ Lam' y $ Lam' (m y) $ Lam' (e y) (e t)
 
-instance E Name Name where e = (++"ᴱ")
+-- Displayed algebras sections
+--------------------------------------------------------------------------------
+instance E Name Name where e = (++"ˢ")
 
-eCAppI a aᴹ aᴱ b bᴹ bᴱ t tᴹ tᴱ u uᴹ uᴱ =
+eSAppI a aᴹ aᴱ b bᴹ bᴱ t tᴹ tᴱ u uᴹ uᴱ =
   J (LAM_(uᴹ) LAM_(uᴱ) bᴱ ∙ u ∙ uᴹ ∙ uᴱ ∙ (t ∙ u) ∙ (tᴹ ∙ u ∙ uᴹ)) (tᴱ ∙ u) uᴱ
 
-eCAppSNI a b bᴹ bᴱ t tᴹ tᴱ u =
+eSAppSNI a b bᴹ bᴱ t tᴹ tᴱ u =
   ap (LAM_(f) f ∙ u) (LAM_(u) bᴱ ∙ u ∙ (t ∙ u)) tᴹ tᴱ
 
-eCId a aᴹ aᴱ t tᴹ tᴱ u uᴹ uᴱ =
+eSId a aᴹ aᴱ t tᴹ tᴱ u uᴹ uᴱ =
   (LAM_(e) tr
     (LAM_(xᴹ) Id' (tr aᴹ e xᴹ) uᴹ)
     tᴱ
     (tr (LAM_(yᴹ) Id' (tr aᴹ e (aᴱ ∙ t)) yᴹ) uᴱ (apd aᴹ aᴱ t e)))
 
-eCRefl a aᴹ aᴱ t tᴹ tᴱ =
+eSRefl a aᴹ aᴱ t tᴹ tᴱ =
   (J (LAM_(xᴹ) LAM_(xᴱ)
       Id'
       (tr (LAM_(yᴹ) Id' yᴹ xᴹ) xᴱ
@@ -687,102 +671,102 @@ eCRefl a aᴹ aᴱ t tᴹ tᴱ =
      Refl'
      tᴱ)
 
--- | Code generated with AgdaToHsUtils.hs
-eCJ ∷ Tm → Tm → Tm → Tm → Tm → Tm
+-- | Sig generated with AgdaToHsUtils.hs
+eSJ ∷ Tm → Tm → Tm → Tm → Tm → Tm
     → Tm → Tm → Tm → Tm → Tm → Tm
     → Tm → Tm → Tm → Tm → Tm → Tm
     → Tm
-eCJ a aᴹ aᴱ t tᴹ tᴱ p pᴹ pᴱ pr prᴹ prᴱ u uᴹ uᴱ eq eqᴹ eqᴱ =
-  J (Lam' "eqᴹ₁'" (Lam' "eqᴱ₁'" (Id' (pᴱ ∙ u ∙ uᴹ ∙ uᴱ ∙ eq ∙ "eqᴹ₁'"
-  ∙ "eqᴱ₁'" ∙ (J p pr eq)) (J (Lam' "xᴹ'" (Lam' "zᴹ'" (pᴹ ∙ u ∙ "xᴹ'"
-  ∙ eq ∙ "zᴹ'" ∙ (J p pr eq)))) (J (Lam' "x'" (Lam' "z'" (pᴹ ∙ "x'" ∙
-  (J (Lam' "u₁'" (Lam' "p₁'" (aᴹ ∙ "u₁'"))) tᴹ "z'") ∙ "z'" ∙ Refl' ∙
-  (J p pr "z'")))) prᴹ eq) "eqᴹ₁'")))) (J (Lam' "uᴹ₁'" (Lam' "uᴱ₁'"
-  (Id' (pᴱ ∙ u ∙ "uᴹ₁'" ∙ "uᴱ₁'" ∙ eq ∙ (J (Lam' "u₁'" (Lam' "p₁'"
-  (Id' (J (Lam' "u₂'" (Lam' "p₂'" (aᴹ ∙ "u₂'"))) "u₁'" eq) "uᴹ₁'")))
-  (J (Lam' "u₁'" (Lam' "p₁'" (Id' (J (Lam' "u₂'" (Lam' "p₂'" (aᴹ ∙
-  "u₂'"))) (aᴱ ∙ t) eq) "u₁'"))) (J (Lam' "y'" (Lam' "p₁'" (Id' (J
-  (Lam' "u₁'" (Lam' "p₂'" (aᴹ ∙ "u₁'"))) (aᴱ ∙ t) "p₁'") (aᴱ ∙
-  "y'")))) Refl' eq) "uᴱ₁'") tᴱ) ∙ Refl' ∙ (J p pr eq)) (J (Lam' "xᴹ'"
-  (Lam' "zᴹ'" (pᴹ ∙ u ∙ "xᴹ'" ∙ eq ∙ "zᴹ'" ∙ (J p pr eq)))) (J (Lam'
-  "x'" (Lam' "z'" (pᴹ ∙ "x'" ∙ (J (Lam' "u₁'" (Lam' "p₁'" (aᴹ ∙
-  "u₁'"))) tᴹ "z'") ∙ "z'" ∙ Refl' ∙ (J p pr "z'")))) prᴹ eq) (J (Lam'
-  "u₁'" (Lam' "p₁'" (Id' (J (Lam' "u₂'" (Lam' "p₂'" (aᴹ ∙ "u₂'")))
-  "u₁'" eq) "uᴹ₁'"))) (J (Lam' "u₁'" (Lam' "p₁'" (Id' (J (Lam' "u₂'"
-  (Lam' "p₂'" (aᴹ ∙ "u₂'"))) (aᴱ ∙ t) eq) "u₁'"))) (J (Lam' "y'" (Lam'
-  "p₁'" (Id' (J (Lam' "u₁'" (Lam' "p₂'" (aᴹ ∙ "u₁'"))) (aᴱ ∙ t) "p₁'")
-  (aᴱ ∙ "y'")))) Refl' eq) "uᴱ₁'") tᴱ))))) (J (Lam' "u₁'" (Lam' "eq₁'"
-  (Id' (pᴱ ∙ "u₁'" ∙ (aᴱ ∙ "u₁'") ∙ Refl' ∙ "eq₁'" ∙ (J (Lam' "u₂'"
-  (Lam' "p₁'" (Id' (J (Lam' "u₃'" (Lam' "p₂'" (aᴹ ∙ "u₃'"))) "u₂'"
-  "eq₁'") (aᴱ ∙ "u₁'")))) (J (Lam' "y'" (Lam' "p₁'" (Id' (J (Lam'
-  "u₂'" (Lam' "p₂'" (aᴹ ∙ "u₂'"))) (aᴱ ∙ t) "p₁'") (aᴱ ∙ "y'"))))
-  Refl' "eq₁'") tᴱ) ∙ Refl' ∙ (J p pr "eq₁'")) (J (Lam' "xᴹ'" (Lam'
-  "zᴹ'" (pᴹ ∙ "u₁'" ∙ "xᴹ'" ∙ "eq₁'" ∙ "zᴹ'" ∙ (J p pr "eq₁'")))) (J
-  (Lam' "x'" (Lam' "z'" (pᴹ ∙ "x'" ∙ (J (Lam' "u₂'" (Lam' "p₁'" (aᴹ ∙
-  "u₂'"))) tᴹ "z'") ∙ "z'" ∙ Refl' ∙ (J p pr "z'")))) prᴹ "eq₁'") (J
-  (Lam' "u₂'" (Lam' "p₁'" (Id' (J (Lam' "u₃'" (Lam' "p₂'" (aᴹ ∙
-  "u₃'"))) "u₂'" "eq₁'") (aᴱ ∙ "u₁'")))) (J (Lam' "y'" (Lam' "p₁'"
-  (Id' (J (Lam' "u₂'" (Lam' "p₂'" (aᴹ ∙ "u₂'"))) (aᴱ ∙ t) "p₁'") (aᴱ ∙
-  "y'")))) Refl' "eq₁'") tᴱ))))) (J (Lam' "tᴹ₁'" (Lam' "tᴱ₁'" (Pi'
-  "pᴹ₁'" (Pi' "x'" a (Pi' "xᴹ'" (aᴹ ∙ "x'") (Pi' "z'" (Id' t "x'")
-  ((Id' (J (Lam' "u₁'" (Lam' "p₁'" (aᴹ ∙ "u₁'"))) "tᴹ₁'" "z'") "xᴹ'")
-  ==> (p ∙ "x'" ∙ "z'") ==> U)))) (Pi' "pᴱ₁'" (Pi' "x'" a (Pi' "xᴹ'"
-  (aᴹ ∙ "x'") (Pi' "xᴱ'" (Id' (aᴱ ∙ "x'") "xᴹ'") (Pi' "z'" (Id' t
-  "x'") (Pi' "zᴹ'" (Id' (J (Lam' "u₁'" (Lam' "p₁'" (aᴹ ∙ "u₁'")))
-  "tᴹ₁'" "z'") "xᴹ'") ((Id' (J (Lam' "u₁'" (Lam' "p₁'" (Id' (J (Lam'
-  "u₂'" (Lam' "p₂'" (aᴹ ∙ "u₂'"))) "u₁'" "z'") "xᴹ'"))) (J (Lam' "u₁'"
-  (Lam' "p₁'" (Id' (J (Lam' "u₂'" (Lam' "p₂'" (aᴹ ∙ "u₂'"))) (aᴱ ∙ t)
+eSJ a aᴰ aˢ t tᴰ tˢ p pᴰ pˢ pr prᴰ prˢ u uᴰ uˢ eq eqᴰ eqˢ =
+  J (Lam' "eqᴰ₁'" (Lam' "eqˢ₁'" (Id' (pˢ ∙ u ∙ uᴰ ∙ uˢ ∙ eq ∙ "eqᴰ₁'"
+  ∙ "eqˢ₁'" ∙ (J p pr eq)) (J (Lam' "xᴰ'" (Lam' "zᴰ'" (pᴰ ∙ u ∙ "xᴰ'"
+  ∙ eq ∙ "zᴰ'" ∙ (J p pr eq)))) (J (Lam' "x'" (Lam' "z'" (pᴰ ∙ "x'" ∙
+  (J (Lam' "u₁'" (Lam' "p₁'" (aᴰ ∙ "u₁'"))) tᴰ "z'") ∙ "z'" ∙ Refl' ∙
+  (J p pr "z'")))) prᴰ eq) "eqᴰ₁'")))) (J (Lam' "uᴰ₁'" (Lam' "uˢ₁'"
+  (Id' (pˢ ∙ u ∙ "uᴰ₁'" ∙ "uˢ₁'" ∙ eq ∙ (J (Lam' "u₁'" (Lam' "p₁'"
+  (Id' (J (Lam' "u₂'" (Lam' "p₂'" (aᴰ ∙ "u₂'"))) "u₁'" eq) "uᴰ₁'")))
+  (J (Lam' "u₁'" (Lam' "p₁'" (Id' (J (Lam' "u₂'" (Lam' "p₂'" (aᴰ ∙
+  "u₂'"))) (aˢ ∙ t) eq) "u₁'"))) (J (Lam' "y'" (Lam' "p₁'" (Id' (J
+  (Lam' "u₁'" (Lam' "p₂'" (aᴰ ∙ "u₁'"))) (aˢ ∙ t) "p₁'") (aˢ ∙
+  "y'")))) Refl' eq) "uˢ₁'") tˢ) ∙ Refl' ∙ (J p pr eq)) (J (Lam' "xᴰ'"
+  (Lam' "zᴰ'" (pᴰ ∙ u ∙ "xᴰ'" ∙ eq ∙ "zᴰ'" ∙ (J p pr eq)))) (J (Lam'
+  "x'" (Lam' "z'" (pᴰ ∙ "x'" ∙ (J (Lam' "u₁'" (Lam' "p₁'" (aᴰ ∙
+  "u₁'"))) tᴰ "z'") ∙ "z'" ∙ Refl' ∙ (J p pr "z'")))) prᴰ eq) (J (Lam'
+  "u₁'" (Lam' "p₁'" (Id' (J (Lam' "u₂'" (Lam' "p₂'" (aᴰ ∙ "u₂'")))
+  "u₁'" eq) "uᴰ₁'"))) (J (Lam' "u₁'" (Lam' "p₁'" (Id' (J (Lam' "u₂'"
+  (Lam' "p₂'" (aᴰ ∙ "u₂'"))) (aˢ ∙ t) eq) "u₁'"))) (J (Lam' "y'" (Lam'
+  "p₁'" (Id' (J (Lam' "u₁'" (Lam' "p₂'" (aᴰ ∙ "u₁'"))) (aˢ ∙ t) "p₁'")
+  (aˢ ∙ "y'")))) Refl' eq) "uˢ₁'") tˢ))))) (J (Lam' "u₁'" (Lam' "eq₁'"
+  (Id' (pˢ ∙ "u₁'" ∙ (aˢ ∙ "u₁'") ∙ Refl' ∙ "eq₁'" ∙ (J (Lam' "u₂'"
+  (Lam' "p₁'" (Id' (J (Lam' "u₃'" (Lam' "p₂'" (aᴰ ∙ "u₃'"))) "u₂'"
+  "eq₁'") (aˢ ∙ "u₁'")))) (J (Lam' "y'" (Lam' "p₁'" (Id' (J (Lam'
+  "u₂'" (Lam' "p₂'" (aᴰ ∙ "u₂'"))) (aˢ ∙ t) "p₁'") (aˢ ∙ "y'"))))
+  Refl' "eq₁'") tˢ) ∙ Refl' ∙ (J p pr "eq₁'")) (J (Lam' "xᴰ'" (Lam'
+  "zᴰ'" (pᴰ ∙ "u₁'" ∙ "xᴰ'" ∙ "eq₁'" ∙ "zᴰ'" ∙ (J p pr "eq₁'")))) (J
+  (Lam' "x'" (Lam' "z'" (pᴰ ∙ "x'" ∙ (J (Lam' "u₂'" (Lam' "p₁'" (aᴰ ∙
+  "u₂'"))) tᴰ "z'") ∙ "z'" ∙ Refl' ∙ (J p pr "z'")))) prᴰ "eq₁'") (J
+  (Lam' "u₂'" (Lam' "p₁'" (Id' (J (Lam' "u₃'" (Lam' "p₂'" (aᴰ ∙
+  "u₃'"))) "u₂'" "eq₁'") (aˢ ∙ "u₁'")))) (J (Lam' "y'" (Lam' "p₁'"
+  (Id' (J (Lam' "u₂'" (Lam' "p₂'" (aᴰ ∙ "u₂'"))) (aˢ ∙ t) "p₁'") (aˢ ∙
+  "y'")))) Refl' "eq₁'") tˢ))))) (J (Lam' "tᴰ₁'" (Lam' "tˢ₁'" (Pi'
+  "pᴰ₁'" (Pi' "x'" a (Pi' "xᴰ'" (aᴰ ∙ "x'") (Pi' "z'" (Id' t "x'")
+  ((Id' (J (Lam' "u₁'" (Lam' "p₁'" (aᴰ ∙ "u₁'"))) "tᴰ₁'" "z'") "xᴰ'")
+  ==> (p ∙ "x'" ∙ "z'") ==> U)))) (Pi' "pˢ₁'" (Pi' "x'" a (Pi' "xᴰ'"
+  (aᴰ ∙ "x'") (Pi' "xˢ'" (Id' (aˢ ∙ "x'") "xᴰ'") (Pi' "z'" (Id' t
+  "x'") (Pi' "zᴰ'" (Id' (J (Lam' "u₁'" (Lam' "p₁'" (aᴰ ∙ "u₁'")))
+  "tᴰ₁'" "z'") "xᴰ'") ((Id' (J (Lam' "u₁'" (Lam' "p₁'" (Id' (J (Lam'
+  "u₂'" (Lam' "p₂'" (aᴰ ∙ "u₂'"))) "u₁'" "z'") "xᴰ'"))) (J (Lam' "u₁'"
+  (Lam' "p₁'" (Id' (J (Lam' "u₂'" (Lam' "p₂'" (aᴰ ∙ "u₂'"))) (aˢ ∙ t)
   "z'") "u₁'"))) (J (Lam' "y'" (Lam' "p₁'" (Id' (J (Lam' "u₁'" (Lam'
-  "p₂'" (aᴹ ∙ "u₁'"))) (aᴱ ∙ t) "p₁'") (aᴱ ∙ "y'")))) Refl' "z'")
-  "xᴱ'") "tᴱ₁'") "zᴹ'") ==> Pi' "x₁'" (p ∙ "x'" ∙ "z'") ("pᴹ₁'" ∙ "x'"
-  ∙ "xᴹ'" ∙ "z'" ∙ "zᴹ'" ∙ "x₁'"))))))) (Pi' "prᴹ₁'" ("pᴹ₁'" ∙ t ∙
-  "tᴹ₁'" ∙ Refl' ∙ Refl' ∙ pr) ((Id' ("pᴱ₁'" ∙ t ∙ "tᴹ₁'" ∙ "tᴱ₁'" ∙
-  Refl' ∙ Refl' ∙ (J (Lam' "xᴹ'" (Lam' "xᴱ'" (Id' (J (Lam' "u₁'" (Lam'
-  "p₁'" (Id' "u₁'" "xᴹ'"))) (J (Lam' "u₁'" (Lam' "p₁'" (Id' (aᴱ ∙ t)
-  "u₁'"))) Refl' "xᴱ'") "xᴱ'") Refl'))) Refl' "tᴱ₁'") ∙ pr) "prᴹ₁'")
-  ==> Id' ("pᴱ₁'" ∙ t ∙ (aᴱ ∙ t) ∙ Refl' ∙ Refl' ∙ (J (Lam' "u₁'"
-  (Lam' "p₁'" (Id' "u₁'" (aᴱ ∙ t)))) Refl' "tᴱ₁'") ∙ Refl' ∙ pr) (J
-  (Lam' "xᴹ'" (Lam' "zᴹ'" ("pᴹ₁'" ∙ t ∙ "xᴹ'" ∙ Refl' ∙ "zᴹ'" ∙ pr)))
-  "prᴹ₁'" (J (Lam' "u₁'" (Lam' "p₁'" (Id' "u₁'" (aᴱ ∙ t)))) Refl'
-  "tᴱ₁'")))))))) (Lam' "pᴹ₁'" (Lam' "pᴱ₁'" (Lam' "prᴹ₁'" (Lam' "prᴱ₁'"
-  "prᴱ₁'")))) tᴱ ∙ pᴹ ∙ pᴱ ∙ prᴹ ∙ prᴱ) eq) uᴱ) eqᴱ
+  "p₂'" (aᴰ ∙ "u₁'"))) (aˢ ∙ t) "p₁'") (aˢ ∙ "y'")))) Refl' "z'")
+  "xˢ'") "tˢ₁'") "zᴰ'") ==> Pi' "x₁'" (p ∙ "x'" ∙ "z'") ("pᴰ₁'" ∙ "x'"
+  ∙ "xᴰ'" ∙ "z'" ∙ "zᴰ'" ∙ "x₁'"))))))) (Pi' "prᴰ₁'" ("pᴰ₁'" ∙ t ∙
+  "tᴰ₁'" ∙ Refl' ∙ Refl' ∙ pr) ((Id' ("pˢ₁'" ∙ t ∙ "tᴰ₁'" ∙ "tˢ₁'" ∙
+  Refl' ∙ Refl' ∙ (J (Lam' "xᴰ'" (Lam' "xˢ'" (Id' (J (Lam' "u₁'" (Lam'
+  "p₁'" (Id' "u₁'" "xᴰ'"))) (J (Lam' "u₁'" (Lam' "p₁'" (Id' (aˢ ∙ t)
+  "u₁'"))) Refl' "xˢ'") "xˢ'") Refl'))) Refl' "tˢ₁'") ∙ pr) "prᴰ₁'")
+  ==> Id' ("pˢ₁'" ∙ t ∙ (aˢ ∙ t) ∙ Refl' ∙ Refl' ∙ (J (Lam' "u₁'"
+  (Lam' "p₁'" (Id' "u₁'" (aˢ ∙ t)))) Refl' "tˢ₁'") ∙ Refl' ∙ pr) (J
+  (Lam' "xᴰ'" (Lam' "zᴰ'" ("pᴰ₁'" ∙ t ∙ "xᴰ'" ∙ Refl' ∙ "zᴰ'" ∙ pr)))
+  "prᴰ₁'" (J (Lam' "u₁'" (Lam' "p₁'" (Id' "u₁'" (aˢ ∙ t)))) Refl'
+  "tˢ₁'")))))))) (Lam' "pᴰ₁'" (Lam' "pˢ₁'" (Lam' "prᴰ₁'" (Lam' "prˢ₁'"
+  "prˢ₁'")))) tˢ ∙ pᴰ ∙ pˢ ∙ prᴰ ∙ prˢ) eq) uˢ) eqˢ
 
-instance E Code Tm where
+instance E Sig Tm where
   e = \case
-    CVar x → Var (e x)
+    SVar x → Var (e x)
 
-    CPiI a (x, b) →
+    SPiI a (x, b) →
       LAM_(f) LAM_(fᴹ)
-        Pi' x (c a)
+        Pi' x (alg a)
           ((Lam' (m x) $ Lam' (e x) $ e b)
             ∙ (e a ∙ Var x)
             ∙ Refl'
             ∙ (f ∙ Var x)
             ∙ (fᴹ ∙ Var x ∙ (e a ∙ Var x)))
 
-    CPiNI a (x, b)  → LAM_(f) LAM(fᴹ) Pi' x a (e b ∙ (f ∙ Var x) ∙ (fᴹ ∙ Var x))
-    CPiSNI a (x, b) → LAM_(f) Lam' x (e b ∙ (f ∙ Var x))
+    SPiNI a (x, b)  → LAM_(f) LAM(fᴹ) Pi' x a (e b ∙ (f ∙ Var x) ∙ (fᴹ ∙ Var x))
+    SPiSNI a (x, b) → LAM_(f) Lam' x (e b ∙ (f ∙ Var x))
 
-    CAppI a b t u    → eCAppI (c a) (m a) (e a) (c1 b) (m1 b) (e1 b)
-                              (c t) (m t) (e t) (c u) (m u) (e u)
-    CAppNI t u       → e t ∙ u
-    CAppSNI a b t u  → eCAppSNI a (c1 b) (m1 b) (e1 b) (c t) (m t) (e t) u
+    SAppI a b t u    → eSAppI (alg a) (m a) (e a) (a1 b) (m1 b) (e1 b)
+                              (alg t) (m t) (e t) (alg u) (m u) (e u)
+    SAppNI t u       → e t ∙ u
+    SAppSNI a b t u  → eSAppSNI a (a1 b) (m1 b) (e1 b) (alg t) (m t) (e t) u
 
-    CId a t u        → eCId (c a) (m a) (e a) (c t) (m t) (e t) (c u) (m u) (e u)
-    CRefl a t        → eCRefl (c a) (m a) (e a) (c t) (m t) (e t)
-    CU               → LAM_(a) LAM_(aᴹ) PI_(x, a) (aᴹ ∙ x)
-    CEl a            → LAM_(t) LAM_(tᴹ) Id' (e a ∙ t) tᴹ
-    CJ a t p pr u eq → eCJ (c a)  (m a)  (e a)
-                           (c t)  (m t)  (e t)
-                           (c2 p) (m2 p) (e2 p)
-                           (c pr) (m pr) (e pr)
-                           (c u)  (m u)  (e u)
-                           (c eq) (m eq) (e eq)
+    SId a t u        → eSId (alg a) (m a) (e a) (alg t) (m t) (e t) (alg u) (m u) (e u)
+    SRefl a t        → eSRefl (alg a) (m a) (e a) (alg t) (m t) (e t)
+    SU               → LAM_(a) LAM_(aᴹ) PI_(x, a) (aᴹ ∙ x)
+    SEl a            → LAM_(t) LAM_(tᴹ) Id' (e a ∙ t) tᴹ
+    SJ a t p pr u eq → eSJ (alg a)  (m a)  (e a)
+                           (alg t)  (m t)  (e t)
+                           (a2 p) (m2 p) (e2 p)
+                           (alg pr) (m pr) (e pr)
+                           (alg u)  (m u)  (e u)
+                           (alg eq) (m eq) (e eq)
 
 
 --------------------------------------------------------------------------------
 
-elabInp ∷ (Sub Tmᴾ, Sub Tmᴾ) → Elab (Sub Tm, Sub Code)
+elabInp ∷ (Sub Tmᴾ, Sub Tmᴾ) → Elab (Sub Tm, Sub Sig)
 elabInp (nonind, ind) = do
   -- check nonind env
   (ts, vs, ns) ← foldrM
@@ -795,8 +779,8 @@ elabInp (nonind, ind) = do
   (ts', vs', cs) ← foldrM
                  (\(x, t)(ts, vs, cs) → do
                      x ← elabBinder vs Nothing x
-                     t ← evalᶜ vs <$> checkTypeᶜ ts vs t
-                     pure ((x, Right t):ts, (x, Nothing):vs, (x, quoteᶜ vs t):cs))
+                     t ← evalS vs <$> checkTypeS ts vs t
+                     pure ((x, Right t):ts, (x, Nothing):vs, (x, quoteS vs t):cs))
                  (ts, vs, []) ind
   pure (ns, cs)
 
@@ -804,7 +788,7 @@ genElims ∷ (Sub Tmᴾ, Sub Tmᴾ) → Elab (Sub Tm, Sub Tm)
 genElims (nonind, ind) = do
   (ns, cs) ← elabInp (nonind, ind)
   let cs' = foldr
-              (\(x, t) acc → (e x, e t ∙ Var x ∙ Var (m x)):(m x, m t ∙ Var x):(x, c t):acc)
+              (\(x, t) acc → (e x, e t ∙ Var x ∙ Var (m x)):(m x, m t ∙ Var x):(x, alg t):acc)
               [] cs
   pure (
     ns,
@@ -829,13 +813,6 @@ header = unlines [
   "",
   "apd : ∀ {α β}{A : Set α}{B : A → Set β}(f : ∀ a → B a){x y : A}(p : x ≡ y) → tr B p (f x) ≡ f y",
   "apd {A = A} {B} f {t} {u} p = J (λ y p → tr B p (f t) ≡ f y) (refl {x = f t}) p"
-  -- "",
-  -- "infixr 5 _◾_",
-  -- "_◾_ : ∀ {α}{A : Set α}{x y z : A} → x ≡ y → y ≡ z → x ≡ z",
-  -- "_◾_ {x = x}{y}{z} p q = tr (λ z → x ≡ z) q p",
-  -- "",
-  -- "sym : ∀ {α}{A : Set α}{x y : A} → x ≡ y → y ≡ x",
-  -- "sym {A = A} {x} {y} p = tr (λ z → z ≡ x) p refl"
   ]
 
 toAgda ∷ (Sub Tmᴾ, Sub Tmᴾ) → IO ()
@@ -852,13 +829,13 @@ toAgda (reverse → nonind, reverse → ind) = do
           putStrLn header
           putStrLn "postulate"
           when (not $ null ns) $ do
-            putStrLn "  -- Assumed non-inductive context:"
+            putStrLn "  -- External context:"
             putStrLn $ renderCxt (reverse ns)
-          putStrLn "  -- Constructors:"
+          putStrLn "  -- Algebras"
           putStrLn $ renderCxt (reverse cs)
-          putStrLn "  -- Induction methods:"
+          putStrLn "  -- Displayed algebras"
           putStrLn $ renderCxt (reverse ms)
-          putStrLn "  -- Eliminators and β-rules:"
+          putStrLn "  -- Displayed algebra sections"
           putStrLn $ renderCxt (reverse es)
         _ → do
           putStrLn "Error in input:"

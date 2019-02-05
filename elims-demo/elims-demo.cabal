@@ -1,6 +1,6 @@
 
 name:           elims-demo
-version:        0.1.0.0
+version:        0.1.1.0
 description:    Demo type theory with higher inductive-inductive types with propositional computation rules
 homepage:       https://bitbucket.org/akaposi/elims/src/e6f6d807fda39ebabcd54d4d3e58065afe249469/haskell/elims-demo/?at=master
 
@@ -23,7 +23,7 @@ library
                 base >=4.7 && <5,
                 split, unordered-containers, megaparsec, mtl
 
-executable hiit-defs
+executable hiit-signatures
   main-is: Main.hs
   hs-source-dirs: .
   ghc-options: -rtsopts

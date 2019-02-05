@@ -6,15 +6,10 @@ Ambrus Kaposi and András Kovács. It takes as input source files
 containing higher inductive-inductive (HIIT) type definitions.
 
 It validates the HIIT definitions, then generates types
-of induction motives and methods (displayed algebras) and 
+of induction motives and methods (displayed algebras) and
 eliminators and computation rules (displayed algebra sections). You
 can then read off induction principles fairly easily (which is
 explained in the paper as well).
-
-Currently, this implementation uses notation from an older version
-of the paper, titled "A Syntax for Higher Inductive-Inductive Types",
-which was published in the postproceedings of FSCD 2018. This version
-will be updated shortly to be in sync with the new paper.
 
 ## Installation
 
@@ -24,7 +19,7 @@ hit `stack install` in the project directory. You may need to do
 installed.
 
 You might also want
-[Agda](https://agda.readthedocs.io/en/v2.5.3/getting-started/installation.html)
+[Agda](https://agda.readthedocs.io/en/v2.5.4.2/getting-started/installation.html)
 installed, if you want to typecheck the generated output. Any
 non-ancient Agda version would work. The easiest way to do this is by
 `stack install Agda`.
@@ -67,39 +62,36 @@ apd : ∀ {α β}{A : Set α}{B : A → Set β}(f : ∀ a → B a){x y : A}(p : 
 apd {A = A} {B} f {t} {u} p = J (λ y p → tr B p (f t) ≡ f y) (refl {x = f t}) p
 
 postulate
-  -- Constructors:
+  -- Algebras
   S¹ : U
   base : S¹
   loop : base ≡ base
 
-  -- Induction methods:
-  S¹ᴹ : S¹ → U
-  baseᴹ : S¹ᴹ base
-  loopᴹ : tr S¹ᴹ loop baseᴹ ≡ baseᴹ
+  -- Displayed algebras
+  S¹ᴰ : S¹ → U
+  baseᴰ : S¹ᴰ base
+  loopᴰ : tr S¹ᴰ loop baseᴰ ≡ baseᴰ
 
-  -- Eliminators and β-rules:
-  S¹ᴱ : (x' : S¹) → S¹ᴹ x'
-  baseᴱ : S¹ᴱ base ≡ baseᴹ
-  loopᴱ : tr (λ u' → tr S¹ᴹ loop u' ≡ baseᴹ) baseᴱ
-            (tr (λ u' → tr S¹ᴹ loop (S¹ᴱ base) ≡ u') baseᴱ
-              (apd S¹ᴱ loop)) ≡ loopᴹ
+  -- Displayed algebra sections
+  S¹ˢ : (x' : S¹) → S¹ᴰ x'
+  baseˢ : S¹ˢ base ≡ baseᴰ
+  loopˢ : tr (λ u' → tr S¹ᴰ loop u' ≡ baseᴰ) baseˢ
+            (tr (λ u' → tr S¹ᴰ loop (S¹ˢ base) ≡ u') baseˢ (apd S¹ˢ loop))
+	      ≡ loopᴰ
 ```
 
 To explain the output:
 
   - First, there is an Agda header defining propositional equality,
     `J` and transport.
-  - Then, we postulate constructors, induction methods and finally
-    eliminators/β-rules.
-    - In a more categorical language, we could call the three
-      postulated sections "algebras", "dependent algebras", and
-      "dependent algebra sections", borrowing terminology from
-      [Shulman](https://www.youtube.com/watch?v=4SLbgT-CfRM).
-    - The actual type of the induction principle would be a dependent
-      function from all induction methods to a Σ-type/record
-      containing all eliminators and β-rules.
+  - Then we just postulate algebras (types of constructors), displayed algebras
+    (types of induction methods) and sections of displayed algebras (types of
+	eliminators and β-rules).
+  - The actual type of the induction principle would be a dependent
+    function from all induction methods to a Σ-type/record
+    containing all eliminators and β-rules.
 
-  - Notice the type for `loopᴱ`. It is more complicated than the usual
+  - Notice the type for `loopˢ`. It is more complicated than the usual
     definition in HoTT because all of our β-rules are only
     propositional equalities. Hence, β-rules may need to be
     transported along previous β-rules in order to be well-typed.
@@ -117,14 +109,10 @@ must be terminated by semicolons (`;`).
 
 Note that name shadowing is currently disallowed.
 
-The `assume` section contains names with types, which are assumed to
-come from an otherwise unspecified ambient type theory. These names
-are not part of the inductive part of the HIIT definition. In the
-parlance of the "A Syntax for Higher Inductive-Inductive Types", this
-section is the "target theory" context.
-
-For an example, we may define lists containing elements of an arbitrary
-type coming from the ambient type theory:
+The `assume` section contains names with types, which are assumed to come from
+an otherwise unspecified external type theory. These names are not part of the
+inductive part of the HIIT definition. For an example, we may define lists
+containing elements of an arbitrary type coming from the external type theory:
 
 ```
 assume
@@ -148,9 +136,8 @@ constructors
 Assumptions can serve as "parameters" to the HIIT, but you can also
 think of them as any kind of _a priori_ existing definitions.
 
-The `constructors` section specifies inductive constructors. In the
-paper's terminology, this section is a Γ context in the "source"
-theory, or the theory of HIIT codes.
+The `constructors` section specifies inductive constructors. In the paper's
+terminology, this section is a Δ context in the theory of HIIT signatures.
 
 Here, only strictly positive definitions are allowed, so `constructors T: U;
 con: (T → T) → T;` is invalid, for instance.
@@ -171,7 +158,7 @@ Types are specified with a small type theory, which contains:
       with `t : a` and `u : a` for some `a`, `p : U` (assuming `x : a`
       and `y : Id t x`), and `pr : p [x ⊢> t, y ⊢> refl t]`. Again,
       other parameters to `J` can't be explicitly given.
-  - There are no lambda expressions currently.
+  - Lambdas are not supported.
 
 #### Differences to the paper
 
@@ -182,15 +169,18 @@ type-directed elaboration to fill in a number of details, including
 El-s, in order to be more user-friendly, so this is only a surface
 difference.
 
-There are two actual differences to the paper.
+Actual differences to the paper:
 
   - The non-inductive "target" theory has a cumulative universe hierarchy
     in the paper. Here, we have type-in-type, purely because of ease of
     implementation, and thus we only eliminate into `U` instead of a universe
-    at a user-given level. This is probably not a big issue, since we can
-    easily spot universe consistency issues by checking the output in Agda.
-  - The paper has a Jβ construction for weakly representing the
-    computation rule for J in the inductive "source" syntax. In the
-    current implementation, we don't include Jβ, as it doesn't really
-    have any use case that we know of. Nonetheless, in the future it may be
-    added for the sake of completeness.
+    at a user-given level. This change is only for ease of implementation,
+	but we can also use this to define large HIITs, and it works pretty much
+	as expected.
+  - The paper has a Jβ construction for weakly representing the computation rule
+    for J in the inductive "source" syntax. In the current implementation, we
+    don't include Jβ, as it doesn't really have any use case that we know
+    of. Nonetheless, in the future it may be added for the sake of completeness.
+  - We don't yet support, but perhaps add later:
+    + Computing homomorphisms in the output
+	+ Equalities between types in signatures
