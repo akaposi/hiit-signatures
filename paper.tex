@@ -363,9 +363,9 @@ In this paper we propose a notion of signatures for higher inductive-inductive
 types (HIITs) which includes the above valid examples and excludes the invalid
 ones. Our signatures allow any number of inductive-inductive type constructors,
 possibly infinitary higher constructors of any dimension and restricts
-constructors to strictly positive ones. It also allows free usage of $\J$ (path
-induction) and $\refl$ in HIIT signatures, and allows mixing type, point and path
-constructors in any order.
+constructors to strictly positive ones. It also allows equalities between type
+constructors, free usage of $\J$ (path induction) and $\refl$ in HIIT
+signatures, and allows mixing type, point and path constructors in any order.
 
 The core idea is to represent HIIT specifications as contexts in a
 domain-specific type theory which we call the \emph{theory of signatures}. Type
@@ -482,7 +482,7 @@ impredicative universe \cite{atkey}.
 \label{sec:signatures}
 
 In this section we define signatures for HIITs. First, we list
-the main motivations behind our definition.
+the main considerations behind our definition.
 
 \begin{itemize}
 \item\emph{Ubiquitous type dependencies.}
@@ -506,12 +506,11 @@ In prior literature, schemes for inductive types usually include structural
 restrictions for this. In our case, a \emph{universe} can be used to make
 size restrictions which also entail strict positivity.
 
-\item\emph{Iterated equalities and type constructor equalities with path
-indcution.} We can support iterated equalities of point and path constructors
-by closing the universe under equality type formation of point and path
-constructors, together with a standard (although size-restricted) definition
-of path induction. We can also introduce a different type former for
-equalities between type constructors.
+\item\emph{Iterated equalities and type constructor equalities, with path
+induction.} We can support iterated equalities by closing the universe under
+equality type formation of point and path constructors, together with a
+standard (although size-restricted) definition of path induction. We can also
+introduce a different type former for equalities between type constructors.
 
 \end{itemize}
 
@@ -832,7 +831,7 @@ because the first parameter of the constructor $\mathsf{con}$ is a function from
 a small type to an external type, and no such functions can be formed.
 
 
-\subsection{External type theory}
+\subsection{External Type Theory}
 \label{sec:external}
 
 The external syntax serves two purposes: it is a source of types external to a
@@ -1020,7 +1019,7 @@ syntaxes involving preterms and inductively defined typing and conversion
 relations. Then, we present syntactic translations as a partial solution to the
 coherence problem.
 
-\subsection{Interpreting intrinsic syntax}
+\subsection{Interpreting Intrinsic Syntax}
 Following Altenkirch and Kaposi \cite{ttintt}, one might define the syntax of a
 type theory as an initial category with families (CwF) \cite{dybjer1995internal}
 extended with additional type formers. The CwF part provides a calculus and
@@ -1095,7 +1094,7 @@ A possible solution would be to add \emph{all higher coherences} instead of
 set-truncating, which would yield something like an ($\omega$, 1)-CwF, but this
 is also an open research problem \cite{altenkirch2018towards, finster2019structure}.
 
-\subsection{Interpreting extrinsic syntax}
+\subsection{Interpreting Extrinsic Syntax}
 An extrinsic syntax for type theory is defined the following way:
 \begin{enumerate}
 \item We inductively define a \emph{presyntax}: sets of preterms, pretypes,
@@ -1144,7 +1143,7 @@ UIP-free normalization may be possible as well. But since this normal form
 interpretation is a major technical challenge, and it has not been carried out
 yet, we cannot use it to justify constructions in the current paper.
 
-\subsection{Syntactic translations}
+\subsection{Syntactic Translations}
 We can circumvent the coherence problem in the following way:
 \begin{enumerate}
 \item Define a \emph{source} and a \emph{target} syntax in any suitable metatheory,
@@ -1335,7 +1334,7 @@ Again, let us consider the circle example:
 The inputs of $\blank^\D$ here are the signature for the circle (the context in
 black) and an $\hat{S^{1}}$-algebra consisting of three non-$\top$ components.
 It returns a family over the type $\hat{S^1}$, an element of this family
-$\hat{b^D}$ at index $\hat{b}$, and and an equality between $\hat{b^D}$ and
+$\hat{b^D}$ at index $\hat{b}$, and a path between $\hat{b^D}$ and
 $\hat{b^D}$ which lies over $\hat{loop}$. This is the same as the usual
 induction motives and methods for the circle, e.g.\ as described in \cite{HoTTbook}.
 
@@ -1580,19 +1579,19 @@ and then we unfold the left hand side to get the doubly-transported
 expression in the result.
 
 For $a =_\U b$ equalities, let us examine here only the $(a =_\U b)^\S$ case.
-The interpretation here is inspired by the univalence axiom, although the
-translation does not require it. If we assume univalence in the external theory,
-then $\hat{a =_{\Type_i} b}$ equalities in are equivalent to equivalences, which
+The interpretation is inspired by the univalence axiom, although the translation
+does not require it. If we assume univalence in the external theory, then
+$\hat{a =_{\Type_i} b}$ equalities in are equivalent to equivalences, which
 contain $\hat{f : a \ra b}$ functions together with $\hat{\mathsf{isEqv}\,f}$
 proofs. Hence, we can view the $\hat{e : \blc{a^\A}\,\gamma =
-  \blc{a^\A}\,\gamma}$ and $\hat{e^D : \TR_{(\lambda\,A.\,A \ra
+  \blc{b^\A}\,\gamma}$ and $\hat{e^D : \TR_{(\lambda\,A.\,A \ra
     \mathsf{Type_0})}\,e\,(\blc{a^\D}\,\gamma^D) = \blc{b^\D}\,\gamma^D}$ proofs
-as function bundled together with witnesses of equivalence. Since
+as functions bundled together with witnesses of equivalence. Since
 $\hat{\mathsf{isEqv}}$ is proof irrelevant, we only need to relate the
-underlying functions. For $\hat{e}$, the underlying function is given just by
-$\hat{\coe\,e}$. For $\hat{e^D}$, the underlying function is a bit more
-complicated, since $\hat{e^D}$ is a path over a path. We can observe this in the
-example for higher inductive integers:
+underlying functions in the translation. For $\hat{e}$, the underlying function
+is given just by $\hat{\coe\,e}$. For $\hat{e^D}$, the underlying function is a
+bit more complicated, since $\hat{e^D}$ is a path over a path. We can observe
+this in the example for higher inductive integers:
 \begin{alignat*}{5}
   & && (\boldsymbol{\cdot},\,\,Int : U,\,\,zero : \underline{Int},\,p : Int =_\U Int)^\S\,
      \hat{(\tt,\,Int,\,z,\,p)\,(\tt,\,Int^D,\,z^D,\,p^D)} \\
@@ -1747,9 +1746,10 @@ not have to reason explicitly about definitional equality in the external
 syntax, but we can still reason directly about preservation of definitional
 equalities in the theory of signatures. This semi-deep formalization can be in
 principle converted into a fully formal syntactic translation, because we prove
-all preservations of definitional equalities by $\refl$. Due to technical
-challenges, this formalization uses transport instead of $\J$ in the source
-theory, but this still covers a rather large class of HIIT definitions.
+all preservations of definitional equalities by $\refl$. Due to technical issues
+and performance issues in Agda, this deeper formalization uses transport instead
+of $\J$ for $t =_a u$ equalities, and it does not cover elimination for $a
+=_\U b$ equalities.
 
 
 %--------------------------------------------------------------------------------
@@ -1851,7 +1851,7 @@ allows us to use composition and $\hat{\inv}$ (which was noted in Section
     (f_0\,x_0)\,(f_1\,(\blc{a^\M}\,\gamma^M\,x_0))}\\
   & (t\,u)^\M\,\hat{\gamma^M} && :\equiv  \hat{\J\,(\blc{t^\M}\,\gamma^M\,(\blc{u^\A}\,\gamma_0))\,(\blc{u^\M}\,\gamma^\M) }\\
   & (t=_a u)^\M\,\hat{\gamma^M} && :\equiv
-    \hat{\lambda\,e.\,(\blc{t^\M}\,\gamma^M\,^{-1})\sqcdot\ap\,(\blc{a^\M}\,\gamma^M)\,e\sqcdot\,\blc{u^\M}\,\gamma^M}\\
+    \hat{\lambda\,e.\,(\blc{t^\M}\,\gamma^M)^{-1}\sqcdot\ap\,(\blc{a^\M}\,\gamma^M)\,e\sqcdot\,\blc{u^\M}\,\gamma^M}\\
   & (\refl_t)^\M\,\hat{\gamma^M} && :\equiv \hat{\inv\,(\blc{t^\M}\,\gamma^M)}\\
   & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\M\,\hat{\gamma^M} && :\equiv\\
   & && \hspace{-10em}\hat{\J\,\bigg(\J\,\Big(\J\,\big(\J\,(\lambda\,p_1\,p^M\,pr_1\,pr^M.\, pr^M)\,(\blc{t^\M}\,\gamma^M)}  \\
