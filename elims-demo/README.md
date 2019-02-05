@@ -171,7 +171,7 @@ difference.
 
 Actual differences to the paper:
 
-  - The non-inductive "target" theory has a cumulative universe hierarchy
+  - The external theory has a cumulative universe hierarchy
     in the paper. Here, we have type-in-type, purely because of ease of
     implementation, and thus we only eliminate into `U` instead of a universe
     at a user-given level. This change is only for ease of implementation,
