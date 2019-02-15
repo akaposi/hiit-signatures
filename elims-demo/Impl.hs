@@ -829,7 +829,7 @@ toAgda (reverse → nonind, reverse → ind) = do
           putStrLn header
           putStrLn "postulate"
           when (not $ null ns) $ do
-            putStrLn "  -- External context:"
+            putStrLn "  -- External context"
             putStrLn $ renderCxt (reverse ns)
           putStrLn "  -- Algebras"
           putStrLn $ renderCxt (reverse cs)
