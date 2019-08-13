@@ -759,14 +759,18 @@ signature could be unfolded to a larger one, by replacing $p : Int =_\U Int$
 with an explicit $suc : Int \ra \underline{Int}$ constructor and additional
 constructors expressing that $suc$ is an equivalence. The definition of $Int$
 with a successor equivalence was previously suggested by Altenkirch and Pinyo
-\cite{pinyo2018integers} and Cavallo and M\"ortberg \cite{cavallointegers}. Our
-signature can be viewed as a shorthand for the unfolded version.
+\cite{pinyo2018integers} and Cavallo and M\"ortberg \cite{cavallointegers}.
 
 For another example, we may have a HIIT definition for a type theory where
 Russell-style universes are compactly specified with an equality:
 \begin{alignat*}{5}
   & ...,\,\, russell : (\Gamma : Con)\ra Tm\,\Gamma\,U =_\U Ty\,\Gamma,\,\, ...
 \end{alignat*}
+
+In the presence of the univalence axiom, type constructor equations can be
+always equivalently represented using usual path constructors, by adding
+explicit equivalences to a signature. In this case, type constructor equations
+serve as a shorthand for equivalences.
 
 So far we were only able to define closed HIITs, which do not refer to external
 types. We add rules which include external types into signatures. A context

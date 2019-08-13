@@ -7,6 +7,7 @@ Response to the first reviewer:
   mainly in order to sync with the existing Agda formalization.
 
 - Page 1: initiality vs finite generation
+  TODO
 
 - Lambdas in signatures:
 
@@ -28,9 +29,26 @@ Response to the first reviewer:
     Γ;Δ, f : El ((x : a) → b), p : (x : a) → f x = t ⊢ f : El ((x : a) → b)
 
   We include this explanation in the revision.
+  (TODO: add this to paper)
 
-Page 7, 8 item (5)
-  We include this in the revision
+- Page 7, 8 item (5), about type equalities and UA
+
+  We include this in the revision.
+  (TODO: look at what I added to the paper, maybe we can say more)
+
+- Page 10, about initial NatAlg
+
+- Page 11, about coherence issue, references
+
+  A discussion of this problem can be found in:
+    https://homotopytypetheory.org/2014/03/03/hott-should-eat-itself/
+
+  There are more references about the related problem of defining semisimplicial
+  types in HoTT (if we can interpret an internal type theory syntax into Type,
+  then we can also compute semicimplicial types, by computing in the internal
+  syntax, then interpreting into Type).
+
+  We'll note this in the revision.
 
 --------------------------------------------------------------------------------
 
