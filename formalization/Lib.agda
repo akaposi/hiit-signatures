@@ -68,6 +68,11 @@ isEquiv : ∀{i j}{A : Set i}{B : Set j}(f : A → B) → Set _
 isEquiv {A = A}{B} f =
   ∃₂ λ (g h : B → A) → (∀ b → f (g b) ≡ b) × (∀ b → g (f b) ≡ b)
 
+-- strong funext
+postulate
+  strExt : ∀ {i j}{A : Set i}{B : A → Set j}{f g : ∀ x → B x}
+           → isEquiv (happly {f = f}{g})
+
 trᴹ :
   ∀ {i j k l}
     {A  : Set i}    {Aᴹ : A → Set j}

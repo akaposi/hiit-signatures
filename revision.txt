@@ -1,0 +1,96 @@
+
+
+Response to the first reviewer:
+
+- Extending to n-Type:
+  As we note in section 2, generalizing external types in signatures to Type-i
+  is possible and not difficult. We omit this generalization from the paper
+  mainly in order to sync with the existing Agda formalization.
+
+- Page 1: initiality vs finite generation
+
+- Lambdas in signatures:
+
+  Lambdas in signatures can be always eliminated by introducing extra
+  function parameters which are constrained by pointwise equalities.
+  In the case of the mentioned example,
+
+    z : H
+    n : (A → H) → H
+    q : n (λ x. z) = z
+
+  We may have the following equivalent λ-free type for q:
+
+    q : (f : A → H) → ((x : A) → f x = z) → n f = z
+
+  In general, if we have
+    Γ;Δ ⊢ λx. t : El ((x : a) → b)
+  Then instead we may have
+    Γ;Δ, f : El ((x : a) → b), p : (x : a) → f x = t ⊢ f : El ((x : a) → b)
+
+  We include this explanation in the revision.
+
+Page 7, 8 item (5)
+  We include this in the revision
+
+--------------------------------------------------------------------------------
+
+Response to the second reviewer:
+
+- On the suggestion for identity homomorphisms:
+
+  This suggestion does solve the U[] case. However, this version still
+  does not work; some cases (like U[]) become provable, where we can
+  make use of strict equality hypotheses, but other cases fail, where
+  we need to provide strict equalities. For example, assuming the
+  suggested strict tᴵᴰ equations, we have
+
+    (t =ₐ u)ᴵᴰ γ : (t = u)ᴹ γ γ (Γᴵᴰ γ) ≡ Uᴵᴰ γ ((t = u)ᴬ γ)
+
+  The type can be reduced along definitions, and using tᴵᴰ and uᴵᴰ, to:
+
+    (λ e. refl ◾ ap (λ x. x) e ◾ refl) ≡ (λ e. e)
+
+  Here, e : tᴬ γ = uᴬ γ, and it is necessarily a non-strict equality. Hence,
+  this case is not provable with strict tᴵᴰ equalities but provable with weak
+  ones. We include this explanation in the revision.
+
+- Addressing comments:
+  - page 7, Figure 2, about external parameters:
+
+    We are not completely sure about the question, but anyway we include some
+    comments on the external context here.
+
+    The codomain types of external (6) and infinitary (7) functions can depend
+    on the additional (x : A) external binder. For example, if we have Γ = Nat:
+    Type₀, zero: Nat, suc: Nat → Nat, and we write the signature for
+    length-indexed A-vectors, then we have "cons : (n : Nat) → A → Vec n → Vec
+    (suc n)", where the "suc n" expression refers back to the external "n : Nat"
+    binder. The only way to extend the external Γ is by using (6) and (7)
+    functions, otherwise, we can only refer to Γ entries which are assumed on
+    the "top level", such as the A : Type₀ in the example for lists on page 8
+    in Section 2.1.
+
+  - page 12: for the intrinsic syntax, do you also assume an induction
+    principle for it, e.g. that it is initial?
+
+    Yes. Of course, the induction principle for the intrinsic syntax would be
+    something that is formalized in the current paper, so if we want to avoid
+    circularity, then we need to say that the induction principle is given in an
+    ad-hoc fashion. This is probably acceptable, since such ad-hoc HIT induction
+    principles have been common in previous HoTT literature.
+
+  - page 12, line -9: you say that you "need to" set-truncate; is this
+    rather a strong belief that you have to?
+
+    On the next page we justify the need for truncation, in particular we think
+    that undecidability of conversion and impossibility of extrinsic term models
+    are solid justification for this.
+
+  - page 21, line -16: is there an expected equation if all computation rules
+    were definitional?
+
+    We think that if we follow "book" HoTT practice, p^s would be a
+    propositional computation rule, because it involves "coe" which is defined
+    externally, similarly to how path constructor computation rules involving
+    "ap" are also propositional.

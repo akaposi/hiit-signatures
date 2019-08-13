@@ -502,15 +502,15 @@ is the source of such types, and constructions in the theory of signatures may
 depend on a context in the external type theory.
 
 \item\emph{Strict positivity.}
-In prior literature, schemes for inductive types usually include structural
-restrictions for this. In our case, a \emph{universe} can be used to make
-size restrictions which also entail strict positivity.
+In prior literature, schemes for inductive types usually include
+structural restrictions for this. In our case, a \emph{universe} is
+used to make size restrictions which also entail strict positivity.
 
 \item\emph{Iterated equalities and type constructor equalities, with path
-induction.} We can support iterated equalities by closing the universe under
+induction.} We support iterated equalities by closing the universe under
 equality type formation of point and path constructors, together with a
-standard (although size-restricted) definition of path induction. We can also
-introduce a different type former for equalities between type constructors.
+standard (although size-restricted) definition of path induction. We also
+introduce an additional type former for equalities between type constructors.
 
 \end{itemize}
 
@@ -628,7 +628,7 @@ introduce a different type former for equalities between type constructors.
 \]
 \caption{The theory of HIIT signatures, parts (1)--(5). Weakenings are
   implicit, we assume fresh names everywhere and consider
-  $\alpha$-convertible terms equal. The $\hat{\Gamma};$ assumptions
+  $\alpha$-convertible terms equal. The $\hat{\Gamma;}$ assumptions
   are only used in parts (6)--(7), see Figure \ref{sigrules2}.}
 \label{sigrules1}
 \end{figure}
@@ -657,7 +657,7 @@ introduce a different type former for equalities between type constructors.
 \hspace{2em}
 \begin{gathered}
   \infer{\hat{\Gamma}\semicol\Delta \vdash t\, \hat{u} : \underline{b[\hat{x}\mapsto \hat{u}]}}
-        {\hat{\Gamma}\semicol\Delta \vdash t : \underline{(\hat{x}\in \hat{A})\ra b} && \hat{\Gamma}\vdash \hat{u} \in \hat{A}}
+        {\hat{\Gamma}\semicol\Delta \vdash t : \underline{(\hat{x}\in \hat{A})\ra b} && \hat{\Gamma}\,\hat{\vdash}\, \hat{u} \in \hat{A}}
 \end{gathered}
 \]
 \caption{The theory of HIIT signatures, parts (6)--(7). Parts (1)--(5)
@@ -684,13 +684,13 @@ formalizations in Section \ref{sec:formalization}. We explain the rules for the
 theory of signatures in order below.
 
 (1) The rules for context formation and variables are standard. We build
-signatures in a well-formed external context.  We assume fresh names everywhere
+signatures in a well-formed external context. We assume fresh names everywhere
 to avoid name capture, and leave weakenings implicit.
 
-(2) There is a universe $\U$, with decoding written as an underline instead of
-usual $\El$, to improve readability. With this part of the syntax, we can already
-define contexts specifying the empty type, unit type and booleans, or in general,
-finite sets of finite sets:
+(2) There is a universe $\U$, with decoding written as an underline
+instead of the usual $\El$, to improve readability. With this part of
+the syntax, we can already define contexts specifying the empty type,
+unit type and booleans, or in general, finite sets of finite sets:
 \[
 \boldsymbol{\cdot},\,\,\,Empty:\U \hspace{3em} \boldsymbol{\cdot},\,\,\,Unit:\U,\,\,\,tt:\underline{Unit} \hspace{3em} \boldsymbol{\cdot},\,\,\,Bool:\U,\,\,\,true:\underline{Bool},\,\,\,false:\underline{Bool}
 \]
@@ -716,6 +716,10 @@ introduction:
 Note that this notion of inductive-inductive types is more general than the one
 considered in previous works \cite{forsberg-phd}, as we allow any number of type
 constructors, and arbitrary mixing of type and point constructors.
+
+We do not include a $\lambda$ in the syntax. The reason is twofold; first,
+
+
 
 (4) $\U$ is closed under the equality type, with eliminator $\J$ and a weak
 (propositional) $\beta$-rule. Weakness is required because the translations in
@@ -1213,11 +1217,11 @@ interpreted as an iterated $\Sigma$-type.
   & ((x:a)\ra B)^\A\,\hat{\gamma} && :\equiv \hat{(}\hat{x}\in a^\A\,\hat{\gamma}\hat{)}\rah  B^\A\,\hat{(}\hat{\gamma}\commah\hat{x}\hat{)} \\
   & (t\,u)^\A\,\hat{\gamma} && :\equiv \hat{(}t^\A\,\hat{\gamma}\hat{)}\,\hat{(}u^\A\,\hat{\gamma}\hat{)} \\
   & (t=_a u)^\A\,\hat{\gamma} && :\equiv t^\A\,\hat{\gamma} \eqh u^\A\,\hat{\gamma} \\
-  & \refl^\A\,\hat{\gamma} && :\equiv \hat{\refl} \\
+  & (\refl_t)^\S\,\hat{\gamma} && :\equiv \hat{\refl} \\
   & (\J_{a\,t\,(x.z.p)}\,pr\,_u\,eq)^\A\,\hat{\gamma} && :\equiv \hat{\J}_{\hat{(}a^\A\,\hat{\gamma}\hat{)}\,\hat{(}t^\A\,\hat{\gamma}\hat{)}\,\hat{(}\hat{\lambda} \hat{x}\,\hat{z}.p^\A\,\hat{(}\hat{\gamma}\commah\hat{x}\commah\hat{z}\hat{)}\hat{)}}\,\hat{(}pr^\A\,\hat{\gamma}\hat{)}\,_{\hat{(}u^\A\,\hat{\gamma}\hat{)}}\,\hat{(}eq^\A\,\hat{\gamma}\hat{)} \\
   & (\J\beta_{a\,t\,(x.z.p)}\,pr)^\A\,\hat{\gamma} && :\equiv \hat{\refl} \\
   & (a=_\U b)^\A\,\hat{\gamma} && :\equiv a^\A\,\hat{\gamma} \eqh b^\A\,\hat{\gamma} \\
-  & \refl^\A\,\hat{\gamma} && :\equiv \hat{\refl} \\
+  & (\refl_a)^\A\,\hat{\gamma} && :\equiv \hat{\refl} \\
   & (\J_{a\,(x.z.p)}\,pr\,_b\,eq)^\A\,\hat{\gamma} && :\equiv \hat{\J}_{\Type_{\hat{0}}\,\hat{(}a^\A\,\hat{\gamma}\hat{)}\,\hat{(}\hat{\lambda} \hat{x}\,\hat{z}.p^\A\,\hat{(}\hat{\gamma}\commah\hat{x}\commah\hat{z}\hat{)}\hat{)}}\,\hat{(}pr^\A\,\hat{\gamma}\hat{)}\,_{\hat{(}b^\A\,\hat{\gamma}\hat{)}}\,\hat{(}eq^\A\,\hat{\gamma}\hat{)} \\
   & (\J\beta_{a\,(x.z.p)}\,pr)^\A\,\hat{\gamma} && :\equiv \hat{\refl} \\
   & ((\hat{x}\in \hat{A})\ra B)^\A\,\hat{\gamma} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  B^\A\,\hat{\gamma} \\
@@ -1357,7 +1361,7 @@ was chosen previously for the $\blank^\D$ translation.
       {\hat{\Gamma}\vdash\Delta}
 \hspace{1em}
 \infer{
-  \hat{\Gamma}\vdashh A^\D \in \hat{(}\hat{\gamma_0\,\gamma_1}\in\Delta^\A\hat{)}\rah \Delta^\M\,\hat{\gamma_0\,\gamma_1}\rah  A^\A\,\hat{\gamma_0}\rah A^\A\,\hat{\gamma_1}\rah \Type_{\hat{i}}}
+  \hat{\Gamma}\vdashh A^\M \in \hat{(}\hat{\gamma_0\,\gamma_1}\in\Delta^\A\hat{)}\rah \Delta^\M\,\hat{\gamma_0\,\gamma_1}\rah  A^\A\,\hat{\gamma_0}\rah A^\A\,\hat{\gamma_1}\rah \Type_{\hat{i}}}
       {\hat{\Gamma}\semicol\Delta\vdash A}
 \]
 
@@ -1581,7 +1585,7 @@ expression in the result.
 For $a =_\U b$ equalities, let us examine here only the $(a =_\U b)^\S$ case.
 The interpretation is inspired by the univalence axiom, although the translation
 does not require it. If we assume univalence in the external theory, then
-$\hat{a =_{\Type_i} b}$ equalities in are equivalent to equivalences, which
+$\hat{a =_{\Type_i} b}$ equalities are equivalent to equivalences, which
 contain $\hat{f : a \ra b}$ functions together with $\hat{\mathsf{isEqv}\,f}$
 proofs. Hence, we can view the $\hat{e : \blc{a^\A}\,\gamma =
   \blc{b^\A}\,\gamma}$ and $\hat{e^D : \TR_{(\lambda\,A.\,A \ra
@@ -1598,7 +1602,7 @@ this in the example for higher inductive integers:
   & \equiv \,\, && \hat{
      \top \times (Int^S : (x : Int)\ra Int^D\,x) \times (z^S : Int^S\,z = z^D)}\\
   & && \hat{\hspace{1em}\times\,
-       (p^S : (\lambda\,x.\,p^S\,(\coe\,p\,x)) = (\lambda\,x.\,\TR\,p^D\,(\J\,(p^S\,x)\,p)))}
+       (p^S : (\lambda\,x.\,Int^S\,(\coe\,p\,x)) = (\lambda\,x.\,\TR\,p^D\,(\J\,(Int^S\,x)\,p)))}
 \end{alignat*}
 
 
@@ -1670,17 +1674,41 @@ are definitionally equal in the theory of signatures. The translation of the
 latter would be the following (omitting many details, including the handling of
 substitutions in the translation):
 \[
-(\U[\sigma])^{\mathsf{ID}}\,\hat{\gamma\,A} \equiv \hat{\TR_{(\lambda\,x. A\ra A)}\,(\sigma^{\mathsf{ID}}\,\gamma)\,(\lambda\,x.\, x)}
+(\U[\sigma])^{\mathsf{ID}}\,\hat{\gamma\,A} \equiv \hat{\TR_{(\lambda\,x. A\ra A)}\,(\blc{\sigma^{\mathsf{ID}}}\,\gamma)\,(\lambda\,x.\, x)}
 \]
 Here, $\hat{\sigma^{\mathsf{ID}}\,\gamma}$ yields an equation for functoriality of
 $\hat{\sigma}$. Since the transport is constant, the result is propositionally
 equal to $\hat{\lambda\,x.\, x}$. However, that is not enough, since we need to
 preserve $\U = \U[\sigma]$ up to definitional equality.
 
-There are numerous unavoidable instances of such failures of strict preservation
-of definitional equalities for $\blank^{\mathsf{ID}}$, and they similarly arise when we
-try to construct composition of homomorphisms. We consider three potential
-solutions for this strictness problem:
+Alternatively, we could try changing the $\blank^\mathsf{ID}$ interpretation of
+terms and substitutions to get \emph{definitional} equalities, instead of
+propositional equalities internal to the target syntax. This would not be a
+purely syntactic translation anymore, since for each
+$\hat{\Gamma}\semicol\Delta\vdash t : A$ we would get a universally quantified
+metatheoretic statement expressing that for each $\hat{\gamma}$ term,
+$\hat{\blc{t^\M}\,\gamma\,\gamma\,(\blc{\Delta^{\mathsf{ID}}}\,\gamma)}$ is
+definitionally equal to
+$\hat{\blc{A^{\mathsf{ID}}}\,\gamma\,(\blc{t^\A}\,\gamma)}$. This would solve
+the strictness problem in the case of $\U[\sigma]$, since there would be no need
+to transport over definitional equalities.
+
+Unfortunately, while this approach repairs $\blank^{\mathsf{ID}}$ in some cases,
+other cases become unfeasible, because we are not able to produce definitional
+equations. For example, the interpretation of the identity type would be as follows:
+\[
+(t =_a u)^{\mathsf{ID}}\,\hat{\gamma \,\,\blc{:}\,\, \blc{(t =_a u)^\M}\,\gamma\,\gamma\,(\blc{\Gamma^{\mathsf{ID}}}\,\gamma)\,(\blc{(t =_a u)^\A}\,\gamma)} \equiv \hat{\blc{\U^{\mathsf{ID}}}\,\gamma\,(\blc{(t =_a u)^\A}\,\gamma)}
+\]
+The goal type can be reduced along definitions, and using $t^{\mathsf{ID}}$ and $u^{\mathsf{ID}}$, to
+\[
+\hat{(\lambda\,e.\,\,\refl\,\sqcdot\,\ap\,(\lambda\,x.\,x)\,e\,\sqcdot\,\refl)\,\blc{\equiv}\,(\lambda\,e.\,e)}
+\]
+This definitional equality is clearly not provable, although $(t =_a
+u)^{\mathsf{ID}}$ does work when we interpret terms with weak internal
+equalities. Hence, there are strictness problems both with weak and strict
+equations for functoriality.
+
+We consider three potential solutions:
 \begin{enumerate}
 \item Solving the coherence problem. This would allow us to interpret signatures
       into the metatheory, allowing preservation of definitional equality up
@@ -1893,10 +1921,9 @@ The two-dimensional sphere is given by the following signature:
 \]
 The sphere-algebras are computed as follows.
 \begin{alignat*}{5}
-  & && \Gamma^\C \equiv \hat{\top}\timesh\hat{(}\hat{S^2}\in\Type_{\hat{0}}\hat{)}\timesh\hat{(}\hat{b}\in \hat{S^2}\hat{)}\timesh\hat{(}\hat{surf\in \hat{\refl_{\hat{b}}}=_{\hat{(}\hat{b}=_{\hat{S^2}}\hat{b}\hat{)}}\hat{\refl_{\hat{b}}}}\hat{)}
+  & && \Gamma^\A \equiv \hat{\top}\timesh\hat{(}\hat{S^2}\in\Type_{\hat{0}}\hat{)}\timesh\hat{(}\hat{b}\in \hat{S^2}\hat{)}\timesh\hat{(}\hat{surf\in \hat{\refl_{\hat{b}}}=_{\hat{(}\hat{b}=_{\hat{S^2}}\hat{b}\hat{)}}\hat{\refl_{\hat{b}}}}\hat{)}
 \end{alignat*}
-Given a sphere-algebra and fixing a universe level $i$, the motives
-and methods are computed as follows.
+Given a sphere-algebra and fixing a universe level $\hat{i}$, the displayed algebra is the following.
 \begin{alignat*}{5}
   & && \Gamma^\D\,\,\hat{(}\hat{\tt,\,S^2,\,b,\,surf}\hat{)}\\
   & \equiv \,\, && \hat{\top}\timesh\hat{(}\hat{S^{2D}}\in \hat{S^2}\rah\Type_{\hat{i}}\hat{)} \\
@@ -1912,7 +1939,7 @@ Given a sphere-algebra and a displayed algebra over it, we get the type of secti
   & && \hspace{5.5em} \hat{=} \,\hat{surf^D}\hat{\bigg)}
 \end{alignat*}
 Note that if $\hat{b^S}$ is a definitional equality (that is, we have
-$\hat{S^{2S}\,\,b} \hat{\equiv} \hat{b^D}$), the occurrences of $\hat{b^S}$
+$\hat{S^{2S}\,\,b}\,\hat{\equiv}\,\hat{b^D}$), the occurrences of $\hat{b^S}$
 in the type of $\hat{surf^S}$ can be replaced by $\hat{\refl}$. In
 this case the type of $\hat{surf^S}$ becomes the more usual
 $\hat{\apd}\,\hat{(}\hat{\apd}\,\hat{S^{2S}}\hat{)}\,\hat{surf}\,\hat{=}\,\hat{surf^D}$.
@@ -1930,7 +1957,7 @@ signature for the corresponding indexed W-type is the following:
 \[
 W :\equiv (\boldsymbol{\cdot},\,\,\,w:(\hat{i} \in \hat{I})\ra\U,\,\,\,sup: (\hat{s} \in \hat{S})\ra((\hat{p} \in \hat{P\,s})\ra w\,(\hat{in\,s\,p}))\ra \underline{w\,(\hat{out\,s})})
 \]
-We pick a universe level $j$ for elimination. The interpretations of $W$ are the following, omitting leading $\hat{\top}$ components:
+We pick a universe level $j$ for elimination. The $\blank^\A$, $\blank^\D$ and $\blank^\S$ interpretations of $W$ are the following, omitting leading $\hat{\top}$ components:
 \begin{alignat*}{5}
   & \rlap{$W^\A \equiv \hat{(}\hat{w}\in \hat{I}\rah\Type_{\hat{0}}\hat{)}\timesh\hat{(}\hat{(}\hat{s}\in \hat{S}\hat{)}\rah\hat{(}\hat{(}\hat{p}\in \hat{P\,s}\hat{)}\rah \hat{w}\,\hat{(}\hat{in\,s\,p}\hat{)}\hat{)}\rah \hat{w}\,\hat{(}\hat{out\,s}\hat{)}\hat{)}$}\\
   & W^\D\,\hat{(}\hat{w, sup}\hat{)} && \equiv\, && \hat{(}\hat{w^D} \in \hat{(}\hat{i}\in \hat{I}\hat{)}\rah \hat{w\,i}\rah \Type_{\hat{j}}\hat{)}\\
