@@ -1,4 +1,17 @@
 
+Notes
+--------------------------------------------------------------------------------
+
+First reviewer:
+  - "add reference to H-S grpd model" -- why?
+  - consider a listing environment for 2.2 (external TT) to improve
+    readability
+
+  - adding another column to ADMS translations, which contains
+    (N) numbers which refer to numbered section in Figure 1-2.
+
+--------------------------------------------------------------------------------
+
 Response to the first reviewer:
 
 - Extending to n-Type:
@@ -40,15 +53,37 @@ Response to the first reviewer:
 
 - Page 11, about coherence issue, references
 
-  A discussion of this problem can be found in:
+  In the revision we add a reference to the following discussion:
+
     https://homotopytypetheory.org/2014/03/03/hott-should-eat-itself/
 
-  There are more references about the related problem of defining semisimplicial
-  types in HoTT (if we can interpret an internal type theory syntax into Type,
-  then we can also compute semicimplicial types, by computing in the internal
-  syntax, then interpreting into Type).
+  As discussed there, our coherence problem is related to the better
+  known problem of constructing semisimplicial types; solving the
+  former implies a solution of the latter.
 
-  We'll note this in the revision.
+- Page 12, about initial CwF
+  TODO
+
+- Page 13, "would merely decidable equality also be sufficient?"
+
+  For the purpose of elaborating raw syntax into intrinsic syntax
+  (which is in our view a primary motivation for decidability), it
+  would not be sufficient, because we need to eliminate from decided
+  equalities to proof-relevant intrinsic terms.
+
+- Page 17 error
+  We fixed it
+
+
+
+
+
+
+
+
+
+
+
 
 --------------------------------------------------------------------------------
 
@@ -56,11 +91,11 @@ Response to the second reviewer:
 
 - On the suggestion for identity homomorphisms:
 
-  This suggestion does solve the U[] case. However, this version still
-  does not work; some cases (like U[]) become provable, where we can
-  make use of strict equality hypotheses, but other cases fail, where
-  we need to provide strict equalities. For example, assuming the
-  suggested strict tᴵᴰ equations, we have
+  This suggestion does solve the U[] case. However, it still does not
+  work; some cases (like U[]) become provable, where we can make use
+  of strict equality hypotheses, but other cases fail, where we need
+  to provide strict equalities. For example, assuming the suggested
+  strict tᴵᴰ equations, we have
 
     (t =ₐ u)ᴵᴰ γ : (t = u)ᴹ γ γ (Γᴵᴰ γ) ≡ Uᴵᴰ γ ((t = u)ᴬ γ)
 
@@ -100,9 +135,9 @@ Response to the second reviewer:
   - page 12, line -9: you say that you "need to" set-truncate; is this
     rather a strong belief that you have to?
 
-    On the next page we justify the need for truncation, in particular we think
-    that undecidability of conversion and impossibility of extrinsic term models
-    are solid justification for this.
+    On the next page we justify the need for truncation. We think that
+    undecidability of conversion and impossibility of extrinsic term
+    models are solid justifications.
 
   - page 21, line -16: is there an expected equation if all computation rules
     were definitional?

@@ -1,7 +1,7 @@
 
 {-
 
-Shallow formalization for the paper "Syntax for Higher Inductive-Inductive Types".
+Shallow formalization for the paper "Signatures and Induction Principles for Higher Inductive-Inductive Types".
 
   * We shallowly embed both source and target theories into Agda. So, types become Agda types, functions
     Agda functions, and so on. Hence, the -ᴬ interpretation is left implicit everywhere.
@@ -9,7 +9,7 @@ Shallow formalization for the paper "Syntax for Higher Inductive-Inductive Types
     assuming all induction hypotheses.
   * The translations here are understood to be defined using recursion (as opposed to induction),
     so elements of the source syntax never even appear in this formalisation, and ᶜ is also implicit.
-  * Dependency of Γ;Γ context are also left implicit. We model terms in extended contexts (such as the
+  * Dependency of Γ;Δ context are also left implicit. We model terms in extended contexts (such as the
     B domain of a ((x : a) → B) type) by Agda functions which take as arguments all additional context entries.
     Hence, if we are in implicit Γ context, and (Γ, x : El a ⊢ B), then we use (Bᴰ : (x : El a)(xᴰ : (El a)ᴰ x) → Uᴰ B)
 -}
@@ -113,7 +113,7 @@ appₙᵢₛᴰ A {B} _ {t} tᴰ u = tᴰ u
   {t : a} (tᴰ : aᴰ t)
   {u : a} (uᴰ : aᴰ u)
   → Uᴰ (t ≡ u)
-≡ᴰ {a} aᴰ {t} tᴰ {u} uᴰ = λ z → tr aᴰ z tᴰ ≡ uᴰ
+≡ᴰ {a} aᴰ {t} tᴰ {u} uᴰ = λ e → tr aᴰ e tᴰ ≡ uᴰ
 
 reflᴰ :
   {a : U} (aᴰ : Uᴰ a)
@@ -124,21 +124,21 @@ reflᴰ {a} aᴰ {t} tᴰ = refl {x = tᴰ}
 Jᴰ :
   (a  : U)                  (aᴰ  : Uᴰ a)
   (t  : a)                  (tᴰ  : aᴰ t)
-  (p  : ∀ x (z : t ≡ x) → U)(pᴰ  : ∀ x (xᴰ : aᴰ x) z zᴰ → Uᴰ (p x z))
+  (p  : ∀ x (e : t ≡ x) → U)(pᴰ  : ∀ x (xᴰ : aᴰ x) e eᴰ → Uᴰ (p x e))
   (pr : p t refl)           (prᴰ : pᴰ _ tᴰ _ (reflᴰ aᴰ tᴰ) pr)
   (u  : a)                  (uᴰ  : aᴰ u)
   (eq : t ≡ u)              (eqᴰ : (≡ᴰ aᴰ tᴰ uᴰ) eq)
   → pᴰ _ uᴰ _ eqᴰ (J p pr eq)
 Jᴰ a aᴰ t tᴰ p pᴰ pr prᴰ u uᴰ eq eqᴰ =
-  J (λ xᴰ zᴰ → pᴰ u xᴰ eq zᴰ (J p pr eq))
-    (J (λ x z → pᴰ x (tr aᴰ z tᴰ) z refl (J p pr z))
+  J (λ xᴰ eᴰ → pᴰ u xᴰ eq eᴰ (J p pr eq))
+    (J (λ x e → pᴰ x (tr aᴰ e tᴰ) e refl (J p pr e))
       prᴰ eq)
     eqᴰ
 
 Jβᴰ :
   {a  : U}                   (aᴰ  : Uᴰ a)
   {t  : a}                   (tᴰ  : aᴰ t)
-  {p  : ∀ x (z : t ≡ x) → U} (pᴰ  : ∀ x (xₘ :  aᴰ x) z zₘ → Uᴰ (p x z))
+  {p  : ∀ x (e : t ≡ x) → U} (pᴰ  : ∀ x (xₘ :  aᴰ x) e eₘ → Uᴰ (p x e))
   {pr : p t refl}            (prᴰ : pᴰ _ tᴰ _ (reflᴰ aᴰ tᴰ) pr)
   → ≡ᴰ (pᴰ t tᴰ refl refl) (Jᴰ _ _ _ _ _ pᴰ _ prᴰ _ tᴰ refl refl) prᴰ refl -- Note: this last refl is Jβᴬ
 Jβᴰ _ _ _ _ = refl

@@ -239,21 +239,24 @@ EUTypes CA15123.}	%optional
 
 \begin{abstract}
 \noindent
-Higher inductive-inductive types (HIITs) generalize inductive types of dependent
-type theories in two ways. On the one hand they allow the simultaneous
-definition of multiple sorts that can be indexed over each other. On the other
-hand they support equality constructors, thus generalizing higher inductive
-types of homotopy type theory. Examples that make use of both features are the
-Cauchy real numbers and the well-typed syntax of type theory where conversion
-rules are given as equality constructors. In this paper we propose a general
-definition of HIITs using a small type theory, named the theory of signatures. A
-context in this theory encodes a HIIT by listing the constructors. We also
-compute notions of induction and recursion for HIITs, by using variants of
-syntactic logical relation translations. Building full categorical semantics and
-constructing initial algebras is left for future work. The theory of HIIT
-signatures was formalised in Agda together with the syntactic translations. We
-also provide a Haskell implementation, which takes signatures as input and
-outputs translation results as valid Agda code.
+Higher inductive-inductive types (HIITs) generalize inductive types of
+dependent type theories in two ways. On the one hand they allow the
+simultaneous definition of multiple sorts that can be indexed over
+each other. On the other, hand they support equality constructors,
+thus generalizing higher inductive types of homotopy type
+theory. Examples that make use of both features are the Cauchy real
+numbers and the well-typed syntax of type theory where conversion
+rules are given as equality constructors. In this paper we propose a
+general definition of HIITs using a small type theory, named the
+theory of signatures. A context in this theory encodes a HIIT by
+listing the constructors. We also compute notions of induction and
+recursion for HIITs by using variants of syntactic logical relation
+translations. Building full categorical semantics and constructing
+initial algebras is left for future work. The theory of HIIT
+signatures was formalised in Agda together with the syntactic
+translations. We also provide a Haskell implementation, which takes
+signatures as input and outputs translation results as valid Agda
+code.
 \end{abstract}
 
 \maketitle
@@ -273,7 +276,7 @@ well-known induction principle:
 \[
   \Elim\Nat:(P:\Nat \ra \mathsf{Type})(pz: P\,\zero)\big(ps:(n:\Nat)\ra P\,n\ra P\,(\suc\,n)\big)(n:\Nat)\ra P\,n
 \]
-\noindent $P$ is a family of types (or: a proof-relevant predicate) over natural
+\noindent $P$ is a family of types (i.e.\ a proof-relevant predicate) over natural
 numbers, which is called the \emph{induction motive}. The arguments $pz$ and
 $ps$ are called the \emph{induction methods}. The behavior of induction is
 described by a \emph{computation rule} ($\beta$-rule) for each constructor
@@ -283,15 +286,16 @@ and induction method:
   & \Elim\Nat\,P\,pz\,ps\,(\suc\,n) && \equiv ps\,n\,(\Elim\Nat\,P\,pz\,ps\,n)
 \end{alignat*}
 
-Indexed families of types can be also considered, for example length-indexed
-vectors of $A$-elements $\mathsf{Vec}_A: \Nat \ra \mathsf{Type}$. Mutual
-inductive types are yet another generalization, however, they can be reduced to
-indexed families where indices classify constructors for each mutual type.
-Inductive-inductive types \cite{forsberg-phd} are mutual definitions where this
-reduction does not work: here a type can be defined together with a family
-indexed over it. An example is the following fragment of a well-typed syntax of
-a type theory, where the second $\Ty$ type constructor is indexed over $\Con$,
-but constructors of $\Con$ also refer to $\Ty$:
+Indexed families of types can be also considered, such as
+length-indexed vectors of $A$-elements $\mathsf{Vec}_A: \Nat \ra
+\mathsf{Type}$. Mutual inductive types are yet another generalization,
+but they can be reduced to indexed families where indices classify
+constructors for each mutual type.  Inductive-inductive types
+\cite{forsberg-phd} are mutual definitions where this reduction does
+not work: here a type can be defined together with a family indexed
+over it. An example is the following fragment of a well-typed syntax
+of a type theory, where the second $\Ty$ type constructor is indexed
+over $\Con$, but constructors of $\Con$ also refer to $\Ty$:
 \begin{alignat*}{3}
   & \Con && : \mathsf{Type} && \text{contexts} \\
   & \Ty  && : \Con \ra \mathsf{Type} && \text{types in contexts} \\
@@ -458,14 +462,15 @@ considered in QIIT and HIT literature.
 The article of Altenkirch et al. \cite{gabe} gives specification and semantics
 of QIITs in a set-truncated setting. Signatures are given as lists of functors
 which can be interpreted as complete categories of algebras, and completeness is
-used to talk about notions of induction and recursion.  However, no strict
+used to talk about notions of induction and recursion. However, no strict
 positivity restriction is given, nor a construction of initial algebras.
 
-Closely related to the current work is the paper by the current authors and
-Altenkirch \cite{kaposi2019constructing}, which also concerns QIITs. There,
-signatures for QIITs are essentially a restriction of the signatures given here,
-but in contrast to the current work, the restricted quotient setting enables
-building initial algebras and detailed categorical semantics.
+Closely related to the current work is the paper by the current
+authors and Altenkirch \cite{kaposi2019constructing}, which also
+concerns QIITs. There, signatures for QIITs are essentially a
+restriction of the signatures given here, but in contrast to the
+current work, the restricted set-truncated setting enables building
+initial algebras and detailed categorical semantics.
 
 The logical predicate syntactic translation was introduced by Bernardy et
 al. \cite{bernardy2010parametricity}. The idea that a context can be seen as a
@@ -767,10 +772,10 @@ Russell-style universes are compactly specified with an equality:
   & ...,\,\, russell : (\Gamma : Con)\ra Tm\,\Gamma\,U =_\U Ty\,\Gamma,\,\, ...
 \end{alignat*}
 
-In the presence of the univalence axiom, type constructor equations can be
-always equivalently represented using usual path constructors, by adding
-explicit equivalences to a signature. In this case, type constructor equations
-serve as a shorthand for equivalences.
+In the presence of the univalence axiom, type constructor equations
+can be always equivalently represented using (4) path constructors, by
+adding explicit equivalences to a signature. In this case, type
+constructor equations serve as a shorthand for equivalences.
 
 So far we were only able to define closed HIITs, which do not refer to external
 types. We add rules which include external types into signatures. A context
@@ -915,12 +920,11 @@ fundamental (categorical) semantic concepts: \emph{algebras},
 \emph{homomorphisms}, \emph{displayed algebras} and \emph{sections of displayed
   algebras}. Then, we can express induction and recursion using these.
 
-Let us first consider natural numbers, and see how the usual definition of
-induction arises.
-
-For $\Nat$, algebras are simply a triple consisting of a type, a value and an
-endofunction. Below, we leave universe indices explicit, and we use the notation
-of the external type theory described in Section \ref{sec:external}.
+Let us first consider natural numbers, and see how the usual
+definition of induction arises. For $\Nat$, algebras are simply a
+triple consisting of a type, a value and an endofunction. Below, we
+leave universe indices explicit, and we use the notation of the
+external type theory described in Section \ref{sec:external}.
 \begin{alignat*}{5}
 & \Alg : \mathsf{Type} \\
 & \Alg \equiv (N : \mathsf{Type}) \times N \times (N \ra N)
@@ -985,19 +989,19 @@ general case, displayed algebras yield induction motives and methods, and
 homomorphisms and sections yield a function for each type constructor and a
 $\beta$-rule for each point or path constructor.
 
-We will compute algebras and the other notions by induction on the syntax of the
-theory of signatures. However, first we need to clarify the formal foundations
-of these computations.
+We compute algebras and the other notions by induction on the syntax
+of the theory of signatures. However, first we need to clarify the
+formal foundations of these computations.
 
 \section{The Coherence Problem and Syntactic Translations}
 \label{sec:coherence}
 
 The next task would be to define a computation which takes as input a
-$\hat{\Gamma}\vdash\Delta$ signature, and returns the corresponding type of
-algebras in some type theory. This would behave as a ``standard'' model of
-signatures, which simply maps each construction in the syntax to its
-counterpart: types to types, universe to universe, functions to functions, and
-so on.
+$\hat{\Gamma}\vdash\Delta$ signature, and returns the corresponding
+type of algebras in some type theory. This would behave as a
+``standard'' model of signatures, which simply maps each construction
+in the syntax to its counterpart: types to types, universe to
+universe, functions to functions, and so on.
 
 However, it is important to interpret signatures into a theory without
 uniqueness of identity proofs (UIP), because we are considering \emph{higher}
@@ -1015,11 +1019,17 @@ interpretation is the following:
 \item Give a standard interpretation of signatures into the UIP-free metatheory.
 \end{enumerate}
 
-It may come as a surprise that realizing the above steps is an \emph{open
-  problem}, for any syntax of a dependent type theory. We call the problem of
-interpreting syntaxes of type theories into a UIP-free metatheory a
-\emph{coherence problem}. This issue appears to arise with all known ways of
-defining syntaxes for dependent type theories.
+It may come as a surprise that realizing the above steps is an
+\emph{open problem}, for any syntax of a dependent type theory. We
+call the problem of interpreting syntaxes of type theories into a
+UIP-free metatheory a \emph{coherence problem}.
+
+This issue appears to arise with all known ways of defining syntaxes
+for dependent type theories. Shulman previously discussed this problem
+in \cite{hottshouldeat}. It is also related to the problem of
+constructing semisimplicial types in homotopy type theory; as
+explained in \cite{hottshouldeat} solving our coherence problem
+enables a construction of semisimplicial types.
 
 In the following, we first consider the coherence problem in two settings: with
 intrinsically typed higher inductive-inductive syntaxes, then with conventional
@@ -1389,7 +1399,7 @@ the universe and the inductive function space.
 \allowdisplaybreaks
 \begin{alignat*}{5}
   & \boldsymbol{\cdot}^\M\hat{\gamma_0\,\gamma_1} && :\equiv \hat{\top} \\
-  & (\Delta,x:A)^\M\,\hat{\gamma_0\,\gamma_1} && :\equiv \hat{(\gamma^M : \blc{\Delta^\M}\,\gamma_0\,\gamma_1)\times \blc{A^\M}\,\gamma_0\,\gamma_1\,\gamma^M} \\
+  & (\Delta,x:A)^\M\,\hat{(\gamma_0,\alpha_0)\,(\gamma_1,\alpha_1)} && :\equiv \hat{(\gamma^M : \blc{\Delta^\M}\,\gamma_0\,\gamma_1)\times \blc{A^\M}\,\gamma_0\,\gamma_1\,\gamma^M\,\alpha_0\,\alpha_1} \\
   & x^\M\,\hat{\gamma_0\,\gamma_1\,\gamma^M} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^M} \\
   & \U^\M\,\hat{\gamma_0\,\gamma_1\,\gamma^M\,A_0\,A_1} && :\equiv \hat{A_0\ra A_1 \ra \Type_0} \\
   & (\underline{a})^\M\,\hat{\gamma_0\,\gamma_1\,\gamma^M\,t_0\,\,t_1} && :\equiv \hat{
@@ -1873,7 +1883,7 @@ allows us to use composition and $\hat{\inv}$ (which was noted in Section
 \allowdisplaybreaks
 \begin{alignat*}{5}
   & \boldsymbol{\cdot}^\M\hat{\gamma_0\,\gamma_1} && :\equiv \hat{\top} \\
-  & (\Delta,x:A)^\M\,\hat{\gamma_0\,\gamma_1} && :\equiv \hat{(\gamma^M : \blc{\Delta^\M}\,\gamma_0\,\gamma_1)\times \blc{A^\M}\,\gamma^M} \\
+  & (\Delta,x:A)^\M\,\hat{(\gamma_0,\alpha_0)\,(\gamma_1,\alpha_1)} && :\equiv \hat{(\gamma^M : \blc{\Delta^\M}\,\gamma_0\,\gamma_1)\times \blc{A^\M}\,\gamma^M\,\alpha_0\,\alpha_1} \\
   & x^\M\,\hat{\gamma^M} && :\equiv x^{\text{th}}\text{ component in } \hat{\gamma^M} \\
   & \U^\M\,\hat{\gamma^M\,A_0\,A_1} && :\equiv \hat{A_0\ra A_1} \\
   & (\underline{a})^\M\,\hat{\gamma^M\,t_0\,\,t_1} && :\equiv \hat{

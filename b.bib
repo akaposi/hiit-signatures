@@ -1707,7 +1707,7 @@ keywords = "identity types"
 }
 @article{dybjerInductive,
   author    = {Peter Dybjer},
-  title     = {Representing Inductively Defined Sets by Wellorderings in Martin-L{\"{o}}f's
+  title     = {Representing Inductively Defined Sets by Wellorderings in {M}artin-{L}{\"{o}}f's
                Type Theory},
   journal   = {Theor. Comput. Sci.},
   volume    = {176},
@@ -1720,12 +1720,16 @@ keywords = "identity types"
   biburl    = {http://dblp.uni-trier.de/rec/bib/journals/tcs/Dybjer97},
   bibsource = {dblp computer science bibliography, http://dblp.org}
 }
-@misc{lumsdaineShulman,
-Author = {Peter LeFanu Lumsdaine and Mike Shulman},
-Title = {Semantics of higher inductive types},
-Year = {2017},
-Eprint = {1705.07088},
-}
+
+@article{lumsdaineShulman,
+  title={Semantics of higher inductive types},
+  DOI={10.1017/S030500411900015X},
+  journal={Mathematical Proceedings of the Cambridge Philosophical Society},
+  publisher={Cambridge University Press},
+  author = {Peter LeFanu Lumsdaine and Michael Shulman},
+  pages={1--50}
+  }
+
 @article{twolevel,
   author =        {Danil Annenkov and Paolo Capriotti and Nicolai Kraus},
   journal =       {ArXiv e-prints},
@@ -2118,11 +2122,14 @@ Eprint = {1705.07088},
  address = {New York, NY, USA},
  keywords = {Dependent type theory, Program translation},
 }
+
 @MastersThesis{nielsmsc,
     author = {Niels van der Weide},
     title = {Higher Inductive Types},
     school = {Radboud University, Nijmegen},
-    year = {2016}}
+    year = {2016},
+    note = "\url{http://cs.ru.nl/~nweide/HITs.pdf}"
+}
 @InProceedings{gabe,
 author="Altenkirch, Thorsten
 and Capriotti, Paolo
@@ -2286,7 +2293,7 @@ Eprint = {arXiv:1705.04296},
 }
 
 @article{ahrens2015univalent,
-  title={Univalent categories and the Rezk completion},
+  title={Univalent categories and the {Rezk} completion},
   author={Ahrens, Benedikt and Kapulkin, Krzysztof and Shulman, Michael},
   journal={Mathematical Structures in Computer Science},
   volume={25},
@@ -2326,7 +2333,7 @@ Eprint = {arXiv:1705.04296},
 @article{altenkirch2018towards,
   title={Towards the syntax and semantics of higher dimensional type theory},
   author={Altenkirch, Thorsten and Kraus, Nicolai},
-  year={2018}
+  note={Talk at HoTT/UF 2018}
 }
 
 @article{finster2019structure,
@@ -2339,7 +2346,7 @@ Eprint = {arXiv:1705.04296},
   title={Towards a directed homotopy type theory based on 4 kinds of variance},
   author={Nuyts, Andreas},
   year={2015},
-  school={MA thesis. KU Leuven}
+  school={KU Leuven}
 }
 
 @article{riehl2017type,
@@ -2361,4 +2368,11 @@ Eprint = {arXiv:1705.04296},
   title = {Successor on biinv-int which cancels pred exactly},
   year = {2018 (accessed 2019-02-04)},
   howpublished = "\url{https://github.com/RedPRL/redtt/blob/master/library/cool/biinv-int.red}"
+}
+
+@misc{hottshouldeat,
+  author = {Shulman, Michael},
+  title = {Homotopy Type Theory should eat itself (but so far, it’s too big to swallow)},
+  year = {2014 (accessed 2019-08-14)},
+  howpublished = "\url{https://homotopytypetheory.org/2014/03/03/hott-should-eat-itself}"
 }
