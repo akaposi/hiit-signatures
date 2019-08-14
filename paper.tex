@@ -524,8 +524,6 @@ introduce an additional type former for equalities between type constructors.
 \subsection{Theory of Signatures}
 \label{sec:tos}
 
-
-
 \begin{figure}
 
 (1) Contexts and variables
@@ -722,10 +720,6 @@ Note that this notion of inductive-inductive types is more general than the one
 considered in previous works \cite{forsberg-phd}, as we allow any number of type
 constructors, and arbitrary mixing of type and point constructors.
 
-We do not include a $\lambda$ in the syntax. The reason is twofold; first,
-
-
-
 (4) $\U$ is closed under the equality type, with eliminator $\J$ and a weak
 (propositional) $\beta$-rule. Weakness is required because the translations in
 Sections \ref{sec:morphisms} and \ref{sec:sections} do not preserve this
@@ -810,26 +804,44 @@ in the external theory there is no way to recursively refer to the inductive typ
 \cite{abbot05containers}, where shapes and positions can contain arbitrary types
 but they cannot recursively refer to the $W$-type being defined.
 
-(7) $\U$ is also closed under a function space where the domain is an external
-type and the codomain is a small source theory type. We overload the application
-notation for external parameters, as it is usually clear from context which
-application is meant. The rules allow types with infinitary constructors, for
-example trees containing elements of $\hat{A}$ at the leaves and branching by
-$\hat{B}$ (which could be an infinite type):
+(7) $\U$ is also closed under a function space where the domain is an
+external type and the codomain is a small source theory type. We
+overload the application notation for external parameters, as it is
+usually clear from context which application is meant. The rules allow
+types with infinitary constructors, for example, trees branching by a
+possibly infinite external type $\hat{A}$:
 \[
-\hat{A}\in\Type_{\hat{0}}\commah\hat{B}\in\Type_{\hat{0}}\vdash\,\boldsymbol{\cdot},\,\,\,T:\U,\,\,\,leaf:(\hat{x}\in \hat{A})\ra\underline{T},\,\,\,node:((\hat{x}\in \hat{B})\ra T)\ra\underline{T}
+\hat{A}\in\Type_{\hat{0}}\vdash\,\boldsymbol{\cdot},\,\,\,T:\U,\,\,\,leaf:\underline{T},\,\,\,node:((\hat{x}\in \hat{A})\ra T)\ra\underline{T}
 \]
-Here, $leaf$ has a function type (6) and $node$ has a function type (3) with a
-function type (7) in the domain. More generally, we can define $W$-types
-\cite{abbot05containers} as follows. $\hat{S}$ describes the ``shapes'' of the
-constructors and $\hat{P}$ the ``positions'' where recursive arguments can
-appear.
+Here, $node$ has a function type (3) with a function type (7) in the
+domain. More generally, we can define $W$-types
+\cite{abbot05containers} as follows. $\hat{S}$ describes the
+``shapes'' of the constructors and $\hat{P}$ the ``positions'' where
+recursive arguments can appear.
 \[
 \hat{S}\in\Type_{\hat{0}}\commah\hat{P}:\hat{S}\rah\Type_{\hat{0}}\vdash\,\boldsymbol{\cdot},\,\,\,W:\U,\,\,\,sup: (\hat{s} \in \hat{S})\ra((\hat{p} \in \hat{P}\,\hat{s})\ra W)\ra \underline{W}
 \]
 For a more complex infinitary example, see the definition of Cauchy
 reals in \cite[Definition 11.3.2]{HoTTbook}. It can be also found as
 an example file in our Haskell implementation.
+
+Note that we do not include a $\lambda$ for infinitary function types,
+although we could possibly use it when describing paths between such
+functions. The reason is that $\lambda$ can be always represented in
+signatures by introducing additional function parameters which are
+constrained by pointwise equalities. For example, consider adding the
+following path constructor to the previously described
+$\hat{A}$-branching trees:
+\[
+eq : \underline{node\,(\lambda\,\hat{x}.\,leaf) =_T leaf}
+\]
+This can be rewritten without $\lambda$ as follows:
+\[
+eq : (f : \hat{A}\ra T)\ra ((\hat{x : A})\ra f \hat{x} =_T leaf)\ra\underline{node\,f =_T leaf}
+\]
+The benefit of supporting $\lambda$ would be less encoding noise in signatures. However,
+we observe that such usage of $\lambda$ is rather rare in HITs in practice, and hence omit
+$\lambda$ for the sake of simplicity.
 
 The invalid examples $\mathsf{Ival}$ and $\mathsf{Neg}$ from Section
 \ref{sec:intro} cannot be encoded by the theory of signatures. For $\mathsf{Ival}$,
