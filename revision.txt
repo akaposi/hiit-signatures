@@ -7,9 +7,6 @@ First reviewer:
   - consider a listing environment for 2.2 (external TT) to improve
     readability
 
-  - adding another column to ADMS translations, which contains
-    (N) numbers which refer to numbered section in Figure 1-2.
-
 --------------------------------------------------------------------------------
 
 Response to the first reviewer:
@@ -24,9 +21,9 @@ Response to the first reviewer:
 
 - Lambdas in signatures:
 
-  Lambdas in signatures can be always eliminated by introducing extra
-  function parameters which are constrained by pointwise equalities.
-  In the case of the mentioned example,
+  Such lambdas can be always eliminated by introducing extra function
+  parameters which are constrained by pointwise equalities.  In the
+  case of the mentioned example,
 
     z : H
     n : (A → H) → H
@@ -42,7 +39,6 @@ Response to the first reviewer:
     Γ;Δ, f : El ((x : a) → b), p : (x : a) → f x = t ⊢ f : El ((x : a) → b)
 
   We include this explanation in the revision.
-  (TODO: add this to paper)
 
 - Page 7, 8 item (5), about type equalities and UA
 
@@ -70,19 +66,6 @@ Response to the first reviewer:
   (which is in our view a primary motivation for decidability), it
   would not be sufficient, because we need to eliminate from decided
   equalities to proof-relevant intrinsic terms.
-
-- Page 17 error
-  We fixed it
-
-
-
-
-
-
-
-
-
-
 
 
 --------------------------------------------------------------------------------
