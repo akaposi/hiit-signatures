@@ -17,13 +17,15 @@ Response to the first reviewer:
   mainly in order to sync with the existing Agda formalization.
 
 - Page 1: initiality vs finite generation
-  TODO
+  We revised the wording
 
 - Lambdas in signatures:
 
-  Such lambdas can be always eliminated by introducing extra function
-  parameters which are constrained by pointwise equalities.  In the
-  case of the mentioned example,
+  The only function space where it makes sense to have lambdas is the
+  (7) infinitary function space, since we can only mention these in
+  path types. But such lambdas can be always eliminated by introducing
+  extra function parameters which are constrained by pointwise
+  equalities. In the case of the mentioned example,
 
     z : H
     n : (A → H) → H
@@ -43,7 +45,6 @@ Response to the first reviewer:
 - Page 7, 8 item (5), about type equalities and UA
 
   We include this in the revision.
-  (TODO: look at what I added to the paper, maybe we can say more)
 
 - Page 10, about initial NatAlg
 
@@ -58,7 +59,14 @@ Response to the first reviewer:
   former implies a solution of the latter.
 
 - Page 12, about initial CwF
-  TODO
+
+  We removed the problematic "initial" occurrence. To say a bit more
+  here, if we set-truncate CwFs then there is a strict category of
+  CwFs, and if we don't truncate it then we conjecture that there is a
+  wild category of wild CwF-s, but in any case we are referring to an
+  1-category for the purpose of induction and recursion. We think that
+  the subtleties involving these categories is not very relevant to
+  the discussion in that section, so we avoid it in the revision.
 
 - Page 13, "would merely decidable equality also be sufficient?"
 
