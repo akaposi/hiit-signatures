@@ -267,8 +267,8 @@ code.
 
 Many dependent type theories support some form of inductive types. An
 inductive type is given by its constructors, along with an elimination
-principle which expresses that all inhabitants are constructed using
-finitely many applications of the constructors.
+principle which expresses that it is enough to consider the
+constructors when defining a function out of the inductive type.
 
 For example, the inductive type of natural numbers $\Nat$ is given by
 the constructors $\zero:\Nat$ and $\suc:\Nat \ra \Nat$, and has the
@@ -459,7 +459,7 @@ finitary quotient inductive-inductive signatures (QIITs), although GATs also
 support equations between sorts (type constructors), which so far have not been
 considered in QIIT and HIT literature.
 
-The article of Altenkirch et al. \cite{gabe} gives specification and semantics
+The article of Altenkirch et al.\ \cite{gabe} gives specification and semantics
 of QIITs in a set-truncated setting. Signatures are given as lists of functors
 which can be interpreted as complete categories of algebras, and completeness is
 used to talk about notions of induction and recursion. However, no strict
@@ -473,7 +473,7 @@ current work, the restricted set-truncated setting enables building
 initial algebras and detailed categorical semantics.
 
 The logical predicate syntactic translation was introduced by Bernardy et
-al. \cite{bernardy2010parametricity}. The idea that a context can be seen as a
+al.\ \cite{bernardy2010parametricity}. The idea that a context can be seen as a
 signatures and the logical predicate translation can be used to derive the types
 of induction motives and methods was described in \cite[Section
   5.3]{ttintt}. Logical relations are used to derive the computation rules in
@@ -967,11 +967,12 @@ generalize their displayed categories.
 &  \hspace{3em} (N^S : (n : N) \ra N^D\,n)\times (z^S : N^S\,z = z^D)\times ((n : N)\ra N^S\,(s\,n) = s^D\,n\,(N^S\,n))
 \end{alignat*}
 
-\noindent Now, we can reformulate induction for $\Nat$. First, we assume that
-there exists a distinguished $\Nat$-algebra, named $\mathsf{InitialAlg}$. The
-induction principle has the following type:
+\noindent Now, we can reformulate induction for $\Nat$. First, we
+assume that there exists a distinguished $\Nat$-algebra, named
+$\Nat^*$. The induction principle for this algebra has the following
+type:
 \[
- \mathsf{Induction} : (M : \mathsf{\DisplayedAlg}\,\,\mathsf{InitialAlg}) \ra \Section\, M
+ \mathsf{Induction} : (M : \mathsf{\DisplayedAlg}\,\,\Nat^*) \ra \Section\, M
 \]
 \noindent Unfolding the definitions, it is apparent that this is the same notion
 of $\Nat$-induction as we gave before. The initial algebra consists of type and value
@@ -979,14 +980,14 @@ constructors, the induction motives and methods are bundled into a displayed
 algebra, and as result we get a section, containing an eliminator function together
 with its $\beta$-rules. Additionally, we can define recursion using homomorphisms:
 \[
-\mathsf{Recursion} : (\alpha : \Alg) \ra \Morphism\,\mathsf{InitialAlg}\,\alpha
+\mathsf{Recursion} : (\alpha : \Alg) \ra \Morphism\,\Nat^* \,\alpha
 \]
 This corresponds to \emph{weak initiality} in the sense of category theory: for
 each algebra, there is a morphism from the weakly initial algebra to it. Strong initiality
 in the setting of higher inductive types is called \emph{homotopy initiality} \cite{sojakova},
 and it is defined as follows for $\Nat$:
 \begin{alignat*}{5}
-\mathsf{Initiality} : (\alpha : \Alg) \ra \mathsf{isContr}\,(\Morphism\,\mathsf{InitialAlg}\,\alpha)
+\mathsf{Initiality} : (\alpha : \Alg) \ra \mathsf{isContr}\,(\Morphism\,\Nat^*\,\alpha)
 \end{alignat*}
 
 \noindent where $\mathsf{isContr}\,A \equiv (a : A)\times((a' : A)\ra a = a')$. Hence, there is a unique morphism from the initial algebra, but in the setting of homotopy type theory, unique inhabitation can be viewed instead as contractibility.
@@ -1050,9 +1051,10 @@ relations. Then, we present syntactic translations as a partial solution to the
 coherence problem.
 
 \subsection{Interpreting Intrinsic Syntax}
-Following Altenkirch and Kaposi \cite{ttintt}, one might define the syntax of a
-type theory as an initial category with families (CwF) \cite{dybjer1995internal}
-extended with additional type formers. The CwF part provides a calculus and
+Following Altenkirch and Kaposi \cite{ttintt}, one might define the
+syntax of a type theory as a category with families (CwF)
+\cite{dybjer1995internal} extended with additional type formers, which
+supports an induction principle. The CwF part provides a calculus and
 equational theory for explicit substitutions, upon which one can build
 additional type structure. We present an excerpt below:
 
@@ -1642,16 +1644,17 @@ algebra sections is computed for the two-dimensional sphere. In Appendix
 \section{Possible Extensions to Categorical Semantics}
 \label{sec:categorical}
 
-So far, we were able to compute algebras, displayed algebras, morphisms and
-sections, and this allows us to state recursion and induction principles.
-Reiterating Section \ref{sec:general}, for a signature
-$\hat{\Gamma\vdash}\,\Delta$ and assuming $\hat{\Gamma\vdash \mathsf{InitialAlg}
-  : \blc{\Delta^\A}}$, we have the following types for induction and recursion:
+So far, we were able to compute algebras, displayed algebras,
+morphisms and sections, and this allows us to state recursion and
+induction principles.  Reiterating Section \ref{sec:general}, for a
+signature $\hat{\Gamma\vdash}\,\Delta$ and assuming $\hat{\Gamma\vdash
+  \Delta^* : \blc{\Delta^\A}}$ as a candidate algebra for the HIIT, we
+have the following types for induction and recursion:
 \begin{alignat*}{5}
 & \hat{\Gamma\vdash \mathsf{Induction} :
-    (\gamma^D : \blc{\Delta^\D}\,\mathsf{InitialAlg})\ra \blc{\Delta^\S}\,\mathsf{InitialAlg}\,\gamma^D}\\
+    (\gamma^D : \blc{\Delta^\D}\,\Delta^*)\ra \blc{\Delta^\S}\,\Delta^*\,\gamma^D}\\
 & \hat{\Gamma\vdash \mathsf{Recursion} :
-    (\gamma : \blc{\Delta^\A})\ra \blc{\Delta^\M}\,\mathsf{InitialAlg}\,\gamma}
+    (\gamma : \blc{\Delta^\A})\ra \blc{\Delta^\M}\,\Delta^*\,\gamma}
 \end{alignat*}
 
 However, this is not the full picture. We would also like to have a
