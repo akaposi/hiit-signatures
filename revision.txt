@@ -1,13 +1,4 @@
 
-Notes
---------------------------------------------------------------------------------
-
-First reviewer:
-  - "add reference to H-S grpd model" -- why?
-  - consider a listing environment for 2.2 (external TT) to improve
-    readability
-
---------------------------------------------------------------------------------
 
 Response to the first reviewer:
 
