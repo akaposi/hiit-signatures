@@ -52,7 +52,7 @@ Response to the first reviewer:
 
   We removed the problematic "initial" occurrence. To say a bit more
   here, if we set-truncate CwFs then there is a strict category of
-  CwFs, and if we don't truncate it then we conjecture that there is a
+  CwFs, and if we don't truncate then we conjecture that there is a
   wild category of wild CwF-s, but in any case we are referring to a
   1-category for the purpose of induction and recursion. We think that
   the subtleties involving these categories are not very relevant to
@@ -61,7 +61,7 @@ Response to the first reviewer:
 - Page 13, "would merely decidable equality also be sufficient?"
 
   For the purpose of elaborating raw syntax into intrinsic syntax
-  (which is in our view a primary motivation for decidability), it
+  (which is in our view an important motivation for decidability), it
   would not be sufficient, because we need to eliminate from decided
   equalities to proof-relevant intrinsic terms.
 
@@ -91,20 +91,18 @@ Response to the second reviewer:
 - Addressing comments:
   - page 7, Figure 2, about external parameters:
 
-    We do not construct HIIT definitions, only signatures. HIIT
-    signatures can only depend on an HIIT specified by a previous
-    signature if we assume the existence of that HIIT in the external
-    type theory (i.e. as part of the context Γ). More specifically,
-    the codomain types of external (6) and infinitary (7) functions
-    can depend on the additional (x : A) external binder. For example,
-    if we have Γ = (Nat: Type₀, zero: Nat, suc: Nat → Nat), and we
-    write the signature for length-indexed A-vectors, then we have
-    "cons : (n : Nat) → A → Vec n → Vec (suc n)", where the "suc n"
-    expression refers back to the external "n : Nat" binder. The only
-    way to extend the external Γ is by using (6) and (7) functions,
-    otherwise, we can only refer to Γ entries which are assumed on the
-    "top level", such as the A : Type₀ in the example for lists on
-    page 8 in Section 2.1.
+    We do not construct HIIT definitions, only signatures. HIIT signatures can
+    only depend on an HIIT specified by a previous signature if we assume the
+    existence of that HIIT in the external type theory (i.e. as part of the
+    context Γ). Also, the codomain types of external (6) and infinitary (7)
+    functions can depend on the additional (x : A) external binder. For example,
+    if we have Γ = (Nat: Type₀, zero: Nat, suc: Nat → Nat), and we write the
+    signature for length-indexed A-vectors, then we have "cons : (n : Nat) → A →
+    Vec n → Vec (suc n)", where the "suc n" expression refers back to the
+    external "n : Nat" binder. The only way to extend the external Γ is by using
+    (6) and (7) functions, otherwise, we can only refer to Γ entries which are
+    assumed on the "top level", such as the A : Type₀ in the example for lists
+    on page 8 in Section 2.1.
 
   - page 12: for the intrinsic syntax, do you also assume an induction
     principle for it, e.g. that it is initial?
