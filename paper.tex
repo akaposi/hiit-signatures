@@ -803,8 +803,9 @@ development.
 Note that we can assume arbitrary structures in the external $\hat{\Gamma}$
 context, which in particular allows us to specify HIITs depending on other
 (external) HIITs. We can do this by first specifying a HIIT, then using the
-methods in this paper to compute notions of algebras and induction, then assume
-the HIIT in the external context of another HIIT signature.
+translations in Sections \ref{sec:algebras}-\ref{sec:sections} to compute
+notions of algebras and induction, then assume the HIIT in the external context
+of another HIIT signature.
 
 The (6) function space preserves strict positivity, since in the external theory
 there is no way to recursively refer to the inductive type \emph{being
@@ -837,7 +838,7 @@ domain. More generally, we can define $W$-types
 ``shapes'' of the constructors and $\hat{P}$ the ``positions'' where
 recursive arguments can appear.
 \[
-\hat{S}\in\Type_{\hat{0}}\commah\hat{P}:\hat{S}\rah\Type_{\hat{0}}\vdash\,\boldsymbol{\cdot},\,\,\,W:\U,\,\,\,sup: (\hat{s} \in \hat{S})\ra((\hat{p} \in \hat{P}\,\hat{s})\ra W)\ra \underline{W}
+\hat{S : \Type_0, P : S \ra \Type_0} \vdash\,\boldsymbol{\cdot},\,\,\,W:\U,\,\,\,sup: (\hat{s} \in \hat{S})\ra((\hat{p} \in \hat{P}\,\hat{s})\ra W)\ra \underline{W}
 \]
 For a more complex infinitary example, see the definition of Cauchy
 reals in \cite[Definition 11.3.2]{HoTTbook}. It can be also found as
@@ -1892,7 +1893,7 @@ The specification of the $\blank^\M$ interpretation is as following.
       {\hat{\Gamma}\vdash\Delta}
 \hspace{1em}
 \infer{
-  \hat{\Gamma}\vdashh A^\D \in \hat{(}\hat{\gamma_0\,\gamma_1}\in\Delta^\A\hat{)}\rah \Delta^\M\,\hat{\gamma_0\,\gamma_1}\rah  A^\A\,\hat{\gamma_0}\rah A^\A\,\hat{\gamma_1}\rah \Type_{\hat{i}}}
+  \hat{\Gamma}\vdashh A^\M \in \hat{(}\hat{\gamma_0\,\gamma_1}\in\Delta^\A\hat{)}\rah \Delta^\M\,\hat{\gamma_0\,\gamma_1}\rah  A^\A\,\hat{\gamma_0}\rah A^\A\,\hat{\gamma_1}\rah \Type_{\hat{i}}}
       {\hat{\Gamma}\semicol\Delta\vdash A}
 \]
 

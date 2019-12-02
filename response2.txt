@@ -16,7 +16,7 @@ we put inductive T-s into an external "List" type. There is a similar nested HIT
 example, the "hubs and spokes" definitions in HoTT book section 6.7, where we use
 use internal inductive expressions in the recursor for the external circle type.
 
-We'll include these above notes in the paper.
+We'll include these above notes in section 2.1
 
 - Is there an expected computation rule if the previous computation rules (for
   point constructors only, if you prefer to stay close to 'book' HoTT) were
