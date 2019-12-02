@@ -242,7 +242,7 @@ EUTypes CA15123.}	%optional
 Higher inductive-inductive types (HIITs) generalize inductive types of
 dependent type theories in two ways. On the one hand they allow the
 simultaneous definition of multiple sorts that can be indexed over
-each other. On the other, hand they support equality constructors,
+each other. On the other hand they support equality constructors,
 thus generalizing higher inductive types of homotopy type
 theory. Examples that make use of both features are the Cauchy real
 numbers and the well-typed syntax of type theory where conversion
@@ -778,10 +778,10 @@ specification of an inductive type which depends on an external $\hat{\Gamma}$
 signature. For example, in the case of lists for arbitrary external element
 types, $\hat{\Gamma}$ will be $\hat{A}\in\Type_{\hat{0}}$.
 
-(6) We have a function space where the domain is a type in the external
-theory. We distinguish it from (3) by using red brick color in the domain
-specification. We specify lists and integers as follows, with integers now
-given as quotients of pairs of natural numbers:
+(6) is a function space where the domain is a type in the external theory. We
+distinguish it from (3) by using red brick color in the domain specification. We
+specify lists and integers as follows, with integers now given as quotients of
+pairs of natural numbers:
 \begin{alignat*}{4}
   & \hat{A}\in\Type_{\hat{0}} && \vdash\,\boldsymbol{\cdot},\,\, && List:\U,\,\,\,nil:\underline{List},\,\,\,cons:(\hat{x}\in \hat{A})\ra List\ra\underline{List} \\
   & \hat{\Gamma} && \vdash\,\boldsymbol{\cdot},\,\,&& Int:\U,\,\,\,pair:(\hat{x}\,\hat{y}\in\hat{Nat})\ra\underline{Int},\,\,\, \\
@@ -798,11 +798,29 @@ truncation for a type $\hat{A}$ is specified as follows.
 \]
 The smallness of $\hat{A}$ is required in (6). It is possible to generalize
 signatures to arbitrary universe levels, but it is not essential to the current
-development. Note that the (6) function space preserves strict positivity, since
-in the external theory there is no way to recursively refer to the inductive type
-\emph{being defined}. The situation is analogous to the case of $W$-types
+development.
+
+Note that we can assume arbitrary structures in the external $\hat{\Gamma}$
+context, which in particular allows us to specify HIITs depending on other
+(external) HIITs. We can do this by first specifying a HIIT, then using the
+methods in this paper to compute notions of algebras and induction, then assume
+the HIIT in the external context of another HIIT signature.
+
+The (6) function space preserves strict positivity, since in the external theory
+there is no way to recursively refer to the inductive type \emph{being
+  defined}. The situation is analogous to the case of $W$-types
 \cite{abbot05containers}, where shapes and positions can contain arbitrary types
-but they cannot recursively refer to the $W$-type being defined.
+but they cannot recursively refer to the $W$-type being defined. This setup rules
+out some signatures; for example, rose trees cannot be specified as follows, because
+we cannot apply the external $\hat{List}$ to the inductive $T$:
+\[
+\hat{A : \Type_0,\,\,List : \Type_0 \ra \Type_0} \vdash
+     \boldsymbol{\cdot},\,\,T : \U,\,\,node : \hat{A} \ra \hat{List}\,T \ra \underline{T}
+\]
+Analogously nested HIT examples are the ``hubs and spokes'' definitions in
+\cite[Section 6.7]{HoTTbook}. To allow such definitions, we would have to
+analyze external constructions to check whether they preserve strict
+positivity. This is out of the scope of the current paper.
 
 (7) $\U$ is also closed under a function space where the domain is an
 external type and the codomain is a small source theory type. We
@@ -1089,16 +1107,17 @@ previously developed semantics and constructed initial algebras
 theory.
 
 \subsubsection{Set-truncation}
-Additionally, we need to set-truncate the syntax by adding the following constructors:
+Additionally, we prefer to set-truncate the syntax by adding the following
+constructors, for reasons shortly explained:
 \begin{alignat*}{5}
   & \mathsf{setTy}  && : (A\,B : \Ty\,\Gamma)(p\,q : A = B)\ra p = q \\
   & \mathsf{setTm}  && : (t\,u : \Tm\,\Gamma\,A)(p\,q : t = u)\ra p = q \\
   & \mathsf{setSub} && : (\sigma\,\delta : \Sub\,\Gamma\,\Delta)(p\,q : \sigma = \delta)\ra p = q
 \end{alignat*}
 
-\noindent We can omit the rule for contexts, as it is derivable from the above ones. Set
-truncation forces definitional equality of the syntax (as defined by equality
-constructors in the HIIT signature) to be proof irrelevant. If we omit
+\noindent We can omit the rule for contexts, as it is derivable from the above
+ones. Set truncation forces definitional equality of the syntax (as defined by
+equality constructors in the HIIT signature) to be proof irrelevant. If we omit
 set-truncation, then the defined HIIT becomes very different from what we expect
 the syntax to be.
 
@@ -1109,12 +1128,12 @@ interpreted as closed metatheoretic types, $\U$ is interpreted as metatheoretic
 $\Bool$, $[\id]$ is interpreted as $\refl : A = A$ for some metatheoretic $A$
 type, and $\U[]$ is interpreted as the $\Bool$ negation equivalence, thereby
 formally distinguishing $\U[]$ and $[\id]$. Hence, by Hedberg's theorem
-\cite{hedberg}, the syntax does not have decidable equality. This also implies
-that the non-truncated intrinsic syntax is not constructible from set quotients
-of extrinsic terms (since those always form sets). The non-truncated syntax just
-does not seem to be a sensible notion. This situation is similar to how
-categories in homotopy type theory need to have set-truncated morphisms
-\cite{ahrens2015univalent}.
+\cite{hedberg}, the syntax does not have decidable equality, and hence it does
+not support decidable type checking. This also implies that the non-truncated
+intrinsic syntax is not constructible from set quotients of extrinsic terms
+(since those always form sets). The non-truncated syntax just does not seem to
+be a sensible notion. This situation is similar to how categories in homotopy
+type theory need to have set-truncated morphisms \cite{ahrens2015univalent}.
 
 Unfortunately, set-truncation makes it impossible to directly interpret
 syntactic types as elements of a UIP-free metatheoretic $\mathsf{Type}_i$
@@ -1969,7 +1988,7 @@ Given a sphere-algebra and a displayed algebra over it, we get the type of secti
   & && \hspace{5.5em} \hat{=} \,\hat{surf^D}\hat{\bigg)}
 \end{alignat*}
 Note that if $\hat{b^S}$ is a definitional equality (that is, we have
-$\hat{S^{2S}\,\,b}\,\hat{\equiv}\,\hat{b^D}$), the occurrences of $\hat{b^S}$
+$\hat{S^{2S}\,\,b}\,\hat{\,\equiv\,}\,\hat{b^D}$), the occurrences of $\hat{b^S}$
 in the type of $\hat{surf^S}$ can be replaced by $\hat{\refl}$. In
 this case the type of $\hat{surf^S}$ becomes the more usual
 $\hat{\apd}\,\hat{(}\hat{\apd}\,\hat{S^{2S}}\hat{)}\,\hat{surf}\,\hat{=}\,\hat{surf^D}$.

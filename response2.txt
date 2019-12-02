@@ -1,0 +1,35 @@
+
+-- response to the reviewer
+--------------------------------------------------------------------------------
+
+- Would allowing this sequence of definitions with free use of previous ones
+  increase the expressive power?
+
+In that way we don't gain expressive power for specification. It is possible
+already to specify a HIIT, use ^A and ^S translations to compute what it means
+to support it a TT, then assume the HIIT in an external Γ context when building
+another HIIT signature.
+
+What we do not support, is using external types in a signature in a "nested"
+way, for instance defining rose trees as (T : U, node : A -> List T -> T), where
+we put inductive T-s into an external "List" type. There is a similar nested HIT
+example, the "hubs and spokes" definitions in HoTT book section 6.7, where we use
+use internal inductive expressions in the recursor for the external circle type.
+
+We'll include these above notes in the paper.
+
+- Is there an expected computation rule if the previous computation rules (for
+  point constructors only, if you prefer to stay close to 'book' HoTT) were
+  definitional?
+
+In the case of HIIT integers, nothing changes if we switch from propositional to
+strict equality for point computation, since we only have the z^s point
+computation rule, and the next p^s rule does not mention z^s.
+
+In the example for the displayed algebra section for the circle on page 21, and
+in the example for the sphere in Appendix B, we mention what the path
+computation rules would be in the presence of strict point computation rules.
+
+- "need to" set-truncate
+
+We'll revise the wording.
