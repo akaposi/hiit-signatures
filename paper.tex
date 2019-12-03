@@ -1,6 +1,6 @@
 \documentclass[dvipsnames]{lmcs} %%% last changed 2014-08-20
 
-%% build: latexmk -pdf -pvc -interaction=nonstopmode paper.tex
+%% build: latexmk -pdf -pvc paper.tex
 
 %% mandatory lists of keywords
 \keywords{homotopy type theory, higher inductive types, inductive types}
@@ -744,6 +744,17 @@ theory as given e.g.\ in \cite{ttintt} as an inductive type.  Also, see the
 examples in the Agda formalization described in Section
 \ref{sec:formalization}.
 
+The question may arise whether our $\J$ is sufficient to define all
+constructions on paths which we want to express, as we do not have
+$\Sigma$-types in signatures, and we only have a weak version of $\Pi$. First,
+as far as we know, all path constructions which occur in HITs in the literature
+are expressible using our $\J$, so it is certainly adequate in this
+sense. Second, we provide a sketch in our Agda formalization (see Section \ref{sec:formalization}) that a Frobenius
+variant of $\J$ (first considered by Garner in \cite[p.~13]{garner2009two}) is
+derivable from the $\J$ given in Figure \ref{sigrules1}, which suggests that our
+$\J$ does not lose expressiveness because of the lack of $\Sigma$ and
+$\Pi$-types.
+
 (5) There is a different equality type former, which can be used to express
 paths between type constructors. To our knowledge, this has not been considered
 in previous HIT literature, although Cartmell considered equations between sorts
@@ -1255,8 +1266,8 @@ corresponding {\color{BrickRed}brick red} construction in the target syntax. The
 only notable change is in the interpretation of contexts: a source context is
 interpreted as an iterated $\Sigma$-type.
 
-\begingroup
-\allowdisplaybreaks
+%% \begingroup
+%% \allowdisplaybreaks
 \begin{alignat*}{5}
   & (1)\hspace{1em} && \boldsymbol{\cdot}^\A && :\equiv \hat{\top} \\
   & && (\Delta,x:A)^\A && :\equiv \hat{(}\hat{\gamma}\in\Delta^\A\hat{)}\timesh A^\A\,\hat{\gamma} \\
@@ -1278,7 +1289,7 @@ interpreted as an iterated $\Sigma$-type.
   & (7) && ((\hat{x}\in \hat{A})\ra b)^\A\,\hat{\gamma} && :\equiv \hat{(}\hat{x}\in \hat{A}\hat{)}\rah  b^\A\,\hat{\gamma} \\
   & && (t\,\hat{u})^\A\,\hat{\gamma} && :\equiv \hat{(}t^\A\,\hat{\gamma}\hat{)}\,\hat{u}
 \end{alignat*}
-\endgroup
+%% \endgroup
 
 For example, $\blank^\A$ acts as follows on signature for circles:
 \begin{alignat*}{5}
@@ -1789,15 +1800,17 @@ from the approach of the current paper, or require significant further research.
 \section{Formalization and Implementation}
 \label{sec:formalization}
 
-There are three additional development artifacts to the current work: a Haskell
-implementation, a shallow Agda formalization and a deep Agda formalization. All
-three are available from \url{https://github.com/akaposi/hiit-signatures}.
+There are additional development artifacts to the current work: a Haskell
+implementation, two Agda formalizations of the syntactic translations (a shallow
+and a deeper version) and an Agda formalization for deriving a Frobenius $\J$
+rule from $\J$. All are available from
+\url{https://github.com/akaposi/hiit-signatures}.
 
 The Haskell implementation takes as input a file which contains a of a
 $\hat{\Gamma}\vdash\Delta$ signature. Then, it checks the input with respect to
-the rules in Figures \ref{sigrules1} and \ref{sigrules2}, and outputs an Agda-checkable file which
-contains algebras, homomorphisms, displayed algebras and sections for the
-input signature.
+the rules in Figures \ref{sigrules1} and \ref{sigrules2}, and outputs an
+Agda-checkable file which contains algebras, homomorphisms, displayed algebras
+and sections for the input signature.
 
 It comes with examples, including the ones in this paper, the
 inductive-inductive dense completion \cite[Appendix A.1.3]{forsberg-phd} and

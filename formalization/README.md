@@ -1,11 +1,12 @@
 ## Formalizations for "Signatures and Induction Principles for Higher Inductive-Inductive Types"
 
-Usage and installation: this folder has been checked with Agda 2.5.4.1. An Agda standard library
-is also required, see https://agda.readthedocs.io/en/v2.5.4.2/tools/package-system.html for how
-to setup a library. We used 0.16.1 version of the stdlib, which is available from here:
+Usage and installation: this folder has been checked with Agda 2.6.0.1 An Agda standard library
+is also required, see https://agda.readthedocs.io/en/v2.6.0.1/tools/package-system.html for how
+to setup a library. We used 1.0 version of the stdlib, which is available from here:
 https://github.com/agda/agda-stdlib/releases
 
-There are two formalizations, a shallow and a deeper one.
+There are two formalizations of the syntactic translations, a shallow and a
+deeper one.
 
 - The **shallow** one can be found in [Shallow.agda](Shallow.agda). This formalisation embeds both source and target syntax in Agda shallowly.
 
@@ -31,3 +32,8 @@ There are two formalizations, a shallow and a deeper one.
   it's not feasible to get around this with more rewrite rules. Such computation
   would require something an type theory with computing transports, like
   cubical or observational type theory.
+
+Additionally, we have [FrobeniusJDeriv.agda](FrobeniusJDeriv.agda) for a note of
+deriving a Frobenius version of J from Paulin-Mohring J in the absence of Σ and
+Π types. This suggests that our J is not weaker than a J in MLTT with Σ and Π
+types.
