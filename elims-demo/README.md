@@ -1,7 +1,7 @@
 # elims-demo
 
-This package contains a Haskell implementation for the paper "Signatures
-and Induction Principles for Higher Inductive-Inductive Types", by
+This package contains a Haskell implementation for the paper [Signatures
+and Induction Principles for Higher Inductive-Inductive Types](https://lmcs.episciences.org/6100/pdf), by
 Ambrus Kaposi and András Kovács. It takes as input source files
 containing higher inductive-inductive (HIIT) type definitions.
 
