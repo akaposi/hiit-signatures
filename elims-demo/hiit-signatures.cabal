@@ -1,0 +1,40 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           hiit-signatures
+version:        0.1.1.0
+description:    Generating induction principles for higher inductive-inductive types
+homepage:       https://github.com/akaposi/hiit-signatures#readme
+bug-reports:    https://github.com/akaposi/hiit-signatures/issues
+author:         András Kovács
+maintainer:     puttamalac@gmail.com
+copyright:      2018 András Kovács
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/akaposi/hiit-signatures
+
+executable hiit-signatures
+  main-is: Main.hs
+  other-modules:
+      AgdaToHsUtil
+      Examples
+      Impl
+      Presyntax
+      Paths_hiit_signatures
+  hs-source-dirs:
+      src
+  ghc-options: -rtsopts -O1
+  build-depends:
+      base >=4.7 && <5
+    , megaparsec
+    , mtl
+    , split
+    , unordered-containers
+  default-language: Haskell2010

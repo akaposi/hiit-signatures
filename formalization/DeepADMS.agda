@@ -1,4 +1,4 @@
--- {-# OPTIONS --without-K #-}
+{-# OPTIONS --without-K --postfix-projections #-}
 
 open import Lib
 
@@ -269,6 +269,14 @@ app {Γᴬ , Γᴰ , Γᴹ , Γˢ}{aᴬ , aᴰ , aᴹ , aˢ}{Bᴬ , Bᴰ , Bᴹ 
        (tˢ γ γᴰ γˢ α)
        αˢ})
 
+lam : ∀{Γ}{a : Tm Γ U}{B : Ty (Γ ▶ El a)} → Tm (Γ ▶ El a) B → Tm Γ (Π a B)
+lam {Γᴬ , Γᴰ , Γᴹ , Γˢ}{aᴬ , aᴰ , aᴹ , aˢ}{Bᴬ , Bᴰ , Bᴹ , Bˢ}(tᴬ , tᴰ , tᴹ , tˢ) =
+  (λ γ α → tᴬ (γ , lift α)) ,
+  (λ γ γᴰ α αᴰ → tᴰ (γ , lift α) (γᴰ , lift αᴰ)) ,
+  (λ γ₀ γ₁ γᴹ α → tᴹ (γ₀ , lift α) (γ₁ , lift (lower (aᴹ γ₀ γ₁ γᴹ) α)) (γᴹ , lift refl)) ,
+  (λ γ γᴰ γˢ α → tˢ (γ , lift α) (γᴰ , lift (aˢ γ γᴰ γˢ α)) (γˢ , refl))
+
+
 app[] : {Γ Δ : Con} {σ : Sub Γ Δ} {a : Tm Δ (U {Δ})}
         {B : Ty (Δ ▶ El {Δ} a)} {t : Tm Δ (Π {Δ} a B)} → _≡_ {j}
         {Tm (Γ ▶ El {Γ} (tr {i} {j} {Ty Γ} (Tm Γ) {_[_]T {Γ} {Δ}
@@ -331,6 +339,15 @@ appNI t α =
   (λ γ₀ γ₁ γᴹ → t .₂ .₂ .₁ _ _ γᴹ α) ,
   (λ γ γᴰ γˢ → t. ₂ .₂ .₂ _ _ γˢ α)
 
+lamNI : ∀ {Γ}{A}{B : A → Ty Γ} → (∀ α → Tm Γ (B α)) → Tm Γ (ΠNI A B)
+lamNI {Γᴬ , Γᴰ , Γᴹ , Γˢ}{A}{B} t =
+  (λ γ α → t α .₁ γ) ,
+  (λ γ γᴰ α → t α .₂ .₁ γ γᴰ) ,
+  (λ γ₀ γ₁ γᴹ α → t α .₂ .₂ .₁ γ₀ γ₁ γᴹ) ,
+  (λ γ γᴰ γˢ α → t α .₂ .₂ .₂ γ γᴰ γˢ)
+
+-- βη obvious
+
 appNI[] :
   {Γ Δ : Con} {σ : Sub Γ Δ} {A : Set} {B : A → Ty Δ}
   (t : Tm Δ (ΠNI {Δ} A B)) (α : A) →
@@ -372,6 +389,15 @@ appₙᵢ (tᴬ , tᴰ , tᴹ , tˢ) α =
   (λ γ₀ γ₁ γᴹ → lift (ap (λ f → f α) (tᴹ _ _ γᴹ .lower))) ,
   (λ γ γᴰ γˢ → ap (λ f → f α) (tˢ γ γᴰ γˢ))
 
+lamₙᵢ : ∀ {Γ}{A}{b : A → Tm Γ U} → (∀ α → Tm Γ (El (b α))) → Tm Γ (El (Πₙᵢ A b))
+lamₙᵢ t =
+  (λ γ → lift λ α → t α .₁ γ .lower) ,
+  (λ γ γᴰ → lift λ α → t α .₂ .₁ γ γᴰ .lower) ,
+  (λ γ₀ γ₁ γᴹ → lift (ext λ α → t α .₂ .₂ .₁ γ₀ γ₁ γᴹ .lower)) ,
+  (λ γ γᴰ γˢ → ext λ α → t α .₂ .₂ .₂ _ _ γˢ)
+-- weak + needs strong funext!!
+-- with strict sigs no need for funext at all
+
 appₙᵢ[] :
   {Γ Δ : Con} {σ : Sub Γ Δ} {A : Set} {b : A → Tm Δ (U {Δ})} (t : Tm Δ
   (El {Δ} (Πₙᵢ {Δ} A b))) (α : A) → _≡_ {_} {Tm Γ (El {Γ} (tr {_}
@@ -399,6 +425,171 @@ appₙᵢ[] :
   {b}))) (_[_]t {Γ} {Δ} {El {Δ} (Πₙᵢ {Δ} A b)} t σ)) α)
 appₙᵢ[]{Γ}{Δ} {σ} {A} {b} t α = refl
 
+-- ⊤ : Tm Γ U
+--------------------------------------------------------------------------------
+
+Top : ∀ {Γ} → Tm Γ U
+Top = (λ _ → ⊤) , (λ _ _ _ → Lift ⊤) , (λ _ _ γᴹ → lift _) , _
+
+Tt : ∀ {Γ} → Tm Γ (El Top)
+Tt = (λ _ → _) , _ , (λ _ _ _ → lift refl ) , λ _  _ _ → refl
+
+-- Σ
+--------------------------------------------------------------------------------
+
+Sg : ∀ {Γ} → (a : Tm Γ U) → Tm (Γ ▶ El a) U → Tm Γ U
+Sg (aᴬ , aᴰ , aᴹ , aˢ) (bᴬ , bᴰ , bᴹ , bˢ) =
+  (λ γ → Σ (aᴬ γ) λ α → bᴬ (γ , lift α)) ,
+  (λ γ γᴰ → λ {(α , β) → Σ (aᴰ γ γᴰ α) λ αᴰ → bᴰ (γ , lift α) (γᴰ , lift αᴰ) β}),
+  (λ γ₀ γ₁ γᴹ → lift λ {(α , β) → (aᴹ _ _ γᴹ .lower α) , bᴹ (γ₀ , lift α) (γ₁ , lift (aᴹ _ _ γᴹ .lower α)) (γᴹ , lift refl) .lower β}) ,
+  (λ γ γᴰ γˢ → λ {(α , β) → aˢ _ _ γˢ α , bˢ (γ , lift α) (γᴰ , lift (aˢ _ _ γˢ α)) (γˢ , refl) β})
+
+pair : ∀ {Γ a}{b : Tm (Γ ▶ El a) U}(t : Tm Γ (El a))
+       → Tm Γ (El (_[_]t {A = U} b (_,s_ {A = El a} id t)))
+       → Tm Γ (El (Sg {Γ} a b))
+pair {Γᴬ , Γᴰ , Γᴹ , Γˢ} {aᴬ , aᴰ , aᴹ , aˢ} {bᴬ , bᴰ , bᴹ , bˢ} (tᴬ , tᴰ , tᴹ , tˢ) (uᴬ , uᴰ , uᴹ , uˢ) =
+  (λ γ → lift ((lower (tᴬ γ)) , uᴬ γ .lower )) ,
+  (λ γ γᴰ → lift ((lower (tᴰ γ γᴰ)) , lower (uᴰ γ γᴰ))) ,
+
+  (λ γ₀ γ₁ γᴹ → lift (
+     J (λ uᴬγ₁lower _ → aᴹ γ₀ γ₁ γᴹ .lower (lower (tᴬ γ₀)) ,
+          bᴹ (γ₀ , lift (lower (tᴬ γ₀)))
+          (γ₁ , lift (aᴹ γ₀ γ₁ γᴹ .lower (lower (tᴬ γ₀)))) (γᴹ , lift refl)
+          .lower (uᴬ γ₀ .lower)
+          ≡ lower (tᴬ γ₁) , uᴬγ₁lower)
+       (J (λ tᴬγ₁lower tᴹγᴹlower → aᴹ γ₀ γ₁ γᴹ .lower (lower (tᴬ γ₀)) ,
+             bᴹ (γ₀ , lift (lower (tᴬ γ₀)))
+             (γ₁ , lift (aᴹ γ₀ γ₁ γᴹ .lower (lower (tᴬ γ₀)))) (γᴹ , lift refl)
+             .lower (uᴬ γ₀ .lower)
+             ≡
+             tᴬγ₁lower ,
+             lower (bᴹ (γ₀ , tᴬ γ₀) (γ₁ , lift tᴬγ₁lower) (γᴹ , lift tᴹγᴹlower))
+             (uᴬ γ₀ .lower))
+          refl
+          (tᴹ _ _ γᴹ .lower))
+       (uᴹ _ _ γᴹ .lower))) ,
+
+  λ γ γᴰ γˢ →
+    J (λ uᴰγᴰlower _ →
+         aˢ γ γᴰ γˢ (lower (tᴬ γ)) , bˢ (γ , lift (lower (tᴬ γ))) (γᴰ , lift (aˢ
+         γ γᴰ γˢ (lower (tᴬ γ)))) (γˢ , refl) (uᴬ γ .lower) ≡ lower (tᴰ γ γᴰ) ,
+         uᴰγᴰlower)
+      (J (λ tᴰγᴰlower tˢγˢ →
+            aˢ γ γᴰ γˢ (lower (tᴬ γ)) ,
+            bˢ (γ , lift (lower (tᴬ γ)))
+            (γᴰ , lift (aˢ γ γᴰ γˢ (lower (tᴬ γ)))) (γˢ , refl) (uᴬ γ .lower)
+            ≡
+            tᴰγᴰlower ,
+            bˢ (γ , tᴬ γ) (γᴰ , lift tᴰγᴰlower) (γˢ , tˢγˢ) (uᴬ γ .lower))
+         refl
+         (tˢ _ _ γˢ))
+      (uˢ _ _ γˢ)
+
+
+Proj1 : ∀ {Γ a}{b : Tm (Γ ▶ El a) U} → Tm Γ (El (Sg a b)) → Tm Γ (El a)
+Proj1 {Γᴬ , Γᴰ , Γᴹ , Γˢ} {aᴬ , aᴰ , aᴹ , aˢ} {bᴬ , bᴰ , bᴹ , bˢ} (tᴬ , tᴰ , tᴹ , tˢ) =
+  (λ γ → lift (tᴬ γ .lower .₁)) ,
+  (λ γ γᴰ → lift (tᴰ _ γᴰ .lower .₁)) ,
+  (λ γ₀ γ₁ γᴹ → lift (ap ₁ (tᴹ _ _ γᴹ .lower))) ,
+  λ γ γᴰ γˢ → ap ₁ (tˢ _ _ γˢ)
+
+Proj2 : ∀ {Γ a}{b : Tm (Γ ▶ El a) U}(t : Tm Γ (El (Sg a b)))
+        → Tm Γ (El (_[_]t {A = U} b (_,s_ {A = El a} id (Proj1 {Γ}{a}{b} t))))
+Proj2 {Γᴬ , Γᴰ , Γᴹ , Γˢ} {aᴬ , aᴰ , aᴹ , aˢ} {bᴬ , bᴰ , bᴹ , bˢ} (tᴬ , tᴰ , tᴹ , tˢ) =
+  (λ γ → lift (tᴬ γ .lower .₂)) ,
+  (λ γ γᴰ → lift (tᴰ _ γᴰ .lower .₂)) ,
+  (λ γ₀ γ₁ γᴹ → lift (
+    J (λ tᴬγ₁lower e → lower
+        (bᴹ (γ₀ , lift (tᴬ γ₀ .lower .₁)) (γ₁ , lift (tᴬγ₁lower .₁))
+         (γᴹ , lift (ap ₁ e)))
+        (tᴬ γ₀ .lower .₂)
+        ≡ tᴬγ₁lower .₂)
+      refl
+      (tᴹ _ _ γᴹ .lower))),
+  λ γ γᴰ γˢ →
+     J
+      (λ tᴰγᴰlower e → bˢ (γ , lift (tᴬ γ .lower .₁))
+      (γᴰ , lift (tᴰγᴰlower .₁)) (γˢ , ap ₁ e)
+      (tᴬ γ .lower .₂)
+      ≡ tᴰγᴰlower .₂)
+    refl
+    (tˢ _ _ γˢ)
+
+
+-- Large Identity
+--------------------------------------------------------------------------------
+
+IdL : ∀ {Γ A} → Tm Γ A → Tm Γ A → Ty Γ
+IdL {Γᴬ , Γᴰ , Γᴹ , Γˢ} {Aᴬ , Aᴰ , Aᴹ , Aˢ}(tᴬ , tᴰ , tᴹ , tˢ) (uᴬ , uᴰ , uᴹ , uˢ) =
+  (λ γ → tᴬ γ ≡ uᴬ γ) ,
+  (λ γ γᴰ e → tr (Aᴰ _ γᴰ) e (tᴰ _ γᴰ) ≡ uᴰ _ γᴰ) ,
+  (λ γ₀ γ₁ γᴹ e₀ e₁ → tr2 (Aᴹ _ _ γᴹ) e₀ (tr-const e₀ ◾ e₁) (tᴹ _ _ γᴹ) ≡ uᴹ _ _ γᴹ) ,
+  (λ γ γᴰ γˢ e eᴰ → tr2 (Aˢ _ _ γˢ) e eᴰ (tˢ _ _ γˢ) ≡ uˢ _ _ γˢ)
+
+ReflL : ∀ {Γ A t} → Tm Γ (IdL {Γ} {A} t t)
+ReflL {Γᴬ , Γᴰ , Γᴹ , Γˢ} {Aᴬ , Aᴰ , Aᴹ , Aˢ}{tᴬ , tᴰ , tᴹ , tˢ} =
+  (λ _ → refl) ,
+  (λ _ _ → refl) ,
+  (λ _ _ _ → refl) ,
+  (λ _ _ _ → refl)
+
+TrL : ∀ {Γ A}{t u : Tm Γ A}(P : Ty (Γ ▶ A)) → Tm Γ (IdL {Γ}{A} t u)
+    → Tm Γ (_[_]T {Γ}{Γ ▶ A} P (_,s_ {A = A} id t))
+    → Tm Γ (_[_]T {Γ}{Γ ▶ A} P (_,s_ {A = A} id u))
+TrL {Γᴬ , Γᴰ , Γᴹ , Γˢ} {Aᴬ , Aᴰ , Aᴹ , Aˢ}{tᴬ , tᴰ , tᴹ , tˢ} {uᴬ , uᴰ , uᴹ , uˢ}
+    (Pᴬ , Pᴰ , Pᴹ , Pˢ) (pᴬ , pᴰ , pᴹ , pˢ)(ptᴬ , ptᴰ , ptᴹ , ptˢ) =
+    (λ γ → tr (λ α → Pᴬ (γ , α)) (pᴬ γ) (ptᴬ γ)) ,
+    (λ γ γᴰ →
+       J (λ uᴰγγᴰ pᴰγγᴰ → Pᴰ (γ , uᴬ γ) (γᴰ , uᴰγγᴰ) (tr (λ α → Pᴬ (γ , α)) (pᴬ γ) (ptᴬ γ)))
+         (J (λ uᴬγ pᴬγ → Pᴰ (γ , uᴬγ) (γᴰ , tr (Aᴰ γ γᴰ) (pᴬγ) (tᴰ γ γᴰ))(tr (λ α → Pᴬ (γ , α)) (pᴬγ) (ptᴬ γ)))
+            (ptᴰ γ γᴰ)
+            (pᴬ γ))
+         (pᴰ γ γᴰ)) ,
+    (λ γ₀ γ₁ γᴹ →
+       J (λ uᴹγᴹ pᴹγᴹ → Pᴹ (γ₀ , uᴬ γ₀) (γ₁ , uᴬ γ₁) (γᴹ , uᴹγᴹ)
+           (tr (λ α → Pᴬ (γ₀ , α)) (pᴬ γ₀) (ptᴬ γ₀))
+           (tr (λ α → Pᴬ (γ₁ , α)) (pᴬ γ₁) (ptᴬ γ₁)))
+         (J (λ uᴬγ₀ pᴬγ₀ → Pᴹ (γ₀ , uᴬγ₀) (γ₁ , uᴬ γ₁)
+              (γᴹ ,
+               tr2 (Aᴹ γ₀ γ₁ γᴹ) (pᴬγ₀) (tr-const (pᴬγ₀) ◾ pᴬ γ₁) (tᴹ γ₀ γ₁ γᴹ))
+              (tr (λ α → Pᴬ (γ₀ , α)) (pᴬγ₀) (ptᴬ γ₀))
+              (tr (λ α → Pᴬ (γ₁ , α)) (pᴬ γ₁) (ptᴬ γ₁)))
+            (J (λ uᴬγ₁ pᴬγ₁ →
+                  Pᴹ (γ₀ , tᴬ γ₀) (γ₁ , uᴬγ₁)
+                  (γᴹ , tr2 (Aᴹ γ₀ γ₁ γᴹ) refl (pᴬγ₁) (tᴹ γ₀ γ₁ γᴹ)) (ptᴬ γ₀)
+                  (tr (λ α → Pᴬ (γ₁ , α)) (pᴬγ₁) (ptᴬ γ₁)))
+               (ptᴹ _ _ γᴹ)
+               (pᴬ γ₁))
+            (pᴬ γ₀))
+         (pᴹ _ _ γᴹ)) ,
+    λ γ γᴰ γˢ →
+      J (λ uˢγˢ pˢγˢ →
+           Pˢ (γ , uᴬ γ) (γᴰ , uᴰ γ γᴰ) (γˢ , uˢγˢ) (tr (λ α → Pᴬ (γ , α)) (pᴬ
+           γ) (ptᴬ γ)) (J (λ uᴰγγᴰ pᴰγγᴰ → Pᴰ (γ , uᴬ γ) (γᴰ , uᴰγγᴰ) (tr (λ α →
+           Pᴬ (γ , α)) (pᴬ γ) (ptᴬ γ))) (J (λ uᴬγ pᴬγ → Pᴰ (γ , uᴬγ) (γᴰ , tr
+           (Aᴰ γ γᴰ) pᴬγ (tᴰ γ γᴰ)) (tr (λ α → Pᴬ (γ , α)) pᴬγ (ptᴬ γ))) (ptᴰ γ
+           γᴰ) (pᴬ γ)) (pᴰ γ γᴰ)))
+        (J (λ uᴰγᴰ pᴰγᴰ →
+              Pˢ (γ , uᴬ γ) (γᴰ , uᴰγᴰ) (γˢ , tr2 (Aˢ γ γᴰ γˢ) (pᴬ γ) (pᴰγᴰ) (tˢ γ γᴰ γˢ)) (tr
+              (λ α → Pᴬ (γ , α)) (pᴬ γ) (ptᴬ γ)) (J (λ uᴰγγᴰ pᴰγγᴰ → Pᴰ (γ , uᴬ γ) (γᴰ ,
+              uᴰγγᴰ) (tr (λ α → Pᴬ (γ , α)) (pᴬ γ) (ptᴬ γ))) (J (λ uᴬγ pᴬγ → Pᴰ (γ ,
+              uᴬγ) (γᴰ , tr (Aᴰ γ γᴰ) pᴬγ (tᴰ γ γᴰ)) (tr (λ α → Pᴬ (γ , α)) pᴬγ (ptᴬ
+              γ))) (ptᴰ γ γᴰ) (pᴬ γ)) (pᴰγᴰ)))
+           (J (λ uᴬγ pᴬγ →
+                Pˢ (γ , uᴬγ) (γᴰ , tr (λ z → Aᴰ γ γᴰ z) (pᴬγ) (tᴰ γ γᴰ)) (γˢ , tr2 (Aˢ γ γᴰ γˢ)
+                (pᴬγ) refl (tˢ γ γᴰ γˢ)) (tr (λ α → Pᴬ (γ , α)) (pᴬγ) (ptᴬ γ)) (J (λ uᴬγ
+                pᴬγ → Pᴰ (γ , uᴬγ) (γᴰ , tr (Aᴰ γ γᴰ) pᴬγ (tᴰ γ γᴰ)) (tr (λ α → Pᴬ (γ ,
+                α)) pᴬγ (ptᴬ γ))) (ptᴰ γ γᴰ) (pᴬγ)))
+              (ptˢ _ _ γˢ)
+              (pᴬ γ))
+           (pᴰ _ γᴰ))
+        (pˢ _ _ γˢ)
+-- strict β works fine
+
+
+
+
+
 -- Identity (with only transport)
 --------------------------------------------------------------------------------
 
@@ -420,14 +611,21 @@ Id : ∀ {Γ}(a : Tm Γ U) → Tm Γ (El a) → Tm Γ (El a) → Tm Γ U
 Id (aᴬ , aᴰ , aᴹ , aˢ) (tᴬ , tᴰ , tᴹ , tˢ) (uᴬ , uᴰ , uᴹ , uˢ) =
   (λ γ → lower (tᴬ γ) ≡ lower (uᴬ γ)) ,
   (λ γ γᴰ eq → tr (aᴰ γ γᴰ) eq (lower (tᴰ γ γᴰ)) ≡ lower (uᴰ γ γᴰ)) ,
-  (λ γ₀ γ₁ γᴹ → lift λ e →
+  (λ γ₀ γ₁ γᴹ → lift λ eq →
       lower (tᴹ _ _ γᴹ) ⁻¹
-    ◾ ap (lower (aᴹ _ _ γᴹ)) e
+    ◾ ap (lower (aᴹ _ _ γᴹ)) eq
     ◾ lower (uᴹ _ _ γᴹ)) ,
   (λ γ γᴰ γˢ eq →
       ap (tr (aᴰ γ γᴰ) eq) (tˢ γ γᴰ γˢ ⁻¹)
     ◾ apd (aˢ γ γᴰ γˢ) eq
     ◾ uˢ γ γᴰ γˢ)
+
+Refl : ∀ {Γ a}{t : Tm Γ (El a)} → Tm Γ (El (Id a t t))
+Refl {Γᴬ , Γᴰ , Γᴹ , Γˢ}{aᴬ , aᴰ , aᴹ , aˢ} {tᴬ , tᴰ , tᴹ , tˢ} =
+  (λ γ → lift refl) ,
+  (λ _ _ → lift refl) ,
+  (λ _ _ γᴹ → lift (inv (lower (tᴹ _ _ γᴹ)))) ,
+  (λ _ _ γˢ → ap (_◾ tˢ _ _ γˢ) (ap-id (tˢ _ _ γˢ ⁻¹)) ◾ inv (tˢ _ _ γˢ))
 
 Id[] :
   {Γ Δ : Con} {σ : Sub Γ Δ} {a : Tm Δ (U {Δ})} {t u : Tm Δ (El {Δ} a)}
@@ -444,6 +642,7 @@ Id[] :
   (_[_]t {Γ} {Δ} {El {Δ} a} u σ)))
 Id[] = refl
 
+{-
 Transp :
   {Γ : Con} {a : Tm Γ (U {Γ})} (P : Ty (Γ ▶ El {Γ} a))
   {t u : Tm Γ (El {Γ} a)} →
@@ -456,6 +655,7 @@ Transp {Γᴬ , Γᴰ , Γᴹ , Γˢ}{aᴬ , aᴰ , aᴹ , aˢ}
        (ptᴬ , ptᴰ , ptᴹ , ptˢ)
        (eqᴬ , eqᴰ , eqᴹ , eqˢ)
   = (λ γ → tr (λ uᴬ → Pᴬ (γ , lift uᴬ)) (eqᴬ γ .lower) (ptᴬ γ)) ,
+
     (λ γ γᴰ →
        tr (λ uᴰ → Pᴰ (γ , uᴬ γ) (γᴰ , lift uᴰ)
                     (tr (λ x → Pᴬ (γ , lift x)) (eqᴬ γ .lower) (ptᴬ γ)))
@@ -466,6 +666,7 @@ Transp {Γᴬ , Γᴰ , Γᴹ , Γˢ}{aᴬ , aᴰ , aᴹ , aˢ}
                    (tr (λ uᴬ → Pᴬ (γ , lift uᴬ)) eqᴬ (ptᴬ γ)))
            (ptᴰ γ γᴰ)
            (eqᴬ γ .lower))) ,
+
     (λ γ₀ γ₁ γᴹ →
       tr (λ eqᴬγ₁ → Pᴹ (γ₀ , uᴬ γ₀) (γ₁ , uᴬ γ₁) (γᴹ , uᴹ γ₀ γ₁ γᴹ)
                        (tr (λ uᴬ₁ → Pᴬ (γ₀ , lift uᴬ₁)) (eqᴬ γ₀ .lower) (ptᴬ γ₀))
@@ -497,9 +698,11 @@ Transp {Γᴬ , Γᴰ , Γᴹ , Γˢ}{aᴬ , aᴰ , aᴹ , aˢ}
                             ptᴬγ₁))
                     (λ _ ptᴹγᴹ → ptᴹγᴹ)
                     (tᴹ _ _ γᴹ .lower)
-                    (ptᴬ γ₁) (ptᴹ _ _ γᴹ))
+                    (ptᴬ γ₁)
+                    (ptᴹ _ _ γᴹ))
                  (eqᴬ γ₀ .lower))
              (uᴹ _ _ γᴹ .lower))) ,
+
     (λ γ γᴰ γˢ →
       tr
         (λ eqᴰ →
@@ -561,7 +764,9 @@ Transp {Γᴬ , Γᴰ , Γᴹ , Γˢ}{aᴬ , aᴰ , aᴹ , aˢ}
                     (tˢ γ γᴰ γˢ) (ptᴰ γ γᴰ) (ptˢ γ γᴰ γˢ))
                 (eqᴬ γ .lower))
             (uˢ γ γᴰ γˢ)))
+-}
 
+{-
 <>∘ :
   {Γ Δ : Con} (σ : Sub Γ Δ) (a : Tm Δ (U {Δ})) → (t : Tm Δ (El {Δ} a)) → _≡_ {j}
   {Sub Γ (Δ ▶ El {Δ} a)} (_∘_ {Γ} {Δ} {Δ ▶ El {Δ} a} (<_> {Δ} {El {Δ} a} t) σ)
@@ -853,3 +1058,4 @@ reflU[] = refl
 --   --  -- slow typecheck
 
 --   --      ) ,
+-}

@@ -1,4 +1,4 @@
-
+{-# OPTIONS --without-K #-}
 {-
 
 Shallow formalization for the paper "Signatures and Induction Principles for Higher Inductive-Inductive Types".
@@ -72,6 +72,45 @@ Uᴰ A = A → Set
 Elᴰ : ∀{a}(aᴰ : Uᴰ a) → Setᴰ a -- Elᴰ is identity, so it is left implicit from now on
 Elᴰ aᴰ x = aᴰ x
 
+-- ID
+
+ID : {A : Set} → A → A → Set
+ID x y = x ≡ y
+
+IDᴰ :
+  {a : Set}(aᴰ : Setᴰ a)
+  {b : Set}(bᴰ : Setᴰ b)
+  → Setᴰ ?
+IDᴰ {a} aᴰ {b} bᴰ e = tr Setᴰ e aᴰ ≡ bᴰ
+
+Reflᴰ :
+  {a : U}(aᴰ : Uᴰ a)
+  → IDᴰ aᴰ aᴰ refl
+Reflᴰ {a} aᴰ = refl
+
+-- JUᴰ :
+--   (a : U)               (aᴰ : Uᴰ a)
+--   (P : ∀ b → a ≡ b → U) (Pᴰ : ∀ b (bᴰ : Uᴰ b) e (eᴰ : IdUᴰ aᴰ bᴰ e) → Uᴰ (P b e))
+--   (pr : P a refl)       (prᴰ : Pᴰ a aᴰ refl (reflUᴰ aᴰ) pr)
+--   (b : U)               (bᴰ : Uᴰ b)
+--   (e : a ≡ b)           (eᴰ : IdUᴰ aᴰ bᴰ e)
+--   → Elᴰ (Pᴰ _ bᴰ _ eᴰ) (J P pr e)
+-- JUᴰ a aᴰ P Pᴰ pr prᴰ b bᴰ e eᴰ =
+--   J (λ bᴰ eᴰ → Pᴰ b bᴰ e eᴰ (J P pr e))
+--     (J (λ b e → Pᴰ b (tr Uᴰ e aᴰ) e refl (J P pr e)) prᴰ e) eᴰ
+
+-- JUβ :
+--   (a : U)               (aᴰ : Uᴰ a)
+--   (P : ∀ b → a ≡ b → U) (Pᴰ : ∀ b (bᴰ : Uᴰ b) e (eᴰ : IdUᴰ aᴰ bᴰ e) → Uᴰ (P b e))
+--   (pr : P a refl)       (prᴰ : Pᴰ a aᴰ refl (reflUᴰ aᴰ) pr)
+--   → ≡ᴰ (Pᴰ a aᴰ refl refl)
+--        (JUᴰ a aᴰ P Pᴰ pr prᴰ a aᴰ refl refl)
+--        prᴰ
+--        refl
+-- JUβ a aᴰ P Pᴰ pr prᴰ = refl
+
+
+
 -- inductive functions
 Πᴰ : ∀ {a}(aᴰ : Uᴰ a){B : a → Set}(Bᴰ : ∀ {x} (xₘ : aᴰ x) → Setᴰ (B x)) → Setᴰ (Π a B)
 Πᴰ {a} aᴰ {B} Bᴰ f = (x : a)(xₘ : aᴰ x) → Bᴰ xₘ (f x)
@@ -92,7 +131,15 @@ appₙᵢᴰ :
     {t : Πₙᵢ A B}  (tᴰ : Πₙᵢᴰ A Bᴰ t)
     (u : A)
   → Bᴰ u (t u)
-appₙᵢᴰ A {B} Bᴰ {t} tᴰ u = tᴰ u
+appₙᵢᴰ A {B} Bᴰ {t} tᴰ = tᴰ
+
+lamₙᵢᴰ :
+  ∀ (A : Set)
+    {B : A → Set}  (Bᴰ : ∀ a → Setᴰ (B a))
+    {t : Π A B}    (tᴰ : ∀ a → Bᴰ a (t a))
+ → Πₙᵢᴰ A Bᴰ t
+lamₙᵢᴰ A {B} Bᴰ {t} tᴰ = tᴰ
+-- βη = refl
 
 -- small non-inductive functions (infinitary parameters)
 Πₙᵢₛᴰ : (A : Set){b : A → U}(Bᴰ : ∀ a → Uᴰ (b a)) → Uᴰ (Πₙᵢₛ A b)
@@ -105,6 +152,8 @@ appₙᵢₛᴰ :
     (u : A)
   → bᴰ u (t u)
 appₙᵢₛᴰ A {B} _ {t} tᴰ u = tᴰ u
+
+-- lam, βη OK
 
 
 -- Identity

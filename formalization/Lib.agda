@@ -93,6 +93,9 @@ tr2 :
   → C a₀ b₀ → C a₁ b₁
 tr2 {B = B} C {a₀}{.a₀} refl refl c₀ = c₀
 
+tr-const : ∀ {i j}{A : Set i}{B : Set j}{x y : A}(e : x ≡ y){b : B} → tr (λ _ → B) e b ≡ b
+tr-const refl = refl
+
 tr2ᴹ :
   ∀ {i j k l m n}
     {A  : Set i}            {Aᴹ : A → Set l}
